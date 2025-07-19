@@ -1,0 +1,38 @@
+services:
+    map:
+        image: ghcr.io/netwerk-digitaal-erfgoed/ld-workbench:latest
+        volumes: 
+            - ${DATASET}:/pipelines
+        entrypoint: []
+        network_mode: "host"
+        command: /bin/sh -c "ld-workbench --config /pipelines"
+    
+    sparql-server-getdata:
+        image: adfreiburg/qlever
+        volumes:
+            - ${DATASET}/qlever:/data
+        entrypoint: [] 
+        command: /bin/sh -c "cd /data; qlever get-data"
+
+    sparql-server-index:
+        image: adfreiburg/qlever
+        volumes:
+            - ${DATASET}/qlever:/data
+        entrypoint: [] 
+        command: /bin/sh -c "cd /data; qlever index --overwrite-existing"
+
+    sparql-server:
+        image: adfreiburg/qlever
+        volumes:
+            - ${DATASET}/qlever:/data
+        ports:
+            - "8890:8890"
+        entrypoint: [] 
+        user: ${USER}
+        command: /bin/sh -c "cd /data; qlever start && tail -f /dev/null"
+
+    europeana-tools:
+        build: ../europeana-tools
+        volumes:
+              - ${DATASET}:/opt/data
+

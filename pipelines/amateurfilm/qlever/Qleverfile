@@ -1,0 +1,15 @@
+[data]
+NAME         = amateurfilm
+DATA_URL     = https://data.beeldengeluid.nl/files/amateurfilm/lod_exporter_amateurfilm_sdo_20241014_dedup.nt
+GET_DATA_CMD = wget -nc ${DATA_URL}
+DESCRIPTION  = ${NAME} downloaded from ${DATA_URL}
+[index]
+INPUT_FILES = *.nt
+CAT_INPUT_FILES = cat ${INPUT_FILES}
+SETTINGS_JSON   = { "num-triples-per-batch": 1000000 }
+[server]
+PORT         = 8890
+ACCESS_TOKEN = _iKdX02Xpo41q
+[runtime]
+SYSTEM = native
+IMAGE  = docker.io/adfreiburg/qlever:latest
