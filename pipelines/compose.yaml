@@ -5,7 +5,6 @@ services:
             - ${DATASET}:/pipelines
         entrypoint: []
         network_mode: "host"
-        command: /bin/sh -c "ld-workbench --config /pipelines"
     
     sparql-server-getdata:
         image: adfreiburg/qlever

@@ -8,10 +8,10 @@ COPY libs ./libs
 COPY pom.xml .
 RUN mvn --quiet -e -f ./pom.xml clean assembly:assembly
 
-FROM stain/jena AS jena-tools
-
 # Package stage
-#FROM openjdk:11-jre-slim
+
+# use the jena image providing java jre and jena tools
+FROM stain/jena AS jena-tools
 
 WORKDIR /app/crawler
 

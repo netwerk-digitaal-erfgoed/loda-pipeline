@@ -9,7 +9,8 @@ DATASET="amateurfilm"
 
 ./start-sparql-server.sh $DATASET
 
-# wait a short while for the server to come up
+# wait a short while for the server to come up - should be replace by a test!
+echo "Wait a short while for the server to start"
 sleep 5s 
 
 ./start-mapping.sh $DATASET
