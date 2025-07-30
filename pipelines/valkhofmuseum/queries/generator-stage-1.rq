@@ -1,0 +1,67 @@
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX void:    <http://rdfs.org/ns/void#>
+PREFIX schema:  <https://schema.org/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+
+CONSTRUCT {
+    $this a edm:ProvidedCHO ;
+         edm:type ?edm_type ;
+         dc:creator ?creator ;
+         dc:description ?description ;
+         dc:type ?genre ;
+         dc:subject ?subject ;
+         dc:title ?name ;
+         dcterms:alternative ?altName ;
+         dc:publisher ?publisher ;
+         owl:sameAs ?sameAs ;
+         dcterms:spatial ?spatial ;
+         dcterms:temporal ?temporal ;
+         dcterms:medium ?material .   
+
+    ?uri_ore a ore:Aggregation ;
+         edm:aggregatedCHO $this ;
+         edm:provider ?provider ;
+         edm:dataProvider ?dataProvider ;
+         edm:rights ?license ;
+         edm:isShownBy ?isShownBy ;
+         edm:isShownAt ?isShownAt .
+}
+WHERE {
+  BIND(("IMAGE") as ?edm_type)
+  BIND(STR('DC4EU') as ?provider)
+	BIND(("Valkhof Museum") as ?dataProvider)
+  BIND(IRI($this) as ?isShownAt) 
+
+  # Generate an "URI_CHO#agg" URI pointing to a ore:Aggregation resource. 
+  BIND( URI(CONCAT(STR($this),"#agg")) as ?uri_ore)
+
+  OPTIONAL { $this schema:creator ?creator }
+  OPTIONAL { $this schema:description ?description }
+  OPTIONAL { $this schema:genre ?genre . 
+    FILTER (lang( ?genre) = "en")
+    BIND(str(?genre) as ?dc_genre)
+  }
+  OPTIONAL { $this schema:keywords ?subject }
+  OPTIONAL { $this schema:about ?subject }
+  OPTIONAL { $this schema:license ?cho_license }
+  OPTIONAL { $this schema:name ?name }
+  OPTIONAL { $this schema:alternateName ?altName }
+  OPTIONAL { $this schema:publisher ?publisher }
+  OPTIONAL { $this schema:sameAs ?sameAs }
+  OPTIONAL { $this schema:spatial ?spatial }
+  OPTIONAL { $this schema:temporal ?temporal }
+  OPTIONAL { $this schema:material ?material }
+  OPTIONAL {
+    # Europeana requires valid URI for edm:isShownBy 
+    $this schema:image/schema:contentUrl ?image
+    BIND(IRI(?image) as ?isShownBy)
+    FILTER(!BOUND(?image))
+  }
+  BIND(COALESCE(IRI(?cho_license),IRI(?dataset_license),"no license info") as ?license)
+}

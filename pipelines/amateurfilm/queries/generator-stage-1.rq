@@ -50,24 +50,8 @@ CONSTRUCT {
 	BIND(STR('DC4EU') as ?provider)
 	BIND(("VIDEO") as ?edm_type)
 
-	# Mapping sdo:provider naar edm:dataProvider in schema-edm vervangen door constante waarde, 
-	# omdat er nu 4 verschillende waarden/GTAA uri’s voorkomen:
-	# - NEDERLANDS INSTITUUT VOOR BEELD EN GELUID (4328 records)
-	# - NIET VAN TOEPASSING (1272 records)
-	# - NADER TE BEPALEN (424 records)
-	# - NIET BEKEND (58 records)
-	#
 	# Overeenkomstig met andere B&G datasets op Europeana deze constante waarde als string toevoegen: 
-	# Netherlands Institute for Sound & Vision
-	
 	BIND(("Netherlands Institute for Sound & Vision") as ?dataProvider)
-
-	# Klopt het dat er momenteel geen Publiek Domein of Creative Commons waarden voorkomen in de dataset?
-	# Er zijn 2 waarden:
-	# no license info (4075 records)
-	# CNE (2013)
-
-	# Voor deze twee waarden een constant mapping in de schema-edm mapping opnemen naar http://rightsstatements.org/vocab/InC/1.0/
 
 	OPTIONAL {
 		$this sdo:description ?description 
@@ -99,15 +83,21 @@ CONSTRUCT {
 		$this sdo:keywords ?keyword
 		BIND(STRLANG(?keyword, "nl") AS ?lang_keyword) # temp fix
 	}
+
+	# Klopt het dat er momenteel geen Publiek Domein of Creative Commons waarden voorkomen in de dataset?
+	# Er zijn 2 waarden:
+	# no license info (4075 records)
+	# CNE (2013)
+
+	# Voor deze twee waarden een constant mapping in de schema-edm mapping opnemen naar http://rightsstatements.org/vocab/InC/1.0/
+	# TODO: map license from new values
+
 	OPTIONAL {
 		$this sdo:license ?license 
 	}
 	OPTIONAL {
-		$this sdo:alternateName ?altName 
+		$this sdo:alternativeHeadline ?altName
 		BIND(STRLANG(STR(?altName), "nl") AS ?lang_alt_name) # temp fix
-	}
-	OPTIONAL {
-		$this sdo:sameAs ?sameAs 
 	}
 	OPTIONAL {
 		$this sdo:location ?spatial .
@@ -131,7 +121,7 @@ CONSTRUCT {
 		BIND(IRI(?image) as ?isShownBy)
 	}
 	OPTIONAL {
-		$this sdo:identifier/sdo:value ?pid
+		$this sdo:identifier ?pid
 	}
 
 }

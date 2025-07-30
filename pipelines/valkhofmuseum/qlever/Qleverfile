@@ -1,0 +1,15 @@
+[data]
+NAME         = Valkhof Museum
+DATA_URL     = https://valk.hosting.deventit.net/AtlantisPubliek/data/set/Valkhof+museum+-+Museum+objecten.nt
+GET_DATA_CMD = wget -nc ${DATA_URL}
+DESCRIPTION  = ${NAME} downloaded from ${DATA_URL}
+[index]
+INPUT_FILES = *.nt
+CAT_INPUT_FILES = cat ${INPUT_FILES}
+SETTINGS_JSON   = { "num-triples-per-batch": 1000000 }
+[server]
+PORT         = 8890
+ACCESS_TOKEN = _iKdX02Xpo41q
+[runtime]
+SYSTEM = native
+IMAGE  = docker.io/adfreiburg/qlever:latest

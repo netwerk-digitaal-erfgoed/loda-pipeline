@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-DATASET="amateurfilm"
+#DATASET="amateurfilm"
+DATASET="valkhofmuseum"
 
 ./get-data.sh $DATASET
 

@@ -1,0 +1,21 @@
+# Metadata for your pipeline:
+---
+name: Valkhof Museum
+description: Zet de datadump van het Valkhof Museum om naar EDM RDF voor publicatie op Europeana
+
+# This is optional, by default it will be stored in the data directory of the pipeline using filename 'statements.nt'
+destination: file://valkhofmuseum.nt
+
+# The individual stages for your pipeline
+stages:
+  - name: "Stage 1 - Schema2EDM"
+    iterator:
+      query: file://queries/iterator-stage-1.rq
+      # local file takes a very long time (https://github.com/netwerk-digitaal-erfgoed/ld-workbench/issues/117)
+      #endpoint: file://data/lod_exporter_amateurfilm_sdo_20241014_dedup.nt
+      # can't use the source triple store due to issue (https://github.com/netwerk-digitaal-erfgoed/dc4eu-projects/issues/1)
+      #endpoint: https://cat.apis.beeldengeluid.nl/sparql
+      # advice: load the datadump into Qlever, use the IP address of the machine (127.0.0.0 or 0.0.0.0 won't work because of Docker use)
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq

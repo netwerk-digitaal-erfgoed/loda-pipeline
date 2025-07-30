@@ -1,0 +1,9 @@
+# iterator.rq
+PREFIX sdo: <https://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema:  <https://schema.org/>
+
+SELECT $this WHERE {
+  $this a sdo:CreativeWork ;
+        schema:image [rdf:type schema:MediaObject] .
+}
