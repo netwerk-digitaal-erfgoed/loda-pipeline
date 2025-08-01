@@ -18,3 +18,4 @@ WORKDIR /app/crawler
 COPY --from=build /app/crawler/target/cc-lod-crawler-DockerApplication .
 
 RUN chmod 777 /app/crawler
+RUN chmod 777 /app/crawler/rdf2edm.sh

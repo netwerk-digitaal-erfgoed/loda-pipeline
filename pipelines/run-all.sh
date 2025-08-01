@@ -6,6 +6,10 @@ DATASET="valkhofmuseum"
 
 ./get-data.sh $DATASET
 
+# pause a while to wait for the download to finish
+echo "Wait a short while for the download to finish"
+sleep 2s 
+
 ./create-sparql-index.sh $DATASET
 
 ./start-sparql-server.sh $DATASET

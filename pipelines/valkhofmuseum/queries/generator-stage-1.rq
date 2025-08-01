@@ -8,6 +8,7 @@ PREFIX void:    <http://rdfs.org/ns/void#>
 PREFIX schema:  <https://schema.org/>
 PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
 PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX crm:     <http://www.cidoc-crm.org/cidoc-crm/>
 
 CONSTRUCT {
     $this a edm:ProvidedCHO ;
@@ -33,35 +34,61 @@ CONSTRUCT {
          edm:isShownAt ?isShownAt .
 }
 WHERE {
-  BIND(("IMAGE") as ?edm_type)
-  BIND(STR('DC4EU') as ?provider)
-	BIND(("Valkhof Museum") as ?dataProvider)
-  BIND(IRI($this) as ?isShownAt) 
 
   # Generate an "URI_CHO#agg" URI pointing to a ore:Aggregation resource. 
   BIND( URI(CONCAT(STR($this),"#agg")) as ?uri_ore)
 
-  OPTIONAL { $this schema:creator ?creator }
+  # approach this collection as Europeana IMAGE collection
+  BIND(("IMAGE") as ?edm_type)
+
+  # DC4EU as fixed provider of the EDM dataset
+  BIND(STR('DC4EU') as ?provider)
+
+  # Valkhof Museum as the fixed data provider for this dataset
+	BIND(("Valkhof Museum") as ?dataProvider)
+
+  # the IRI of the object should resolve to a landingpage with the registration system
+  BIND(IRI($this) as ?isShownAt) 
+
+  # schema:license contains an invalid license which leads to problems with Europeana
+  # original license link was: https://creativecommons.org/licenses/zero/1.0/
+  # define a static license 
+  BIND("http://creativecommons.org/publicdomain/zero/1.0/" as ?license)
+  #OPTIONAL { $this schema:license ?cho_license }
+  #BIND(COALESCE(IRI(?cho_license),IRI(?dataset_license),"no license info") as ?license)
+
+  # a title or description is required by Europeana
+  # require records with at least rdfs:label present 
+  $this rdfs:label ?name .
+
+  # Europeana requires valid URI for edm:isShownBy 
+  # using the image link instead of the IIIF manifest for now
+  $this schema:image ?image .
+  BIND(IRI(?image) as ?isShownBy)
+
+  # collect optional description fields
   OPTIONAL { $this schema:description ?description }
-  OPTIONAL { $this schema:genre ?genre . 
-    FILTER (lang( ?genre) = "en")
-    BIND(str(?genre) as ?dc_genre)
-  }
+  
+  # A ProvidedCHO must have a dc:subject or dc:type or dct:temporal or dct:spatial.
+
+  # this information is not available in the schema.org data so use the linked art data
+  OPTIONAL { $this crm:P108i_was_produced_by/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?temporal }  
+  OPTIONAL { $this crm:P2_has_type/rdfs:label ?genre }
+
+  # give it a try
   OPTIONAL { $this schema:keywords ?subject }
   OPTIONAL { $this schema:about ?subject }
-  OPTIONAL { $this schema:license ?cho_license }
-  OPTIONAL { $this schema:name ?name }
+  OPTIONAL { $this schema:spatial ?spatial }
+
+#  OPTIONAL { $this schema:genre ?genre . 
+#    FILTER (lang( ?genre) = "en")
+#    BIND(str(?genre) as ?dc_genre)
+#  }
+
+  OPTIONAL { $this schema:creator ?creator }
   OPTIONAL { $this schema:alternateName ?altName }
   OPTIONAL { $this schema:publisher ?publisher }
   OPTIONAL { $this schema:sameAs ?sameAs }
-  OPTIONAL { $this schema:spatial ?spatial }
-  OPTIONAL { $this schema:temporal ?temporal }
   OPTIONAL { $this schema:material ?material }
-  OPTIONAL {
-    # Europeana requires valid URI for edm:isShownBy 
-    $this schema:image/schema:contentUrl ?image
-    BIND(IRI(?image) as ?isShownBy)
-    FILTER(!BOUND(?image))
-  }
-  BIND(COALESCE(IRI(?cho_license),IRI(?dataset_license),"no license info") as ?license)
+
 }
