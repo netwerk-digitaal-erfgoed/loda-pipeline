@@ -6,9 +6,17 @@ export DATASET="./${1}"
 
 echo "Make the data ready for upload to Europeana.."
 
-echo "First convert the data file to a RDF/XML serialization..."
+echo "Deduplicate the output from LDWorkbench..."
 
-docker compose run --rm europeana-tools /bin/bash -c "riot --output=rdfxml /opt/data/${DATASET}.nt > /opt/data/${DATASET}.rdf"
+docker compose run --rm europeana-tools /bin/bash -c "sparql --data /opt/data/${DATASET}.nt --query /opt/shapes/distinct.rq --results=N-Triples > /opt/data/${DATASET}-distinct.nt"
+
+echo "Validate the result against the EDM shape constraints..."
+
+docker compose run --rm europeana-tools /bin/bash -c "shacl validate --data /opt/data/${DATASET}-distinct.nt --shapes /opt/shapes/edm.ttl > /opt/data/validate-report.txt"
+
+echo "Convert the data file to a RDF/XML serialization..."
+
+docker compose run --rm europeana-tools /bin/bash -c "riot --output=rdfxml /opt/data/${DATASET}-distinct.nt > /opt/data/${DATASET}.rdf"
 
 echo "Rewrite the RDF/XML to XML that can be processed by Europeana..."
 

@@ -34,4 +34,5 @@ services:
         build: ../europeana-tools
         volumes:
               - ${DATASET}:/opt/data
+              - ./shapes:/opt/shapes
 

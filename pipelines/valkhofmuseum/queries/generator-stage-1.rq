@@ -53,7 +53,7 @@ WHERE {
   # schema:license contains an invalid license which leads to problems with Europeana
   # original license link was: https://creativecommons.org/licenses/zero/1.0/
   # define a static license 
-  BIND("http://creativecommons.org/publicdomain/zero/1.0/" as ?license)
+  BIND(IRI("http://creativecommons.org/publicdomain/zero/1.0/") as ?license)
   #OPTIONAL { $this schema:license ?cho_license }
   #BIND(COALESCE(IRI(?cho_license),IRI(?dataset_license),"no license info") as ?license)
 
@@ -70,9 +70,9 @@ WHERE {
   OPTIONAL { $this schema:description ?description }
   
   # A ProvidedCHO must have a dc:subject or dc:type or dct:temporal or dct:spatial.
+  OPTIONAL { $this schema:datePublished ?temporal}
 
   # this information is not available in the schema.org data so use the linked art data
-  OPTIONAL { $this crm:P108i_was_produced_by/crm:P4_has_time-span/crm:P82a_begin_of_the_begin ?temporal }  
   OPTIONAL { $this crm:P2_has_type/rdfs:label ?genre }
 
   # give it a try

@@ -1,3 +1,5 @@
 *.nt
 *.zip
 *.rdf
+sandboxID.txt
+validate-report.txt

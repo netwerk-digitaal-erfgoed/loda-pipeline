@@ -1,0 +1,21 @@
+# LDWorkbench generates multiple triples which is inefficient and might lead to problems
+# within the processing pipeline at Europeana. This query removes the duplicates
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+
+construct {?s ?p ?o}
+where {
+    {
+      select distinct ?s ?p (SAMPLE(?oRaw) as ?o) {
+        ?s ?p ?oRaw
+        FILTER(?p=edm:isShownBy) 
+      }
+      GROUP BY ?s ?p   
+    }
+    UNION
+    {
+      select distinct ?s ?p ?o { 
+        ?s ?p ?o 
+        FILTER( ?p != edm:isShownBy )
+      }
+    }
+}
