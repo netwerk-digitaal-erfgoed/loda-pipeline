@@ -1,0 +1,20 @@
+# Europeana doens't resolve GTAA terms (yet), so we need to get the labels
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+construct {
+  $this a skos:Concept; 
+	skos:prefLabel ?label ;
+	skos:broader ?broader ;
+	skos:narrower ?narrower ;
+	skos:exactMatch ?exactMatch ;
+	skos:closeMatch ?closeMatch ;
+	skos:related ?related ;
+	skos:note ?note .
+} where {
+  $this skos:prefLabel ?label
+  OPTIONAL { $this skos:broader ?broader }
+  OPTIONAL { $this skos:narrower ?narrower }
+  OPTIONAL { $this skos:exactMatch ?exactMatch }
+  OPTIONAL { $this skos:closeMatch ?closeMatch }
+  OPTIONAL { $this skos:related ?related }
+  OPTIONAL { $this skos:note ?note }
+}

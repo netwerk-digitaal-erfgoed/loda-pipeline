@@ -1,0 +1,25 @@
+# Metadata for your pipeline:
+---
+name: NA fotocollectie
+description: Zet de NA fotocollectie datadumps om naar EDM RDF voor publicatie op Europeana
+
+# This is optional, by default it will be stored in the data directory of the pipeline using filename 'statements.nt'
+destination: file://nafotos.nt
+
+# The individual stages for your pipeline
+stages:
+  - name: "Stage 1 - Schema2EDM"
+    iterator:
+      query: file://queries/iterator-stage-1.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 2 - GTAA SKOS"
+    iterator:
+      query: file://queries/iterator-stage-2.rq
+      endpoint: http://localhost:8890/
+      batchSize: 50000
+    generator:
+      - query: file://queries/generator-stage-2.rq
+        endpoint: https://gtaa.apis.beeldengeluid.nl/sparql
+        batchSize: 50000

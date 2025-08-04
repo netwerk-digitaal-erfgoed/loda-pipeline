@@ -1,0 +1,19 @@
+[data]
+NAME            = nafotos
+DATA_URL        = https://ams3.digitaloceanspaces.com/nde-europeana/nafotos.tar.gz https://ams3.digitaloceanspaces.com/nde-europeana/2-10-62ntfoto.tar.gz https://ams3.digitaloceanspaces.com/nde-europeana/2-24-06-01ntfoto.tar.gz
+GET_DATA_CMD    = wget -nc ${DATA_URL}
+DESCRIPTION     = ${NAME} downloaded from ${DATA_URL}
+
+[index]
+INPUT_FILES     = 2-24-06-01ntfoto.tar.gz
+CAT_INPUT_FILES = tar -xOzf ${INPUT_FILES}
+SETTINGS_JSON   = { "num-triples-per-batch": 1000000 }
+
+[server]
+PORT            = 8890
+ACCESS_TOKEN    = _iKdX02Xpo41q
+
+[runtime]
+SYSTEM = native
+IMAGE  = docker.io/adfreiburg/qlever:latest
+

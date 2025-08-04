@@ -1,0 +1,8 @@
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+
+SELECT $this WHERE {
+  $this a nao:Recordaggregatie ;
+	ore:aggregates ?uri_cho .
+  ?uri_cho a nao:Archiefeenheid .
+}
