@@ -27,6 +27,10 @@ process_dataset () {
 	./convert-to-edm.sh $DATASET
 
 	./stop-sparql-server.sh $DATASET
+	
+	./make_dataset_description.sh $DATASET
+	
+	./upload-to-s3bucket.sh $DATASET
 }
 
 

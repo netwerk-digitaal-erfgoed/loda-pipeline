@@ -7,21 +7,21 @@ services:
         network_mode: "host"
     
     sparql-server-getdata:
-        image: adfreiburg/qlever
+        image: adfreiburg/qlever:latest
         volumes:
             - ${DATASET}/qlever:/data
         entrypoint: [] 
         command: /bin/sh -c "cd /data; qlever get-data"
 
     sparql-server-index:
-        image: adfreiburg/qlever
+        image: adfreiburg/qlever:latest
         volumes:
             - ${DATASET}/qlever:/data
         entrypoint: [] 
         command: /bin/sh -c "cd /data; qlever index --overwrite-existing"
 
     sparql-server:
-        image: adfreiburg/qlever
+        image: adfreiburg/qlever:latest
         volumes:
             - ${DATASET}/qlever:/data
         ports:
@@ -36,3 +36,8 @@ services:
               - ${DATASET}:/opt/data
               - ./shapes:/opt/shapes
 
+    s3cmd:
+        image: d3fk/s3cmd
+        volumes:
+              - ${DATASET}:/s3
+              - .s3:/root

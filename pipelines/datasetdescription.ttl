@@ -1,0 +1,43 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<https://dc4eu.nl/id/datasets/$DATASETNAME> a dcat:Dataset ;
+	dcterms:title "$DATASET_DESCRIPTION_TITLE" ;
+	dcterms:description "$DATASET_DESCRIPTION_TITLE - dataset '$DATASETNAME' - converted via LODA-pipeline to the EDM datamodel." ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <$DATASET_DESCRIPTION_CREATOR_URI> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml> ;
+	dcterms:created "$DATASET_DESCRIPTION_CREATE_DATE"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:language "$DATASET_DESCRIPTION_LANGUAGE" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcterms:source <https://archief.nl/id/dataset/toegang/2.10.62> .
+
+<$DATASET_DESCRIPTION_CREATOR_URI> foaf::name "$DATASET_DESCRIPTION_CREATOR_NAME" .
+
+<https://dc4eu.nl> foaf::name "DC4EU" .
+
+<https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of $NUMBERTRIPLES N-triples." ;
+	dcat:byteSize "$DISTRIBUTION_SIZE_NTRIPLES"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcat:accessURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
+	dcat:downloadURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of $NUMBERXML EDM XML files." ;
+	dcat:byteSize "$DISTRIBUTION_SIZE_XMLZIP"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcat:accessURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
+	dcat:downloadURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+

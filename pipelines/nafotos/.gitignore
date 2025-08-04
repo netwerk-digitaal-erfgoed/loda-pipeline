@@ -1,3 +1,5 @@
 *.nt
 *.zip
 *.rdf
+*.gz
+*.txt
