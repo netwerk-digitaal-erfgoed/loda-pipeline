@@ -14,25 +14,25 @@ CONSTRUCT {
 	?uri_cho a edm:ProvidedCHO ;
 		edm:type ?edm_type ;
 		dc:creator ?creator ;
-        dc:description ?description ;
-        dc:type ?genre ;
-        dc:subject ?subjecturi ;
-        dc:subject ?subjectliteral ;
-        dcterms:spatial ?spatial ;
-        dcterms:medium ?material ;
-		dc:rights ?policy ;
-        dc:identifier ?identifier ;
-        dc:date ?date ;
-        dcterms:isPartOf ?is_part_of ;
+		dc:description ?description ;
+		dc:type ?genre ;
+		dc:subject ?subjecturi ;
+		dc:subject ?subjectliteral ;
+		dcterms:spatial ?spatial ;
+		dcterms:medium ?material ;
+		dc:rights ?license ;
+		dc:identifier ?identifier ;
+		dc:date ?date ;
+		dcterms:isPartOf ?is_part_of ;
 		edm:pid ?pid ;
-# 		dc:publisher ?publisher ;
+#		dc:publisher ?publisher ;
 	. 
 	
 	?uri_ore a ore:Aggregation ;
 		edm:aggregatedCHO ?uri_cho ;
 		edm:provider ?provider ;
 		edm:dataProvider ?dataProvider ;
-		edm:rights ?license ;
+		edm:rights ?rights ;
 		edm:hasView ?isShownBy ; # was edm:isShownBy
 		edm:isShownAt ?isShownAt ;
 	.
@@ -52,10 +52,8 @@ CONSTRUCT {
 	BIND( ("Foto") as ?genre )
 	BIND( STRLANG("DC4EU - Dutch Collections for Europe", "en") AS ?provider )
 	BIND( STRLANG("Nationaal Archief","nl") as ?dataProvider )
-	BIND( IRI("http://creativecommons.org/publicdomain/mark/1.0/") as ?policy )
 
 	?this ore:aggregates ?uri_cho .
-#	?uri_cho a nao:Archiefeenheid .
 
 	?uri_ore foaf:primaryTopic ?uri_cho .
 	?uri_ore odrl:hasPolicy <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> . 
@@ -115,17 +113,13 @@ CONSTRUCT {
 		BIND(STRLANG(?_is_part_of, "nl") AS ?is_part_of) 
 	}
 
-	# voorkomende waarden:
-    # "Nationaal Archief, CC0"@nl > http://creativecommons.org/publicdomain/zero/1.0/
-	# "Nationaal Archief, Public Domain"@nl > http://creativecommons.org/publicdomain/mark/1.0/
+	# License "conversion" <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> > <http://creativecommons.org/publicdomain/mark/1.0/> 
+	?uri_ore odrl:hasPolicy ?policy .
+	BIND(  IF(?policy = <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein>, IRI("http://creativecommons.org/publicdomain/mark/1.0/"), ?policy) as ?rights)
 
 	OPTIONAL { 
-		?uri_ore odrl:hasPolicy/dcterms:rightsHolder ?_license . 
-		BIND(
-		  IF(?_license = "Nationaal Archief, CC0", <http://creativecommons.org/publicdomain/zero/1.0/>,
-			IF(?_license = "Nationaal Archief, Public Domain", <http://creativecommons.org/publicdomain/mark/1.0/>, "????")
-		  ) AS ?license
-		)
+		?policy dcterms:rightsHolder ?_license . 
+		BIND(STRLANG(?_license, "nl") AS ?license) 
 	}
 	
-} LIMIT 800
+}
