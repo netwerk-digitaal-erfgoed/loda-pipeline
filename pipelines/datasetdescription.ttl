@@ -21,7 +21,7 @@
 	dcterms:description "Gzipped distribution of $NUMBERTRIPLES N-triples." ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_NTRIPLES"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
 	dcat:downloadURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -33,7 +33,7 @@
 	dcterms:description "Zipped distribution of $NUMBERXML EDM XML files." ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_XMLZIP"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
 	dcat:downloadURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
