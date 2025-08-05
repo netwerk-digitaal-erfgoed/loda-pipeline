@@ -25,7 +25,7 @@ if [ ! -d .s3 ] || [ ! -f .s3/.s3cfg ]; then
 	# change the value of public_url_use_https from False to True
 fi
 
-if [! -f ./${DATASETNAME}/${DATASETNAME}.datasetdescription.ttl ]; then
+if [ ! -f ./${DATASETNAME}/${DATASETNAME}.datasetdescription.ttl ]; then
     echo "File ${DATASETNAME}/${DATASETNAME}.datasetdescription.ttl not found,"
 	echo "NOT uploading ${DATASET} files to S3 bucket ..."	
 fi
