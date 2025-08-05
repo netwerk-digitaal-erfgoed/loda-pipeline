@@ -17,6 +17,7 @@ CONSTRUCT {
         dc:description ?description ;
         dc:type ?genre ;
         dc:subject ?subjecturi ;
+        dc:subject ?subjectliteral ;
         dcterms:spatial ?spatial ;
         dcterms:medium ?material ;
 		dc:rights ?policy ;
