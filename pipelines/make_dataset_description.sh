@@ -2,6 +2,7 @@
 set -e
 
 # pass the dataset name as the first argument
+export DATASET="./${1}"
 export DATASETNAME="${1}"
 
 if [ ! -f ./${1}/datasetdescription.env ]; then
@@ -27,3 +28,5 @@ export DISTRIBUTION_CONTENT_XMLZIP="${DATASET_DESCRIPTION_DISTRUTION_BASE}/${DAT
 export DISTRIBUTION_SIZE_XMLZIP=$(stat -c %s "${DATASETNAME}/${DATASETNAME}.zip")
 
 envsubst < datasetdescription.ttl > ${DATASETNAME}/${DATASETNAME}.datasetdescription.ttl
+
+docker compose run --rm europeana-tools /bin/bash -c "shacl validate --data /opt/data/${DATASETNAME}.datasetdescription.ttl --shapes https://raw.githubusercontent.com/netwerk-digitaal-erfgoed/dataset-register/refs/heads/main/spec/shacl.ttl > /opt/data/validate-report-db.txt"
