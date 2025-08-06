@@ -9,12 +9,12 @@ CONSTRUCT {
     $this a edm:ProvidedCHO ;
 		edm:type ?edm_type ;
 		dc:creator ?creator ;
-		dc:description ?lang_description ;
+		dc:description ?description ;
 		dc:type ?genre ;
 		dc:subject ?subject ;
-		dc:subject ?lang_keyword ;
-		dc:title ?lang_name ;
-		dcterms:alternative ?lang_altName ;
+		dc:subject ?keyword ;
+		dc:title ?name ;
+		dcterms:alternative ?altName ;
 		dc:publisher ?publisher ;
 		dcterms:spatial ?spatial ;
 		dcterms:temporal ?temporal ;
@@ -39,7 +39,7 @@ CONSTRUCT {
 		edm:aggregatedCHO $this ;
 		edm:provider ?provider ;
 		edm:dataProvider ?dataProvider ;
-		edm:rights ?license ;
+		edm:rights ?fixed_license ;
 		edm:isShownBy ?isShownBy ;
 		edm:isShownAt ?isShownAt .
 
@@ -55,7 +55,6 @@ CONSTRUCT {
 
 	OPTIONAL {
 		$this sdo:description ?description 
-		BIND(STRLANG(STR(?description), "nl") AS ?lang_description) #temp fix
 	}
 	OPTIONAL {
 	   $this sdo:about ?subject .
@@ -63,7 +62,6 @@ CONSTRUCT {
 	}
 	OPTIONAL {
 		$this sdo:name ?name 
-		BIND(STRLANG(STR(?name), "nl") AS ?lang_name) #temp fix
 	}
 	OPTIONAL {
 		$this sdo:publisher ?publisher 
@@ -81,23 +79,16 @@ CONSTRUCT {
 	}
 	OPTIONAL {
 		$this sdo:keywords ?keyword
-		BIND(STRLANG(?keyword, "nl") AS ?lang_keyword) # temp fix
 	}
-
-	# Klopt het dat er momenteel geen Publiek Domein of Creative Commons waarden voorkomen in de dataset?
-	# Er zijn 2 waarden:
-	# no license info (4075 records)
-	# CNE (2013)
-
-	# Voor deze twee waarden een constant mapping in de schema-edm mapping opnemen naar http://rightsstatements.org/vocab/InC/1.0/
-	# TODO: map license from new values
 
 	OPTIONAL {
 		$this sdo:license ?license 
 	}
+	# fix licenses: replace CNE and !bound with InC
+	BIND( COALESCE( IF(BOUND(?license), IF(?license = <http://rightsstatements.org/vocab/CNE/1.0/>, 1/0, ?license), 1/0),<http://rightsstatements.org/vocab/InC/1.0/> ) AS ?fixed_license)
+
 	OPTIONAL {
 		$this sdo:alternativeHeadline ?altName
-		BIND(STRLANG(STR(?altName), "nl") AS ?lang_alt_name) # temp fix
 	}
 	OPTIONAL {
 		$this sdo:location ?spatial .
