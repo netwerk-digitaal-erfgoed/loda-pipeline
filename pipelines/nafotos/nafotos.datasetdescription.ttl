@@ -1,0 +1,43 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<https://dc4eu.nl/id/datasets/nafotos> a dcat:Dataset ;
+	dcterms:title "Fotocollection Dutch National Archives for Europeana" ;
+	dcterms:description "Fotocollection Dutch National Archives for Europeana - dataset 'nafotos' - converted via LODA-pipeline to the EDM datamodel." ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <https://www.nationaalarchief.nl> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets/nafotos/dist-nt>, <https://dc4eu.nl/id/datasets/nafotos/dist-xml> ;
+	dcterms:created "2025-08-04"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:language "en" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcterms:source <https://archief.nl/id/dataset/toegang/2.10.62> .
+
+<https://www.nationaalarchief.nl> foaf::name "National Archives" .
+
+<https://dc4eu.nl> foaf::name "DC4EU" .
+
+<https://dc4eu.nl/id/datasets/nafotos/dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of  N-triples." ;
+	dcat:byteSize "95709"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2025-08-04T18:12:05Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2025-08-04T18:12:05Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://ams3.digitaloceanspaces.com/nde-europeana/nafotos.nt.gz> ;
+	dcat:downloadURL <https://ams3.digitaloceanspaces.com/nde-europeana/nafotos.nt.gz> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets/nafotos/dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of  EDM XML files." ;
+	dcat:byteSize "418295"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2025-08-04T18:12:05Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2025-08-04T18:12:05Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://ams3.digitaloceanspaces.com/nde-europeana/nafotos.edmxml.zip> ;
+	dcat:downloadURL <https://ams3.digitaloceanspaces.com/nde-europeana/nafotos.edmxml.zip> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+

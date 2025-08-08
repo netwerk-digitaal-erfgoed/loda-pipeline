@@ -8,18 +8,174 @@ destination: file://nafotos.nt
 
 # The individual stages for your pipeline
 stages:
-  - name: "Stage 1 - Schema2EDM"
+  - name: "Stage 0 - SKOS concepts"
     iterator:
-      query: file://queries/iterator-stage-1.rq
+      query: file://queries/iterator-stage-3.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-3.rq
+
+  - name: "Stage 1 - Schema2EDM - 2.10.62ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.10.62ntfoto.rq
       endpoint: http://localhost:8890/
     generator:
       - query: file://queries/generator-stage-1.rq
-  - name: "Stage 2 - GTAA SKOS"
+  - name: "Stage 2 - Schema2EDM - 2.19.123ntfoto"
     iterator:
-      query: file://queries/iterator-stage-2.rq
+      query: file://queries/iterator-stage-2.19.123ntfoto.rq
       endpoint: http://localhost:8890/
-      batchSize: 50000
     generator:
-      - query: file://queries/generator-stage-2.rq
-        endpoint: https://gtaa.apis.beeldengeluid.nl/sparql
-        batchSize: 50000
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 3 - Schema2EDM - 2.24.26ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.26ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+      
+  - name: "Stage 4 - Schema2EDM - 2.24.15ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.15ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 5 - Schema2EDM - 2.24.14.02ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.14.02ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 6 - Schema2EDM - 2.24.11ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.11ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 7 - Schema2EDM - 2.24.10.02ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.10.02ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 8 - Schema2EDM - 2.24.10.01ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.10.01ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 9 - Schema2EDM - 2.24.09ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.09ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 10 - Schema2EDM - 2.24.06.02ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.06.02ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 11 - Schema2EDM - 2.24.06.01ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.06.01ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 12 - Schema2EDM - 2.24.05.02ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.05.02ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 13 - Schema2EDM - 2.24.04.01ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.04.01ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 14 - Schema2EDM - 2.24.03ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.03ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 15 - Schema2EDM - 2.24.01.13ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.13ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 16 - Schema2EDM - 2.24.01.09ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.09ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 17 - Schema2EDM - 2.24.01.08ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.08ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 18 - Schema2EDM - 2.24.01.07ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.07ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 19 - Schema2EDM - 2.24.01.06ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.06ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 20 - Schema2EDM - 2.24.01.04ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.04ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+
+  - name: "Stage 21 - Schema2EDM - 2.24.01.03ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.03ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 22 - Schema2EDM - 2.24.01.02ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.02ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 23 - Schema2EDM - 2.24.01.01ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.24.01.01ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 24 - Schema2EDM - 2.21.284ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.21.284ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 25 - Schema2EDM - 2.21.008.01ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.21.008.01ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 26 - Schema2EDM - 2.20.46ntfoto"
+    iterator:
+      query: file://queries/iterator-stage-2.20.46ntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+  - name: "Stage 27 - Schema2EDM - 7.000spaondntfoto"
+    iterator:
+      query: file://queries/iterator-stage-7.000spaondntfoto.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq

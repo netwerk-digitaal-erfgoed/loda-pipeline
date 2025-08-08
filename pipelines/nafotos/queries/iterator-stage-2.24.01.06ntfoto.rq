@@ -3,21 +3,17 @@ PREFIX nao:     <https://archief.nl/def/ontologie/>
 
 SELECT $this WHERE {
   $this a nao:Recordaggregatie ;
-    ore:isAggregatedBy <https://archief.nl/doc/2.10.62ntfoto> ;
+    ore:isAggregatedBy <https://archief.nl/doc/2.24.01.06ntfoto> ;
 	ore:aggregates ?uri_cho .
   ?uri_cho a nao:Archiefeenheid .
 }
 
-#<https://archief.nl/doc/2.10.62ntfoto>
-#<https://archief.nl/doc/2.19.123ntfoto>
-#<https://archief.nl/doc/2.20.46ntfoto>
-#<https://archief.nl/doc/2.21.008.01ntfoto>
-#<https://archief.nl/doc/2.21.284ntfoto>
-#<https://archief.nl/doc/2.24.01.01ntfoto>
-#<https://archief.nl/doc/2.24.01.02ntfoto>
-#<https://archief.nl/doc/2.24.01.03ntfoto>
-#<https://archief.nl/doc/2.24.01.04ntfoto>
-#<https://archief.nl/doc/2.24.01.06ntfoto>
+
+#<https://archief.nl/doc/>
+#<https://archief.nl/doc/>
+#<https://archief.nl/doc/>
+#<https://archief.nl/doc/>
+#<https://archief.nl/doc/>
 #<https://archief.nl/doc/2.24.01.07ntfoto>
 #<https://archief.nl/doc/2.24.01.08ntfoto>
 #<https://archief.nl/doc/2.24.01.09ntfoto>

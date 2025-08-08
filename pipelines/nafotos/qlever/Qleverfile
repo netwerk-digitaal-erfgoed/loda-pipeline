@@ -5,7 +5,7 @@ GET_DATA_CMD    = wget -nc ${DATA_URL}
 DESCRIPTION     = ${NAME} downloaded from ${DATA_URL}
 
 [index]
-INPUT_FILES     = 2-24-06-01ntfoto.tar.gz
+INPUT_FILES     = nafotos.tar.gz
 CAT_INPUT_FILES = tar -xOzf ${INPUT_FILES}
 SETTINGS_JSON   = { "num-triples-per-batch": 1000000 }
 

@@ -24,7 +24,7 @@ CONSTRUCT {
 		dc:identifier ?identifier ;
 		dc:date ?date ;
 		dcterms:isPartOf ?is_part_of ;
-		edm:pid ?pid ;
+		edm:pid ?isShownAt ;
 #		dc:publisher ?publisher ;
 	. 
 	
@@ -46,6 +46,9 @@ CONSTRUCT {
 		doap:implements <http://iiif.io/api/image/2/level1.json> ;
 	.
 
+#	?subjecturi a skos:Concept; 
+#		skos:prefLabel ?preflabel .
+	
 } WHERE {
 
 	BIND( ("IMAGE") as ?edm_type )
@@ -88,7 +91,7 @@ CONSTRUCT {
 	OPTIONAL { 
 		?uri_ore dcterms:subject ?subjecturi . 
 		?subjecturi skos:prefLabel ?_preflabel . 
-		BIND(STRLANG(?_preflabel, "nl") AS ?preflabel)
+#		BIND(STRLANG(?_preflabel, "nl") AS ?preflabel)
 	}
 	
 	OPTIONAL { 
@@ -121,5 +124,4 @@ CONSTRUCT {
 		?policy dcterms:rightsHolder ?_license . 
 		BIND(STRLANG(?_license, "nl") AS ?license) 
 	}
-	
 }
