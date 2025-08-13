@@ -1,6 +1,6 @@
 [data]
 NAME         = amateurfilm
-DATA_URL     = https://data.beeldengeluid.nl/files/amateurfilm/lod_exporter_amateurfilm_sdo_20241014_dedup.nt
+DATA_URL     = https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20250806_clean.nt
 GET_DATA_CMD = wget -nc ${DATA_URL}
 DESCRIPTION  = ${NAME} downloaded from ${DATA_URL}
 [index]
