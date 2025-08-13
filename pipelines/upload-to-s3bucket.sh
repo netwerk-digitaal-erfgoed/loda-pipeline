@@ -33,10 +33,13 @@ fi
 cd ${DATASET}
 
 echo "Uploading ${DATASET} files to S3 bucket ..."
-echo ""
+echo "- ${DATASETNAME}.zip"
 docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/zip --acl-public put ${DATASETNAME}.zip s3://${S3_BUCKET}/${1}.edmxml.zip
-echo ""
+echo "- ${DATASETNAME}.nt.gz"
 docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/n-triples+gzip --acl-public put ${DATASETNAME}.nt.gz s3://${S3_BUCKET}/${DATASETNAME}.nt.gz
-echo ""
+echo "- ${DATASETNAME}.datasetdescription.ttl"
 docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=text/turtle --acl-public put ${DATASETNAME}.datasetdescription.ttl s3://${S3_BUCKET}/${DATASETNAME}.datasetdescription.ttl
 echo ""
+curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":"https://${S3_BUCKET}.ams3.digitaloceanspaces.com/${DATASETNAME}.datasetdescription.ttl"}'
+echo ""
+echo "https://${S3_BUCKET}.ams3.digitaloceanspaces.com/${DATASETNAME}.datasetdescription.ttl"

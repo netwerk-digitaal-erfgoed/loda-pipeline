@@ -9,16 +9,19 @@
 	dcterms:creator <$DATASET_DESCRIPTION_CREATOR_URI> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml> ;
 	dcterms:created "$DATASET_DESCRIPTION_CREATE_DATE"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "$DATASET_DESCRIPTION_LANGUAGE" ;
 	dcterms:publisher <https://dc4eu.nl> ;
-	dcterms:source <https://archief.nl/id/dataset/toegang/2.10.62> .
+	dcterms:source <https://archief.nl/id/dataset/toegang/2.10.62>, <https://archief.nl/id/dataset/toegang/2.24.01.01>, <https://archief.nl/id/dataset/toegang/2.24.01.06>, <https://archief.nl/id/dataset/toegang/2.24.03>, <https://archief.nl/id/dataset/toegang/2.24.06.01>, <https://archief.nl/id/dataset/toegang/2.24.11>, <https://archief.nl/id/dataset/toegang/2.19.123>, <https://archief.nl/id/dataset/toegang/2.24.01.02>, <https://archief.nl/id/dataset/toegang/2.24.01.07>, <https://archief.nl/id/dataset/toegang/2.24.04.01>, <https://archief.nl/id/dataset/toegang/2.24.06.02>, <https://archief.nl/id/dataset/toegang/2.24.14.02>, <https://archief.nl/id/dataset/toegang/2.20.46>, <https://archief.nl/id/dataset/toegang/2.24.01.03>, <https://archief.nl/id/dataset/toegang/2.24.01.08>, <https://archief.nl/id/dataset/toegang/2.24.04.02>, <https://archief.nl/id/dataset/toegang/2.24.09>, <https://archief.nl/id/dataset/toegang/2.24.15>, <https://archief.nl/id/dataset/toegang/2.21.008.01>, <https://archief.nl/id/dataset/toegang/2.24.01.04>, <https://archief.nl/id/dataset/toegang/2.24.01.09>, <https://archief.nl/id/dataset/toegang/2.24.04.03>, <https://archief.nl/id/dataset/toegang/2.24.10.01>, <https://archief.nl/id/dataset/toegang/2.24.26>, <https://archief.nl/id/dataset/toegang/2.21.284>, <https://archief.nl/id/dataset/toegang/2.24.01.05>, <https://archief.nl/id/dataset/toegang/2.24.01.13>, <https://archief.nl/id/dataset/toegang/2.24.05.02>, <https://archief.nl/id/dataset/toegang/2.24.10.02>, <https://archief.nl/id/dataset/foto/7-000spabbntfoto> .
 
-<$DATASET_DESCRIPTION_CREATOR_URI> foaf::name "$DATASET_DESCRIPTION_CREATOR_NAME" .
+<$DATASET_DESCRIPTION_CREATOR_URI> a foaf:Organization ;
+	foaf:name "$DATASET_DESCRIPTION_CREATOR_NAME" .
 
-<https://dc4eu.nl> foaf::name "DC4EU" .
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU" .
 
 <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt> a dcat:Distribution ;
-	dcterms:description "Gzipped distribution of $NUMBERTRIPLES N-triples." ;
+	dcterms:description "Gzipped distribution of $DISTRIBUTION_NUMBER_TRIPLES N-triples." ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_NTRIPLES"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
@@ -30,7 +33,7 @@
 	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
 
 <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml>  a dcat:Distribution ;
-	dcterms:description "Zipped distribution of $NUMBERXML EDM XML files." ;
+	dcterms:description "Zipped distribution of $DISTRIBUTION_NUMBER_XML EDM XML files." ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_XMLZIP"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
@@ -40,4 +43,3 @@
 	dcterms:format "application/zip" ;
 	dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip> ;
 	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
-

@@ -1,20 +1,33 @@
-# Europeana doens't resolve GTAA terms (yet), so we need to get the labels
-prefix skos: <http://www.w3.org/2004/02/skos/core#>
-construct {
-  $this a skos:Concept; 
-	skos:prefLabel ?label ;
-	skos:broader ?broader ;
-	skos:narrower ?narrower ;
-	skos:exactMatch ?exactMatch ;
-	skos:closeMatch ?closeMatch ;
-	skos:related ?related ;
-	skos:note ?note .
-} where {
-  $this skos:prefLabel ?label
-  OPTIONAL { $this skos:broader ?broader }
-  OPTIONAL { $this skos:narrower ?narrower }
-  OPTIONAL { $this skos:exactMatch ?exactMatch }
-  OPTIONAL { $this skos:closeMatch ?closeMatch }
-  OPTIONAL { $this skos:related ?related }
-  OPTIONAL { $this skos:note ?note }
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX odrl:    <http://www.w3.org/ns/odrl/2/>
+
+CONSTRUCT {	
+	?uri_ore a ore:Aggregation ;
+		edm:aggregatedCHO ?uri_cho ;
+		edm:provider ?provider ;
+		edm:dataProvider ?dataProvider ;
+		edm:rights ?rights ;
+		edm:hasView ?isShownBy ; 
+		edm:isShownAt ?isShownAt .
+} WHERE {
+	BIND( STRLANG("DC4EU - Dutch Collections for Europe", "en") AS ?provider )
+	BIND( STRLANG("Nationaal Archief","nl") as ?dataProvider )
+
+	?this ore:aggregates ?uri_cho .
+	?uri_ore foaf:primaryTopic ?uri_cho .
+	?uri_ore odrl:hasPolicy <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> . 
+
+	# License "conversion" <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> > <http://creativecommons.org/publicdomain/mark/1.0/> 
+	?uri_ore odrl:hasPolicy ?policy .
+	BIND(  IF(?policy = <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein>, IRI("http://creativecommons.org/publicdomain/mark/1.0/"), ?policy) as ?rights)
+
+	?this edm:isShownAt ?isShownAt .
+	?this edm:hasView ?Zichtexemplaar .
+	?Zichtexemplaar nao:webserviceIIIF ?iiif_info .
+
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json","full/max/0/default.jpg"))) as ?isShownBy) .
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json",""))) as ?uri_iiif) .
 }

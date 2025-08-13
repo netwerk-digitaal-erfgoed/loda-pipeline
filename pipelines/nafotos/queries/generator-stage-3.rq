@@ -1,13 +1,18 @@
 PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
-PREFIX ore:     <http://www.openarchives.org/ore/terms/>
-PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
 
 CONSTRUCT {
-	?subjecturi a skos:Concept; 
-		skos:prefLabel ?preflabel .
+	?isShownBy a edm:WebResource ;
+		svcs:has_service ?uri_iiif .
+
+	?uri_iiif a svcs:Service ;
+		dcterms:conformsTo <http://iiif.io/api/image> ;
+		doap:implements <http://iiif.io/api/image/2/level1.json> .
 } WHERE {
-	?this dcterms:subject ?subjecturi . 
-	?subjecturi skos:prefLabel ?_preflabel . 
-	BIND(STRLANG(?_preflabel, "nl") AS ?preflabel)
+	?this edm:hasView/nao:webserviceIIIF ?iiif_info .
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json","full/max/0/default.jpg"))) as ?isShownBy) .
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json",""))) as ?uri_iiif) .
 }

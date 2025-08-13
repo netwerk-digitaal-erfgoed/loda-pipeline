@@ -1,14 +1,11 @@
-PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc:      <http://purl.org/dc/elements/1.1/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
 PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
 PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
 PREFIX ore:     <http://www.openarchives.org/ore/terms/>
 PREFIX nao:     <https://archief.nl/def/ontologie/>
-PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
 PREFIX odrl:    <http://www.w3.org/ns/odrl/2/>
-PREFIX doap:    <http://usefulinc.com/ns/doap#>
-PREFIX svcs:    <http://rdfs.org/sioc/services#>
 
 CONSTRUCT {
 	?uri_cho a edm:ProvidedCHO ;
@@ -24,38 +21,12 @@ CONSTRUCT {
 		dc:identifier ?identifier ;
 		dc:date ?date ;
 		dcterms:isPartOf ?is_part_of ;
-		edm:pid ?isShownAt ;
-#		dc:publisher ?publisher ;
-	. 
-	
-	?uri_ore a ore:Aggregation ;
-		edm:aggregatedCHO ?uri_cho ;
-		edm:provider ?provider ;
-		edm:dataProvider ?dataProvider ;
-		edm:rights ?rights ;
-		edm:hasView ?isShownBy ; # was edm:isShownBy
-		edm:isShownAt ?isShownAt ;
-	.
-
-	?isShownBy a edm:WebResource ;
-		svcs:has_service ?uri_iiif ;
-	.
-
-	?uri_iiif a svcs:Service ;
-		dcterms:conformsTo <http://iiif.io/api/image> ;
-		doap:implements <http://iiif.io/api/image/2/level1.json> ;
-	.
-
-#	?subjecturi a skos:Concept; 
-#		skos:prefLabel ?preflabel .
-	
+		edm:pid ?isShownAt . 
 } WHERE {
 
 	BIND( ("IMAGE") as ?edm_type )
 	BIND( ("Foto") as ?genre )
-	BIND( STRLANG("DC4EU - Dutch Collections for Europe", "en") AS ?provider )
-	BIND( STRLANG("Nationaal Archief","nl") as ?dataProvider )
-
+	
 	?this ore:aggregates ?uri_cho .
 
 	?uri_ore foaf:primaryTopic ?uri_cho .
@@ -66,11 +37,6 @@ CONSTRUCT {
 	BIND(STRLANG(?_creator, "nl") AS ?creator)
 	
 	?this edm:isShownAt ?isShownAt .
-	?this edm:hasView ?Zichtexemplaar .
-	?Zichtexemplaar nao:webserviceIIIF ?iiif_info .
-
-	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json","full/max/0/default.jpg"))) as ?isShownBy) .
-	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json",""))) as ?uri_iiif) .
 	
 	OPTIONAL { 
 		?uri_cho nao:isMateriaaltype ?_material .  
@@ -87,11 +53,9 @@ CONSTRUCT {
 		?uri_ore nao:toelichting ?_description .  	
 		BIND(STRLANG(?_description, "nl") AS ?description) 
 	}
-
+	
 	OPTIONAL { 
 		?uri_ore dcterms:subject ?subjecturi . 
-		?subjecturi skos:prefLabel ?_preflabel . 
-#		BIND(STRLANG(?_preflabel, "nl") AS ?preflabel)
 	}
 	
 	OPTIONAL { 
@@ -116,12 +80,4 @@ CONSTRUCT {
 		BIND(STRLANG(?_is_part_of, "nl") AS ?is_part_of) 
 	}
 
-	# License "conversion" <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> > <http://creativecommons.org/publicdomain/mark/1.0/> 
-	?uri_ore odrl:hasPolicy ?policy .
-	BIND(  IF(?policy = <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein>, IRI("http://creativecommons.org/publicdomain/mark/1.0/"), ?policy) as ?rights)
-
-	OPTIONAL { 
-		?policy dcterms:rightsHolder ?_license . 
-		BIND(STRLANG(?_license, "nl") AS ?license) 
-	}
 }
