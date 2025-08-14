@@ -3,8 +3,8 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
 <https://dc4eu.nl/id/datasets/nafotos> a dcat:Dataset ;
-	dcterms:title "Fotocollection Dutch National Archives for Europeana" ;
-	dcterms:description "Fotocollection Dutch National Archives for Europeana - dataset 'nafotos' - converted via LODA-pipeline to the EDM datamodel." ;
+	dcterms:title "Photocollection Dutch National Archives for Europeana" ;
+	dcterms:description "Photocollection Dutch National Archives for Europeana - dataset 'nafotos' - converted via LODA-pipeline to the EDM datamodel." ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <https://www.nationaalarchief.nl> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/nafotos/dist-nt>, <https://dc4eu.nl/id/datasets/nafotos/dist-xml> ;
