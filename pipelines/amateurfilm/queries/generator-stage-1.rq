@@ -23,18 +23,6 @@ CONSTRUCT {
 		edm:isPartOf ?isPartOf ;
 		edm:pid ?pid .
 
-	?creator a skos:Concept ;
-		skos:prefLabel ?creator_preflabel .
-
-	?genre a skos:Concept ;
-		skos:prefLabel ?genre_preflabel .
-
-	?spatial a skos:Concept ;
-		skos:prefLabel ?spatial_preflabel .
-
-	?subject a skos:Concept; 
-		skos:prefLabel ?subject_preflabel .
-
 	?uri_ore a ore:Aggregation ;
 		edm:aggregatedCHO $this ;
 		edm:provider ?provider ;
@@ -57,8 +45,7 @@ CONSTRUCT {
 		$this sdo:description ?description 
 	}
 	OPTIONAL {
-	   $this sdo:about ?subject .
-	   ?subject skos:prefLabel ?subject_preflabel
+	   $this sdo:about ?subject 
 	}
 	OPTIONAL {
 		$this sdo:name ?name 
@@ -70,12 +57,10 @@ CONSTRUCT {
 		$this sdo:url ?isShownAt
 	}
 	OPTIONAL {
-		$this sdo:creator/sdo:creator ?creator .
-		?creator skos:prefLabel ?creator_preflabel
+		$this sdo:creator/sdo:creator ?creator 
 	}
 	OPTIONAL {
-		$this sdo:genre ?genre .
-		?genre skos:prefLabel ?genre_preflabel
+		$this sdo:genre ?genre 
 	}
 	OPTIONAL {
 		$this sdo:keywords ?keyword
@@ -91,8 +76,7 @@ CONSTRUCT {
 		$this sdo:alternativeHeadline ?altName
 	}
 	OPTIONAL {
-		$this sdo:location ?spatial .
-	   ?spatial skos:prefLabel ?spatial_preflabel
+		$this sdo:location ?spatial 
 	}
 	OPTIONAL {
 		$this sdo:temporal ?temporal 
