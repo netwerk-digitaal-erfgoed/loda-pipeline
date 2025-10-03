@@ -8,3 +8,4 @@ SELECT $this WHERE {
 	 #sdo:about <http://data.beeldengeluid.nl/gtaa/28142> ;
 	 sdo:associatedMedia [rdf:type sdo:VideoObject] .
 }
+ORDER BY $this
