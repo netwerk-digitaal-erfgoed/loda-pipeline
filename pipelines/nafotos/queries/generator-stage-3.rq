@@ -1,0 +1,18 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+
+CONSTRUCT {
+	?isShownBy a edm:WebResource ;
+		svcs:has_service ?uri_iiif .
+
+	?uri_iiif a svcs:Service ;
+		dcterms:conformsTo <http://iiif.io/api/image> ;
+		doap:implements <http://iiif.io/api/image/2/level1.json> .
+} WHERE {
+	?this edm:hasView/nao:webserviceIIIF ?iiif_info .
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json","full/max/0/default.jpg"))) as ?isShownBy) .
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json",""))) as ?uri_iiif) .
+}
