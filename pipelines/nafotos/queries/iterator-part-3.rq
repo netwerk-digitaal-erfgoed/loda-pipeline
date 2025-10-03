@@ -1,0 +1,15 @@
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+
+# 371229 items
+
+SELECT $this WHERE {
+	$this a nao:Recordaggregatie ;
+		ore:isAggregatedBy ?aggregator ;
+		ore:aggregates ?uri_cho .
+	?uri_cho a nao:Archiefeenheid .
+
+	VALUES ?aggregator {
+		<https://archief.nl/doc/7.000spaondntfoto>
+	}
+}

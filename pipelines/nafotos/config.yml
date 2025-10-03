@@ -8,18 +8,82 @@ destination: file://nafotos.nt
 
 # The individual stages for your pipeline
 stages:
-  - name: "Stage 1 - Schema2EDM"
+
+  - name: "Stage 1 - edm:ProvidedCHO's - part 1"
     iterator:
-      query: file://queries/iterator-stage-1.rq
+      query: file://queries/iterator-part-1.rq
+      batchSize: 250
       endpoint: http://localhost:8890/
     generator:
       - query: file://queries/generator-stage-1.rq
-  - name: "Stage 2 - GTAA SKOS"
+        batchSize: 250
+  - name: "Stage 1 - edm:ProvidedCHO's - part 2"
     iterator:
-      query: file://queries/iterator-stage-2.rq
+      query: file://queries/iterator-part-2.rq
+      batchSize: 250
       endpoint: http://localhost:8890/
-      batchSize: 50000
+    generator:
+      - query: file://queries/generator-stage-1.rq
+        batchSize: 250
+  - name: "Stage 1 - edm:ProvidedCHO's - part 3"
+    iterator:
+      query: file://queries/iterator-part-3.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-1.rq
+        batchSize: 250
+  - name: "Stage 2 - ore:Aggregation's - part 1"
+    iterator:
+      query: file://queries/iterator-part-1.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
     generator:
       - query: file://queries/generator-stage-2.rq
-        endpoint: https://gtaa.apis.beeldengeluid.nl/sparql
-        batchSize: 50000
+        batchSize: 250
+  - name: "Stage 2 - ore:Aggregation's - part 2"
+    iterator:
+      query: file://queries/iterator-part-2.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-2.rq
+        batchSize: 250
+  - name: "Stage 2 - ore:Aggregation's - part 3"
+    iterator:
+      query: file://queries/iterator-part-3.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-2.rq
+        batchSize: 250
+  - name: "Stage 3 - edm:WebResource/svcs:Service's - part 1"
+    iterator:
+      query: file://queries/iterator-part-1.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-3.rq
+        batchSize: 250
+  - name: "Stage 3 - edm:WebResource/svcs:Service's - part 2"
+    iterator:
+      query: file://queries/iterator-part-2.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-3.rq
+        batchSize: 250
+  - name: "Stage 3 - edm:WebResource/svcs:Service's - part 3"
+    iterator:
+      query: file://queries/iterator-part-3.rq
+      batchSize: 250
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-3.rq
+        batchSize: 250
+  - name: "Stage 4 - skos:Concept's"
+    iterator:
+      query: file://queries/iterator-part-4.rq
+      endpoint: http://localhost:8890/
+    generator:
+      - query: file://queries/generator-stage-4.rq
