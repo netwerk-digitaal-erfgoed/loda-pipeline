@@ -1,0 +1,45 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<https://dc4eu.nl/id/datasets/ran> a dcat:Dataset ;
+	dcterms:title "Images of the Dutch Regional Archives of Nijmegen for Europeana"@en ;
+	dcterms:description "Images of the Dutch Regional Archives of Nijmegen for Europeana - dataset 'ran' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <https://www.regionaalarchiefnijmegen.nl/> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets/ran/dist-nt>, <https://dc4eu.nl/id/datasets/ran/dist-xml> ;
+	dcterms:created "2025-11-13"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2025-11-13T10:19:58Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:language "en" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcterms:source <https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten> .
+
+<https://www.regionaalarchiefnijmegen.nl/> a foaf:Organization ;
+	foaf:name "Regional Archives of Nijmegen"@en .
+
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU" .
+
+<https://dc4eu.nl/id/datasets/ran/dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of 1,304,519 N-triples."@en ;
+	dcat:byteSize "15016632"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2025-11-13T10:19:58Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2025-11-13T10:19:58Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/ran.nt.gz> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/ran.nt.gz> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets/ran/dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of 54,968 EDM XML files."@en ;
+	dcat:byteSize "74713496"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2025-11-13T10:19:58Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2025-11-13T10:19:58Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/ran.edmxml.zip> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/ran.edmxml.zip> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
