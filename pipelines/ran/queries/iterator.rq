@@ -1,0 +1,8 @@
+# iterator.rq
+PREFIX sdo: <http://schema.org/>    # note: http and not https!!
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT $this WHERE {
+  $this a sdo:CreativeWork ;
+#        sdo:dateCreated "1912-01-01"^^<http://www.w3.org/2001/XMLSchema#date> . # limit set to 882 resources
+}

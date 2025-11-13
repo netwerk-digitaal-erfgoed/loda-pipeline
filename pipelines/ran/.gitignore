@@ -1,0 +1,7 @@
+*.nt
+*.gz
+*.zip
+*.rdf
+validate-*.txt
+qlever/ran.*
+*datasetdescription.ttl
