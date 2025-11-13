@@ -15,8 +15,12 @@ gzip -c ${DATASETNAME}/${DATASETNAME}-distinct.nt > ${DATASETNAME}/${DATASETNAME
 
 source ./${DATASETNAME}/datasetdescription.env >/dev/null
 
-export DISTRIBUTION_NUMBER_TRIPLES=$(wc -l < ${DATASETNAME}/${DATASETNAME}-distinct.nt)
-export DISTRIBUTION_NUMBER_XML=$(unzip -l ${DATASETNAME}/${DATASETNAME}.zip | grep ".edm.xml" | wc -l)
+export _DISTRIBUTION_NUMBER_TRIPLES=$(wc -l < ${DATASETNAME}/${DATASETNAME}-distinct.nt)
+export _DISTRIBUTION_NUMBER_XML=$(unzip -l ${DATASETNAME}/${DATASETNAME}.zip | grep ".edm.xml" | wc -l)
+
+export LC_NUMERIC=en_US.UTF-8
+export DISTRIBUTION_NUMBER_TRIPLES=$(printf "%'d" $_DISTRIBUTION_NUMBER_TRIPLES)
+export DISTRIBUTION_NUMBER_XML=$(printf "%'d" $_DISTRIBUTION_NUMBER_XML)
 
 DATE_CREATED=$(stat -c %W "${DATASETNAME}/${DATASETNAME}.nt.gz")
 # Convert the timestamp to ISO 8601 format
