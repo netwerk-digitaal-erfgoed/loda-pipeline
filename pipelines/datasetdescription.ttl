@@ -9,7 +9,7 @@
 	dcterms:creator <$DATASET_DESCRIPTION_CREATOR_URI> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml> ;
 	dcterms:created "$DATASET_DESCRIPTION_CREATE_DATE"^^<http://www.w3.org/2001/XMLSchema#date> ;
-	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "$DISTRIBUTION_DATE_UPDATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "$DATASET_DESCRIPTION_LANGUAGE" ;
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcterms:source $DATASET_DESCRIPTION_SOURCE_DATASET .
@@ -24,7 +24,7 @@
 	dcterms:description "Gzipped distribution of $DISTRIBUTION_NUMBER_TRIPLES N-triples."@en ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_NTRIPLES"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "$DISTRIBUTION_DATE_UPDATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
 	dcat:downloadURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -36,7 +36,7 @@
 	dcterms:description "Zipped distribution of $DISTRIBUTION_NUMBER_XML EDM XML files."@en ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_XMLZIP"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "$DISTRIBUTION_DATE_UPDATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
 	dcat:downloadURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
