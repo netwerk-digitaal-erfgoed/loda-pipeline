@@ -1,0 +1,55 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix edm: <http://www.europeana.eu/schemas/edm/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://dc4eu.nl/id/datasets/> a dcat:Dataset ;
+	dcterms:title "Photocollection Dutch National Archives for Europeana"@en ;
+	dcterms:description "Photocollection Dutch National Archives for Europeana - dataset '' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <https://www.nationaalarchief.nl> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets//dist-nt>, <https://dc4eu.nl/id/datasets//dist-xml> ;
+	dcterms:created "2025-08-04"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:language "en" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcterms:source <https://archief.nl/id/dataset/toegang/7.000spaondntfoto> .
+
+<https://www.nationaalarchief.nl> a foaf:Organization ;
+	foaf:name "National Archives"@en .
+
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU" .
+
+<https://dc4eu.nl/id/datasets//dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of 102939 N-triples."@en ;
+	dcat:byteSize "1732014"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.nt.gz> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.nt.gz> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets//dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of 3651 EDM XML files."@en ;
+	dcat:byteSize "5710316"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.edmxml.zip> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.edmxml.zip> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <http://www.iana.org/assignments/media-types/application/rdf+xml> ;
+	dcat:compressFormat <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> ;
+	edm:hasTransformation <#transformation> .
+
+<#transformation> a edm:DataTransformationResource ;
+	rdf:value "https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-1.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-2.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-4.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-4.rq" ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
+    edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
+

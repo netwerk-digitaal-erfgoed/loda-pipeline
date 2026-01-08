@@ -1,0 +1,9 @@
+# iterator.rq
+PREFIX sdo: <https://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT $this WHERE {
+  $this a sdo:CreativeWork .
+  FILTER(!ISBLANK($this))
+}
+ORDER BY $this

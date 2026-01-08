@@ -1,15 +1,199 @@
-# LODA-pipeline
+# Workflow for creating loda-pipelines
 
-Linked Open Data Aggregator (LODA) pipeline. This repository is a new setup to for an automated pipeline to transform linked datasets for delivery to Europeana
+## Installation
+Clone the repository to your local environment and build docker images.
 
-The pipeline is run through bash scripts and is completly dockerized, see [config](pipelines/compose.yaml) for more details. 
+```
+git clone https://github.com/EnnoMeijers/loda-pipeline-v2.git
+cd loda-pipeline-v2
+cd pipelines
+docker compose build fuseki
+docker compose build tools
+```
 
-Datasets are automatically downloaded and loaded in to a [QLever](https://github.com/ad-freiburg/qlever) based SPARQL endpoint. The mapping is based on the [LD-Workbench](https://github.com/netwerk-digitaal-erfgoed/ld-workbench) tooling.
+Both docker commands should result in a succesful build expressed in a last line that confirms the acknowledge the 'Built' status. The software is now ready for use. Please report any problems with installing or building the software to tech@netwerkdigitaalerfgoed.nl
 
-Running the pipeline:
+## 1. Preparation of a new dataset in the pipeline
+To add a new dataset to the pipeline a number of steps must be performed. These steps are the initialization of the dataset, setting some environment variables, automatically creating configuration scripts and edit the sparql queries for the transformation. These steps are described in detail below. 
 
-```sh
-git clone https://github.com/netwerk-digitaal-erfgoed/loda-pipeline.git
-cd loda-pipeline/pipelines
-./run-all.sh
+**NB Please take note the exact location within the directory structure for each of the steps described below. Running scripts in from the wrong location will give wrong results.**
+
+### Initialize a new dataset
+Starting point for the pipeline configuration is the `pipelines` directory. Each pipeline is created as a separate "dataset" directory within `pipelines`.
+
+This step creates an new entry for the pipeline. Each dataset transformation is regarded as a separate pipeline. The script `init-dataset` takes a dataset name as input and creates an empty structure for this pipeline in within the `pipelines` directory with the lowercase version of the dataset name including an empty `environment` file. 
+
+```
+$ cd pipelines
+$ scripts/init-dataset.sh <new-dataset>
+```
+
+The result should be something like this:
+
+```
+initialize pipeline for 'new-dataset'
+Creating new-dataset
+Creating subdirectory for 'data'
+Creating subdirectory for 'ld-workbench'
+Creating subdirectory for 'fuseki'
+Installing 'environment' file
+Set DATASET name to new-dataset in new-dataset/environoment
+Init proces finished - to proceed set the correct variables in the 'environment' file in 'new-dataset'
+```
+
+### Edit the enivronment file
+Edit the `environment` file in newly created dataset directory. Set the value for `SOURCE_URL` for downloading the dataset. In this case the dataset is downloaded and extracted automatically. And a Fuseki database is created used in the following steps. Al data manipulations are done in `./data` directory. As a result the `SOURCE_FILE` variable is set to the names of the downloaded files.
+
+When the `SOURCE_URL` is left blank a data dump can be placed manually in the `./data` directory and the `SOURCE_FILE` variable should point to the name of the file. 
+
+The variable `PRODUCTION=0` is used for signalling that this dataset is ready for automatic processing. Setting the value to `1` will make this dataset part of the complete pipeline and the processing will triggered by running the `run-all.sh` scripts, which could be setup to run periodically. Leave the value at `0` while testing the new setup for this datasets. The seperate steps in the pipeline can be run manually, see below. 
+
+For the automati creation of a NDE dataset description for the resulting dataset, the additional `DATASET_DESCRIPTION` variables should be set too. See the documentation in the `environment` files for more details. 
+
+TODO: use the NDE Datasetregister to download the data
+
+### Set up the pipeline configuration 
+The next step is automatically creating the config files for Fuseki and LDWorkbench based on the variables that have been set in the previous step. This is done by calling the `configure.sh` script from the newly created directory for the `dataset`. Note that all other scripts are run from this directory too! 
+
+```
+$ cd <new-dataset>      # if necessary
+$ ../scripts/configure.sh
+```
+
+The `configure.sh` script reads the environment variables. It will download or read the datafile(s), create a database for Fuseki and create configuration files for Fuseki and [LD-Workbench](https://github.com/netwerk-digitaal-erfgoed/ld-workbench). It will also install a default set of transformation queries. 
+
+### Edit the sparql queries used for the mapping
+The pipeline is now ready to run but the transformation queries must be tailored for the dataset. The default transformation is prepared for the NDE Schema.org profile to EDM mapping. Depending on the conformity to the Schema.org profile adjustments will be necessary. 
+
+LD-Workbench uses a so called iterator query for selecting the resources that are in scope for the transformation. See [interator.rq](pipelines/generic/iterator.rq) for the default version for this query. The actualy mapping for each of the resource is defined using a CONSTRUCT query, the so called generator query. See [edm-generator.rq](pipelines/generic/edm-generator.rq) for the default version. 
+
+Both queries are installed in the `<new-dataset>/ld-workbench` subdirectory. Adjust these queries to define the specific conversion for this dataset. 
+
+Tip: Writing the generator query can be hard. You can start a local sparql endpoint (see next step) and use Yasgui or the VScode SPARQL extension to tune the query interactivly. When finished make sure that the subject `(?s)` is replaced by the iterator variable `$this`.
+
+
+### 2. Testing the pipeline
+The pipeline is now configured to create the datasets acoording to configuration steps described above. Before adding the new dataset to the production pipeline all it should be tested manualy. The section below describes a complete cycle. When satisfied with the results of all the steps the dataset can be added to the production pipeline. See below for more information. 
+
+### Starting the sparql server
+The next step is starting the local sparql server with using the dataset defined in the `environment` file. The script will start the server as a background task.
+
+```
+$ cd <dataset>      # if necessary
+$ ../scritps/start-sparql-server.sh <dataset>
+```
+
+The output should be similar to:
+```
+Starting the SPARQL server with for <new-dataset>...
+[+] Running 1/1
+ ✔ Container pipelines-fuseki-1  Started 0.3s  
+Waiting for the sparql server to be up and running...
+Sparql server available!
+ ```
+
+The SPARQL endpoint should now be available at `http://localhost:3030/<dataset>/sparql`. Visiting this URL in the browser should show the following message:
+`Service Description: /<dataset>/sparql`
+
+In case of problems see the logfile `fuseki/log.txt` for details.
+
+
+### Running the mapping 
+All is set now to do the actual transformation of the data. Make sure the starting point is the `<dataset>` directory.
+
+```
+$ cd <new-dataset>      # if necessary
+$ ../scritps/run-mapping.sh <new-dataset>
+```
+
+This should result something similar to the output below:
+
+```
+Transforming 'new-dataset' data using LD-workbench, see ld-workbench/log.txt for more details...
+```
+
+When succesfully completed the resulting output file with the name `<dataset>.nt` is available in the data directory. See the log file `ld-workbench/log.txt` for details about the processing, especially helpful for debugging. 
+
+### Stopping the sparql endpoint
+The SPARQL-endpoint is no longer needed, so it can be stopped:
+
+```
+$ cd <dataset>      # if necessary
+$ ../scritps/stop-sparql-server.sh <dataset>
+``` 
+
+### Running the EDM conversion
+Although the resulting dataset contains usuable EDM linked data some additional steps must be taken to make this dataset ready for delivery to ingestion pipeline of Europeana. 
+
+The `convert-to-edm.sh` script performs the folling steps:
+
+- deduplicate the LD-Workbench output
+- validate the data against an EDM shape file
+- convert the data to an RDF/XML serialization
+- rewrite the RDF/XML serialization to XML 
+- zip the result
+
+To perform these step run the following command:
+```
+$ cd <dataset>      # if necessary
+$ ../scritps/convert-to-edm.sh <dataset>
+```
+
+This result is something similar to the following output:
+```
+Make the data ready for upload to Europeana..
+Deduplicate the output from LDWorkbench...
+Validate the result against the EDM shape constraints...
+Convert the data file to a RDF/XML serialization...
+Rewrite the RDF/XML to XML that can be processed by Europeana...
+Ready: output file amateurfilm.zip is written to the main directory...
+```
+
+Check the `validate-report.txt` in the `data` directory for any detected problems and adjust the generator query if nessecary and rerun the mapping and convert steps. 
+
+*Note: the deduplication is a performed to make sure that there are no duplicate triples in the resultset. This step also garantees that the edm:isShowBy only has one value for each resource, when more values are generated in the mapping process a random choice is made. See the [distinct.rq](./pipelines/generic/distinct.rq) query for more details.*
+
+
+### Create a dataset description
+The result of the transformation is a dataset that can be published and registered in the NDE-Datasetregister. In order to do so a dataset description according to the NDE requirements must be created. The dataset description requires a number of static data fields that must be set through the `environment` file. See the section with the `DATASET_DESCRIPTION` for the variables that must be set. See the [NDE Requirements](https://docs.nde.nl/requirements-datasets/) for more details about the different variables and the allowed values. 
+
+After setting the variables the dataset description can be created with the following script:
+
+```
+$ cd <dataset>      # if necessary
+$ ../scritps/make_dataset_description.sh <dataset>
+``` 
+
+This shoud result in a file called `datasetdescription.ttl` in the `data` directory that can be used to register the new dataset to the NDE-Datasetregister. In the file `validate-report-datasetdescription.txt` the result of the validation is given. See the requirements mentioned above for more information about eventual errors and warnings. 
+
+
+## Run the complete pipeline
+After a succesful result for all steps mentioned above the dataset is ready to be added to the pipline to be run automatically. Change the `PRODUCTION` variable in the `environment` file to `1`. And either go back to the `pipelines` directory and run of the `run-all.sh` script with the `<dataset>` as parameter to process only this dataset or without a parameter to run the pipeline for all the datasets.
+
+```
+$ cd pipelines      # if necessary
+$ scritps/run-all.sh [ <dataset> ]   # optional parameter
+``` 
+
+## Directory structure
+
+```md
+loda-pipeline/
+├── europeana-tools         * EDM-conversion and java tooling 
+├── jena-fuseki-docker      * used as local triplestore
+└── pipelines
+    ├── dataset 1
+    |   ├── environment     * main variables defining the dataset
+    |   ├── data            * main data directory
+    |   ├── ld-workbench    * actual transformation queries
+    |   |   ├── iterator.rq 
+    |   |   ├── generator.rq 
+    |   |   └── config.yml  * config for the mapping process
+    |   └── fuseki
+    |
+    ├── dataset n
+    |
+    ├── scripts  * scripts as building blocks for the pipeline
+    | 
+    └── generic  * default config files used a template for new dataset configuration
 ```

@@ -2,42 +2,33 @@ services:
     map:
         image: ghcr.io/netwerk-digitaal-erfgoed/ld-workbench:latest
         volumes: 
-            - ${DATASET}:/pipelines
+            - ./${DATASET}:/pipelines
         entrypoint: []
         network_mode: "host"
-    
-    sparql-server-getdata:
-        image: adfreiburg/qlever:latest
-        volumes:
-            - ${DATASET}/qlever:/data
-        entrypoint: [] 
-        command: /bin/sh -c "cd /data; qlever get-data"
 
-    sparql-server-index:
-        image: adfreiburg/qlever:latest
-        volumes:
-            - ${DATASET}/qlever:/data
-        entrypoint: [] 
-        command: /bin/sh -c "cd /data; qlever index --overwrite-existing"
-
-    sparql-server:
-        image: adfreiburg/qlever:latest
-        volumes:
-            - ${DATASET}/qlever:/data
+    fuseki:
+        image: fuseki
+        build:
+            context: ../jena-fuseki-docker-5.6.0
+            dockerfile: Dockerfile
+            args:
+            - JENA_VERSION=5.6.0
+        command: '--config=/pipelines/fuseki/config.ttl'
         ports:
-            - "8890:8890"
-        entrypoint: [] 
-        user: ${USER}
-        command: /bin/sh -c "cd /data; qlever start && tail -f /dev/null"
+            - "3030:3030"
+        volumes:
+            - ./${DATASET}:/pipelines
 
-    europeana-tools:
+    tools:
         build: ../europeana-tools
+        user: $USER
         volumes:
-              - ${DATASET}:/opt/data
-              - ./shapes:/opt/shapes
-
-    s3cmd:
-        image: d3fk/s3cmd
-        volumes:
-              - ${DATASET}:/s3
-              - .s3:/root
+              - ./${DATASET}:/pipelines
+              - ./generic:/generic
+#              
+# NEEDS more configuration, should be mount on root pipelines dir
+#    s3cmd:
+#        image: d3fk/s3cmd
+#        volumes:
+#              - ./${DATASET}:/s3
+#              - .s3:/root

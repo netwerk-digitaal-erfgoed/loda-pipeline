@@ -1,0 +1,18 @@
+# Metadata for your pipeline:
+---
+name: amateurfilm
+description: Zet de amateurfilm datadump om naar EDM RDF voor publicatie op Europeana
+
+# This is optional, by default it will be stored in the data directory of the pipeline using filename 'statements.nt'
+destination: file://amateurfilm.nt
+
+# The individual stages for your pipeline
+stages:
+  - name: "Stage 1 - Schema2EDM"
+    iterator:
+      query: file://iterator-stage-1.rq
+      batchSize: 1000
+      endpoint: http://localhost:3030/amateurfilm/sparql
+    generator:
+      - query: file://generator-stage-1.rq
+        batchSize: 1000

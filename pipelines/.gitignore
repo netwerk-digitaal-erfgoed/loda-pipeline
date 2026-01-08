@@ -1,0 +1,9 @@
+*.nt
+*.zip
+*.rdf
+*.gz
+*.txt
+*/data/*
+!*/data/datasetdescription.ttl
+!*/data/validate*.txt
+*.sparqlbook

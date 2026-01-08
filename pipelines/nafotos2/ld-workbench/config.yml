@@ -1,0 +1,43 @@
+# Metadata for your pipeline:
+---
+name: nafotos2
+description: Zet de nafotos2 datadump om naar EDM RDF voor publicatie op Europeana
+
+# This is optional, by default it will be stored in the data directory of the pipeline using filename 'statements.nt'
+destination: file://nafotos2.nt
+
+# The individual stages for your pipeline
+stages:
+
+  - name: "Stage 1 - edm:ProvidedCHO's"
+    iterator:
+      query: file://iterator-stage-1-2-3.rq
+      batchSize: 1000
+      endpoint: http://localhost:3030/nafotos2/sparql
+    generator:
+      - query: file://generator-stage-1.rq
+        batchSize: 1000
+  - name: "Stage 2 - ore:Aggregation's"
+    iterator:
+      query: file://iterator-stage-1-2-3.rq
+      batchSize: 1000
+      endpoint: http://localhost:3030/nafotos2/sparql
+    generator:
+      - query: file://generator-stage-2.rq
+        batchSize: 1000
+  - name: "Stage 3 - edm:WebResource/svcs:Service's"
+    iterator:
+      query: file://iterator-stage-1-2-3.rq
+      batchSize: 1000
+      endpoint: http://localhost:3030/nafotos2/sparql
+    generator:
+      - query: file://generator-stage-3.rq
+        batchSize: 1000
+  - name: "Stage 4 - skos:Concept's"
+    iterator:
+      query: file://iterator-stage-4.rq
+      batchSize: 1000
+      endpoint: http://localhost:3030/nafotos2/sparql
+    generator:
+      - query: file://generator-stage-4.rq
+        batchSize: 1000

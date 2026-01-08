@@ -1,0 +1,33 @@
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX odrl:    <http://www.w3.org/ns/odrl/2/>
+
+CONSTRUCT {	
+	?uri_ore a ore:Aggregation ;
+		edm:aggregatedCHO ?uri_cho ;
+		edm:provider ?provider ;
+		edm:dataProvider ?dataProvider ;
+		edm:rights ?rights ;
+		edm:isShownBy ?isShownBy ; 
+		edm:isShownAt ?isShownAt .
+} WHERE {
+	BIND( STRLANG("DC4EU - Dutch Collections for Europe", "en") AS ?provider )
+	BIND( STRLANG("Nationaal Archief","nl") as ?dataProvider )
+
+	?this ore:aggregates ?uri_cho .
+	?uri_ore foaf:primaryTopic ?uri_cho .
+	?uri_ore odrl:hasPolicy <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> . 
+
+	# License "conversion" <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> > <http://creativecommons.org/publicdomain/mark/1.0/> 
+	?uri_ore odrl:hasPolicy ?policy .
+	BIND(  IF(?policy = <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein>, IRI("http://creativecommons.org/publicdomain/mark/1.0/"), ?policy) as ?rights)
+
+	?this edm:isShownAt ?isShownAt .
+	?this edm:hasView ?Zichtexemplaar .
+	?Zichtexemplaar nao:webserviceIIIF ?iiif_info .
+
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json","full/max/0/default.jpg"))) as ?isShownBy) .
+	BIND( IRI(CONCAT(REPLACE(STR(?iiif_info),"info.json",""))) as ?uri_iiif) .
+}

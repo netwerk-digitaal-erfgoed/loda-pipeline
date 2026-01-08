@@ -1,0 +1,1322 @@
+PREFIX :        <http://www.europeana.eu/metis/edm/ext/>
+PREFIX cc:      <http://creativecommons.org/ns#>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+[ rdf:type     sh:ValidationReport;
+  sh:conforms  false;
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620238>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/199777>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620310>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/376194>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/98119>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/275696>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2454735920>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1469755>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620278>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1342975>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1581428>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620073>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/375912>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619411>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620258>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2454729885>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2462533441>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2455772432>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3692855>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/331158>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619775>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3692867>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619567>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619419>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620290>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/68408>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620250>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2453578987>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/375427>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1813846>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1908556>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1860034>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3672755>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1469177>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620314>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1400585>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1500984>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3692863>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620306>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2449617559>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2449480489>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2455024419>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619815>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2453899499>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619358>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/275719>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1908543>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/62157>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1581424>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1507301>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/46813>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619362>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1581349>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2462533483>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/343935>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620210>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1342981>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2453579064>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1545627>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/324746>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2453899421>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620254>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1404832>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/351011>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2449617885>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2462533374>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1587507>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/36736>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2453579024>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/351074>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2456093410>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620266>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2454729925>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/294103>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619850>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2462533512>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2462533454>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2462533589>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3692859>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620318>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/2453899270>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620246>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3620327>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1859273>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1408808>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/3619423>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://hdl.handle.net/21.12122/1500988>;
+                 sh:resultMessage              "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal.";
+                 sh:resultPath                 [ sh:alternativePath  ( [ sh:alternativePath  ( [ sh:alternativePath  ( dc:subject dc:type )
+                                                                                               ]
+                                                                                               dcterms:spatial
+                                                                                             )
+                                                                       ]
+                                                                       dcterms:temporal
+                                                                     )
+                                               ];
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:QualifiedMinCountConstraintComponent;
+                 sh:sourceShape                _:b0
+               ]
+] .

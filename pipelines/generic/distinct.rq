@@ -1,0 +1,33 @@
+# LDWorkbench sometimes generates multiple triples which is inefficient and might lead to problems
+# within the processing pipeline at Europeana. This query removes the duplicates
+# This query also removes multiple values for edm:isShownBy which is not allowed according to the Europeana rules
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+
+construct {?s ?p ?o}
+where {
+
+    # edm:isShownBy can only have one value so select a random one when multiple values are present
+    {
+      select distinct ?s ?p (SAMPLE(?_o) as ?o) {
+        ?s ?p ?_o
+        FILTER(?p=edm:isShownBy) 
+      }
+      GROUP BY ?s ?p   
+    }
+    UNION
+    # edm:object can only have one value so select a random one when multiple values are present
+    {
+      select distinct ?s ?p (SAMPLE(?_o) as ?o) {
+        ?s ?p ?_o
+        FILTER(?p=edm:object) 
+      }
+      GROUP BY ?s ?p   
+    }
+    UNION
+    {
+      select distinct ?s ?p ?o { 
+        ?s ?p ?o 
+        FILTER( ?p != edm:isShownBy && ?p != edm:object )
+      }
+    }
+}

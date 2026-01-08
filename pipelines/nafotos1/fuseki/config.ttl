@@ -1,0 +1,44 @@
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX :        <#>
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+     <service1>
+   ) .
+
+## the sparql endpoint will be available on http://localhost:3030/<dataset>/sparql
+<service1> rdf:type fuseki:Service ;
+    fuseki:name   "nafotos1" ;
+    fuseki:endpoint [ 
+         # SPARQL query service
+        fuseki:operation fuseki:query ; 
+        fuseki:name "sparql"
+    ] ;
+    fuseki:endpoint [ 
+         # SPARQL query service (alt name)
+        fuseki:operation fuseki:query ; 
+        fuseki:name "query" 
+    ] ;
+
+    fuseki:dataset  <#dataset> 
+    .
+
+<#dataset> rdf:type ja:MemoryDataset ;
+  ja:data "./data/2-10-62ntfoto.nt" ;
+  ja:data "./data/2-19-123ntfoto.nt" ;
+  ja:data "./data/2-20-46ntfoto.nt" ;
+  ja:data "./data/2-21-008-01ntfoto.nt" ;
+  ja:data "./data/2-21-284ntfoto.nt" ;
+  ja:data "./data/2-24-01-01ntfoto.nt" ;
+  ja:data "./data/2-24-01-02ntfoto.nt" ;
+  ja:data "./data/2-24-01-03ntfoto.nt" ;
+  ja:data "./data/2-24-01-04ntfoto.nt" ;
+  ja:data "./data/2-24-01-05ntfoto.nt" ;
+  ja:data "./data/2-24-01-06ntfoto.nt" ;
+  ja:data "./data/2-24-01-07ntfoto.nt" ;
+  ja:data "./data/2-24-01-08ntfoto.nt" ;
+  ja:data "./data/2-24-01-09ntfoto.nt" ;
+  ja:data "./data/2-24-01-13ntfoto.nt" ;
+  .
