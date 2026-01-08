@@ -103,8 +103,14 @@ if [ ! -z "$SOURCE_FILES" ] | [ $newDownload ]; then
     rm -rf ./DB
   fi
 
+  # TODO: loading nquad requires an extra option in fuseki/config.ttl to be enabled
+  #       define an automation for this detection quads and enabling this option
+
   # create the TDB2 database in the data dir with the name 'DB'
   docker compose run --rm tools /bin/bash -c "tdb2.tdbloader --loc /pipelines/data/DB $filelist"
+
+  # write some characteristics of the created database for debugging purposes
+  docker compose run --rm tools /bin/bash -c "tdb2.tdbstats --loc /pipelines/data/DB" > data/dbstats.txt
 
   # Convert the array to a string with a delimiter
   dataFilesString=$(IFS=:; echo "${dataFiles[*]}")

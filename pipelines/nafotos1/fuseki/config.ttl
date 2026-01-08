@@ -1,6 +1,7 @@
 PREFIX fuseki:  <http://jena.apache.org/fuseki#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ja:      <http://jena.hpl.hp.com/2005/11/Assembler#>
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
 PREFIX :        <#>
 
 [] rdf:type fuseki:Server ;
@@ -22,23 +23,11 @@ PREFIX :        <#>
         fuseki:name "query" 
     ] ;
 
-    fuseki:dataset  <#dataset> 
-    .
+    fuseki:dataset  <#dataset> .
 
-<#dataset> rdf:type ja:MemoryDataset ;
-  ja:data "./data/2-10-62ntfoto.nt" ;
-  ja:data "./data/2-19-123ntfoto.nt" ;
-  ja:data "./data/2-20-46ntfoto.nt" ;
-  ja:data "./data/2-21-008-01ntfoto.nt" ;
-  ja:data "./data/2-21-284ntfoto.nt" ;
-  ja:data "./data/2-24-01-01ntfoto.nt" ;
-  ja:data "./data/2-24-01-02ntfoto.nt" ;
-  ja:data "./data/2-24-01-03ntfoto.nt" ;
-  ja:data "./data/2-24-01-04ntfoto.nt" ;
-  ja:data "./data/2-24-01-05ntfoto.nt" ;
-  ja:data "./data/2-24-01-06ntfoto.nt" ;
-  ja:data "./data/2-24-01-07ntfoto.nt" ;
-  ja:data "./data/2-24-01-08ntfoto.nt" ;
-  ja:data "./data/2-24-01-09ntfoto.nt" ;
-  ja:data "./data/2-24-01-13ntfoto.nt" ;
-  .
+<#dataset> rdf:type tdb2:DatasetTDB2 ;
+  tdb2:location "/pipelines/data/DB" .
+
+  ## Optional - with union default for query and update WHERE matching.
+##  tdb2:unionDefaultGraph true .
+

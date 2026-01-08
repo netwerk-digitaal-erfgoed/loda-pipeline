@@ -26,8 +26,9 @@ PREFIX :        <#>
     fuseki:dataset  <#dataset> .
 
 <#dataset> rdf:type tdb2:DatasetTDB2 ;
-  tdb2:location "/pipelines/data/DB" ;
+  tdb2:location "/pipelines/data/DB" .
 
-  ## Optional - with union default for query and update WHERE matching.
-  tdb2:unionDefaultGraph true .
+  # this option enables unified querying over seperate graphs
+  # use this option when loading quad data files 
+  ## tdb2:unionDefaultGraph true .
 

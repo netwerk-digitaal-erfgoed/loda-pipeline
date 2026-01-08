@@ -23,10 +23,6 @@ mkdir ld-workbench
 echo "Creating subdirectory for 'fuseki'"
 mkdir fuseki
 
-# create a mointing point for the log file
-mkdir ./fuseki/logs
-touch ./fuseki/logs/fuseki_log.txt
-
 echo "Installing 'environment' file"
 echo "Set DATASET name to $dataset in $dataset/environoment" 
 export DATASET=$dataset
