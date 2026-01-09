@@ -12,24 +12,6 @@ unset SOURCE_URL SOURCE_FILES
 # read the variables from the 'environment' file
 source environment
 
-echo "Creating the Fuseki config file"
-
-# create a local copy of the fuseki config file
-envsubst < ../generic/fuseki-config.ttl > ./fuseki/config.ttl
-
-echo "Creating the LD-Workbench config files"
-
-# write the LD-Workbench configuration based on the environment variables
-envsubst < ../generic/ld-workbench-config.yml > ld-workbench/config.yml
-
-# write the generator query based on the environment variables
-
-# to prevent replace of the special variable $this
-export this="\$this"
-envsubst < ../generic/edm-generator.rq > ld-workbench/edm-generator.rq
-
-cp ../generic/iterator.rq ./ld-workbench
-
 # see if a data download an initialization is necessary
 # at least SOURCE_URL or SOURCE_FILE should be set
 if [ -z "$SOURCE_URL" ] && [ -z "$SOURCE_FILES" ] ; then
@@ -84,12 +66,23 @@ fi
 if [ ! -z "$SOURCE_FILES" ] | [ $newDownload ]; then
   
   cd data
-
   echo "Looking for input files files to proces..."
 
-  # Create a fuseki TDB2 database from all the downloaded RDF fules
-  shopt -s nullglob  # only read matches with existing files
-  dataFiles=(*.rdf *.rdf.gz *.ttl *.ttl.gz *.owl *.owl.gz *.nt *.nt.gz *.nq *.nquads *.nquads.gz)
+  if [ ! -z "$SOURCE_FILES" ]; then
+
+      # build a list based on the SOURCE_FILES var
+      echo "Adding $SOURCE_FILES to the list for building the database"
+      IFS=":" dataFiles=( $SOURCE_FILES )
+  
+  else 
+  
+      # build al list from the RDF files in the data direct
+      echo "Creating a list of RDF files for building the database"
+      shopt -s nullglob  # only read matches with existing files
+      dataFiles=(*.rdf *.rdf.gz *.ttl *.ttl.gz *.owl *.owl.gz *.nt *.nt.gz *.nq *.nquads *.nquads.gz)
+  
+  fi 
+  
   filelist=""
   for datafile in "${dataFiles[@]}"
   do
@@ -114,19 +107,54 @@ if [ ! -z "$SOURCE_FILES" ] | [ $newDownload ]; then
   docker compose run --rm tools /bin/bash -c "tdb2.tdbstats --loc /pipelines/data/DB > /pipelines/data/dbstats.txt"
   echo "See 'data/dbstats.txt' for more details about the contents of the database"
 
-  # Convert the array to a string with a delimiter
-  dataFilesString=$(IFS=:; echo "${dataFiles[*]}")
-  export SOURCE_FILES_DOWNLOADED="$dataFilesString"
-
   cd ..
-  
-  # store the filelist in the SOURCE_FILES variable
-  envsubst < environment > tmp.env 
-  mv tmp.env environment
+  # store the file list in the SOURCE_FILES variable 
+  # this is only done in for the inital configuration 
+  # when the SOURCE_FILES var is set to ${SOURCE_FILES_DOWNLOADED}
+  if [ $newDownload ]; then 
+    # Convert the array to a string with a delimiter
+    dataFilesString=$(IFS=:; echo "${dataFiles[*]}")
+    export SOURCE_FILES_DOWNLOADED="$dataFilesString"
 
-  echo "SOURCE_FILES variable set to ${dataFilesString}!"
+    # TODO: use other procedure for writing the SOURCE_FILES var back to environment
+    #       to always update this variable not only when set to ${SOURCE_FILES_DOWNLOADED}
+
+    # store the filelist in the SOURCE_FILES variable
+    envsubst < environment > tmp.env 
+    mv tmp.env environment
+
+    echo "SOURCE_FILES variable set to ${dataFilesString}!"
+  fi 
 
 fi
+
+if [ -f "./fuseki/config.ttl" ] | [ -f "./ld-workbench/config.yml" ]; then
+  
+  echo ""
+  echo "Configuration files already exists so skipping the creation of new ones."
+  echo "Do a manual check for the correct settings!"
+
+else 
+
+  echo "Creating the Fuseki config file"
+
+  # create a local copy of the fuseki config file
+  envsubst < ../generic/fuseki-config.ttl > ./fuseki/config.ttl
+
+  echo "Creating the LD-Workbench config files"
+
+  # write the LD-Workbench configuration based on the environment variables
+  envsubst < ../generic/ld-workbench-config.yml > ld-workbench/config.yml
+
+  # write the generator query based on the environment variables
+
+  # to prevent replacement of the special variable $this
+  export this="\$this"
+  envsubst < ../generic/edm-generator.rq > ld-workbench/edm-generator.rq
+
+  cp ../generic/iterator.rq ./ld-workbench
+
+fi 
 
 echo "Configuration done!"
 

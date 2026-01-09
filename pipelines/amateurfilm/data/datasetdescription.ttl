@@ -10,8 +10,8 @@
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <https://www.beeldengeluid.nl> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets//dist-nt>, <https://dc4eu.nl/id/datasets//dist-xml> ;
-	dcterms:created "2025-12-07"^^<http://www.w3.org/2001/XMLSchema#date> ;
-	dcterms:modified "2025-12-17T18:20:56Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:created "2026-01-09"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "nl" ;
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcterms:source <http://data.beeldengeluid.nl/id/dataset/0029> .
@@ -24,9 +24,9 @@
 
 <https://dc4eu.nl/id/datasets//dist-nt> a dcat:Distribution ;
 	dcterms:description "Gzipped distribution of 66166 N-triples."@en ;
-	dcat:byteSize "1415286"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
-	dcterms:created "2025-12-17T18:20:56Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "2025-12-17T18:20:56Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:byteSize "1415277"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.nt.gz> ;
 	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.nt.gz> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -36,9 +36,9 @@
 
 <https://dc4eu.nl/id/datasets//dist-xml>  a dcat:Distribution ;
 	dcterms:description "Zipped distribution of 2985 EDM XML files."@en ;
-	dcat:byteSize "4685705"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
-	dcterms:created "2025-12-17T18:20:56Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "2025-12-17T18:20:56Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:byteSize "4685681"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.edmxml.zip> ;
 	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.edmxml.zip> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -49,7 +49,7 @@
 	edm:hasTransformation <#transformation> .
 
 <#transformation> a edm:DataTransformationResource ;
-	rdf:value "https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/amateurfilm/ld-workbench/generator-stage-1.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/amateurfilm/ld-workbench/iterator-stage-1.rq" ;
+	rdf:value "https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/amateurfilm/ld-workbench/generator-stage-1.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/amateurfilm/ld-workbench/iterator-stage-1.rq" ;
     dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
     edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
 
