@@ -2,9 +2,7 @@
 *.zip
 *.rdf
 *.gz
-*.txt
 *.sparqlbook
 */data/*
 !*/data/datasetdescription.ttl
-!*/data/validate*.txt
 *.sparqlbook

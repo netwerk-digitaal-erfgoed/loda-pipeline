@@ -6,18 +6,24 @@ export PRODUCTION=0  # change the value to 1 when the dataset is ready for autom
 # short name for addressing the dataset
 export DATASET=ran
 
+# full name for the dataprovider
+export DATAPROVIDER="Regional Archives of Nijmegen"
+
+# default language
+export DEFAULT_LANGUAGE="nl"
+
 # URL of the base repository where config files are stored
 # this is used for referencing the query files in the dataset description
 # see scripts/make_dataset_description.sh for more details
-export PIPELINES_REPO="https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines"
+export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/"
 
 # specify either a URL to download the dataset for this pipeline
-#export SOURCE_URL="https://studiezaal.nijmegen.nl/AtlantisPubliek/data/set/LOD+Beelddocumenten.nt"
+export SOURCE_URL="https://studiezaal.nijmegen.nl/AtlantisPubliek/data/set/LOD+Beelddocumenten.nt"
 
 # or put on or more data files in the data directory and specify the path and filename separated by a ","
-# for example: "./data/file1.nt,./data/file2.nt"
+# for example: "file1.nt,file2.nt"
 # when the SOURCE_URL is set the SOURCE_FILES variable will be set automatically
-export SOURCE_FILES="LOD+Beelddocumenten.nt"
+export SOURCE_FILES=${SOURCE_FILES_DOWNLOADED}
 
 ### variables used to automatically create the dataset description
 
@@ -39,7 +45,7 @@ export DATASET_DESCRIPTION_CREATOR_NAME="Regional Archives of Nijmegen"
 
 # creation date of the dataset
 # export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13" # example
-export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13"
+export DATASET_DESCRIPTION_CREATE_DATE="2026-01-09"
 
 # source of the dataset
 # export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example

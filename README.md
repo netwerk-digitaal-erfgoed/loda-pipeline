@@ -1,4 +1,4 @@
-# Workflow for creating loda-pipelines
+# Workflow for setting up the loda-pipelines
 
 ## Installation
 Clone the repository to your local environment and build docker images.
@@ -60,7 +60,7 @@ $ cd <new-dataset>      # if necessary
 $ ../scripts/configure.sh
 ```
 
-The `configure.sh` script reads the environment variables. It will download or read the datafile(s), create a database for Fuseki and create configuration files for Fuseki and [LD-Workbench](https://github.com/netwerk-digitaal-erfgoed/ld-workbench). It will also install a default set of transformation queries. 
+The `configure.sh` script reads the environment variables. It will download or read the datafile(s), create a database for Fuseki and create configuration files for Fuseki and [LD-Workbench](https://github.com/netwerk-digitaal-erfgoed/ld-workbench). It will also install a default set of transformation queries. Consult the logfiles `download-log.txt` and `dbstats.txt` in the `data` directory for more information about the results of these steps. 
 
 ### Edit the sparql queries used for the mapping
 The pipeline is now ready to run but the transformation queries must be tailored for the dataset. The default transformation is prepared for the NDE Schema.org profile to EDM mapping. Depending on the conformity to the Schema.org profile adjustments will be necessary. 

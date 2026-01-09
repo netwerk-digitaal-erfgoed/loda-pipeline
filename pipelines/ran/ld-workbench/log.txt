@@ -1,0 +1,9 @@
+Welcome to LD Workbench version 2.8.1
+▶ Starting pipeline “ran”
+- Validating pipeline
+✔ Validating pipeline
+- Loading results from iterator
+✔ Stage “Stage 1 - Schema2EDM” resulted in 1,304,519 statements in 126,312 iterations (took 8m 53.1s)
+- Writing results to destination
+✔ Writing results to destination pipelines/ld-workbench/ran.nt
+✔ Your pipeline “ran” was completed in 8m 53.8s using 130 MB of memory
