@@ -23,4 +23,4 @@ docker compose run --rm tools /bin/bash -c "riot --output=rdfxml /pipelines/data
 echo "Rewrite the RDF/XML to XML that can be processed by Europeana..."
 docker compose run --rm tools /bin/bash -c "/app/crawler/rdf2edm.sh -input_file /pipelines/data/${DATASET}.rdf -output_file /pipelines/data/${DATASET}.zip"
 
-echo "Ready: output file ${DATASET}.zip is written to the main directory..."
+echo "Ready: output file ${DATASET}.zip is written to the data directory..."

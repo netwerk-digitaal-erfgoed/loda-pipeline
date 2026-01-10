@@ -22,8 +22,7 @@ export SOURCE_URL=
 
 # or put on or more data files in the data directory and specify the path and filename separated by a ","
 # for example: "file1.nt:file2.nt"
-# when the SOURCE_URL is set the SOURCE_FILES variable will be set automatically
-export SOURCE_FILES=${SOURCE_FILES_DOWNLOADED}
+export SOURCE_FILES=
 
 ### variables used to automatically create the dataset description
 

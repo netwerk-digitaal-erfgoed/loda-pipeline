@@ -1,7 +1,7 @@
 ## general configuration for the dataset
 
 # status for this dataset setup
-export PRODUCTION=1  # change the value to 1 when the dataset is ready for automatic processing
+export PRODUCTION=1
 
 # short name for addressing the dataset
 export DATASET=amateurfilm
@@ -19,8 +19,7 @@ export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline
 
 # specify either a URL to download the dataset for this pipeline
 # export SOURCE_URL="https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20250806_clean.nt"
-#export SOURCE_URL="https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20250806_clean.nt"
-export SOURCE_URL=""
+export SOURCE_URL=
 
 # or put on or more data files in the data directory and specify the path and filename separated by a ","
 # for example: "file1.nt,file2.nt"

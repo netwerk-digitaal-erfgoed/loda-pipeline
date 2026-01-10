@@ -11,7 +11,7 @@
 	dcterms:creator <https://www.beeldengeluid.nl> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets//dist-nt>, <https://dc4eu.nl/id/datasets//dist-xml> ;
 	dcterms:created "2026-01-09"^^<http://www.w3.org/2001/XMLSchema#date> ;
-	dcterms:modified "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T13:17:19Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "nl" ;
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcterms:source <http://data.beeldengeluid.nl/id/dataset/0029> .
@@ -25,8 +25,8 @@
 <https://dc4eu.nl/id/datasets//dist-nt> a dcat:Distribution ;
 	dcterms:description "Gzipped distribution of 66166 N-triples."@en ;
 	dcat:byteSize "1415277"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
-	dcterms:created "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:created "2026-01-10T13:17:19Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T13:17:19Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.nt.gz> ;
 	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.nt.gz> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -37,8 +37,8 @@
 <https://dc4eu.nl/id/datasets//dist-xml>  a dcat:Distribution ;
 	dcterms:description "Zipped distribution of 2985 EDM XML files."@en ;
 	dcat:byteSize "4685681"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
-	dcterms:created "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "2026-01-09T14:25:52Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:created "2026-01-10T13:17:19Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T13:17:19Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.edmxml.zip> ;
 	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.edmxml.zip> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;

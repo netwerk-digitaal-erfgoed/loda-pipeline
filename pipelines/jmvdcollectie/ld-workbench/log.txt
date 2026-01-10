@@ -1,0 +1,9 @@
+Welcome to LD Workbench version 2.8.1
+▶ Starting pipeline “jmvdcollectie”
+- Validating pipeline
+✔ Validating pipeline
+- Loading results from iterator
+✔ Stage “Stage 1 - Schema2EDM” resulted in 119,565 statements in 8,806 iterations (took 38.2s)
+- Writing results to destination
+✔ Writing results to destination pipelines/ld-workbench/jmvdcollectie.nt
+✔ Your pipeline “jmvdcollectie” was completed in 38.6s using 127 MB of memory

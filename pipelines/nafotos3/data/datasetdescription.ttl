@@ -10,8 +10,8 @@
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <https://www.nationaalarchief.nl> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets//dist-nt>, <https://dc4eu.nl/id/datasets//dist-xml> ;
-	dcterms:created "2025-08-04"^^<http://www.w3.org/2001/XMLSchema#date> ;
-	dcterms:modified "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:created "2026-01-10"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-01-10T16:09:23Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "en" ;
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcterms:source <https://archief.nl/id/dataset/toegang/7.000spaondntfoto> .
@@ -24,9 +24,9 @@
 
 <https://dc4eu.nl/id/datasets//dist-nt> a dcat:Distribution ;
 	dcterms:description "Gzipped distribution of 102939 N-triples."@en ;
-	dcat:byteSize "1732014"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
-	dcterms:created "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:byteSize "1730957"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-10T16:09:23Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T16:09:23Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.nt.gz> ;
 	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.nt.gz> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -36,9 +36,9 @@
 
 <https://dc4eu.nl/id/datasets//dist-xml>  a dcat:Distribution ;
 	dcterms:description "Zipped distribution of 3651 EDM XML files."@en ;
-	dcat:byteSize "5710316"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
-	dcterms:created "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcterms:modified "2025-12-20T13:16:48Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:byteSize "5711426"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-10T16:09:23Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T16:09:23Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.edmxml.zip> ;
 	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/nafotos3.edmxml.zip> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
@@ -49,7 +49,7 @@
 	edm:hasTransformation <#transformation> .
 
 <#transformation> a edm:DataTransformationResource ;
-	rdf:value "https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-1.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-2.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/generator-stage-4.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://raw.githubusercontent.com/EnnoMeijers/loda-pipeline-v2/refs/heads/main/pipelines/pipeines/nafotos3/ld-workbench/iterator-stage-4.rq" ;
+	rdf:value "https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/generator-stage-1.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/generator-stage-2.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/generator-stage-3.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/generator-stage-4.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/iterator-stage-1-2-3.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/nafotos3/ld-workbench/iterator-stage-4.rq" ;
     dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
     edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
 

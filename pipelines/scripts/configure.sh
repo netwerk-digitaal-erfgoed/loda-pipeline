@@ -19,39 +19,52 @@ if [ -z "$SOURCE_URL" ] && [ -z "$SOURCE_FILES" ] ; then
    exit 1
 fi
 
+# used for detecting new downloads
 newDownload=false
+
+# used for detecting the need special nquad treatement for Fueksi
+unionDefaultGraph=false
 
 # if $SOURCE_URL is set a file will be downloaded 
 if [ ! -z "$SOURCE_URL" ]; then
   cd data
+  rm -rf *
   file=${SOURCE_URL##*/} 
   echo "Dataset name is: $DATASET"
   echo "Source URL is: $SOURCE_URL"
-  echo "Starting download..."
+  echo "Cleaning the data dir and starting download..."
   if ! wget -o download-log.txt $SOURCE_URL; then
      echo ""
   fi
 
   # check if the download was succesful; else terminate the script
   if grep -wq "ERROR" download-log.txt; then 
-      echo "ERROR in download" 
-      rm $file
+      echo "ERROR in download, see download-log.txt for more information, aborting config procedure!" 
+      if [ -f $file ]; then
+        rm $file
+      fi
       cd ..
       exit 1
   fi
 
   case "$file" in
     *.tar.gz)
-      echo "Extracting files..."  
-      tar xfz $file ;;
+        echo "Extracting files..."  
+        tar xfz $file ;;
     *.tgz)
-      echo "Extracting files..." 
-      tar xfz $file ;;
+        echo "Extracting files..." 
+        tar xfz $file ;;
     *.zip)
-      echo "Extracting files..."
-      unzip $file ;;
-    *.nt | *.nt.gz | *.rdf | *.rdf.gz | *.ttl | *.ttl.gz | *.owl | *.owl.gz | *.nq | *.nquads | *.nquads.gz)
-      echo "Known file type, no extra processing needed!" ;;
+        echo "Extracting files..."
+        unzip $file ;;
+    *.nt | *.nt.gz | *.rdf | *.rdf.gz | *.ttl | *.ttl.gz | *.owl | *.owl.gz)
+        echo "Known file type, no extra processing needed!" ;;    
+    *.nq | *.nquads | *.nquads.gz)
+        echo "Known file type, no extra processing needed!" 
+        echo "Detected nq types, setting the tdb2:unionDefaultGraph parameter to true in fuseki/config.ttl"
+        # this var is used to select the nquad config file
+        unionDefaultGraph=true
+      ;;
     *)
     echo "Unsupported file format, please prepare download files manualy" 
     exit 1 ;;
@@ -63,12 +76,12 @@ if [ ! -z "$SOURCE_URL" ]; then
 fi
 
 # proces the RDF data in ./data if the SOURCE_FILES var is blank 
-if [ ! -z "$SOURCE_FILES" ] | [ $newDownload ]; then
+if [ ! -z "$SOURCE_FILES" ] | [ "$newDownload" == true ]; then
   
   cd data
   echo "Looking for input files files to proces..."
 
-  if [ ! -z "$SOURCE_FILES" ]; then
+  if [ "$newDownload" == false ]; then
 
       # build a list based on the SOURCE_FILES var
       echo "Adding $SOURCE_FILES to the list for building the database"
@@ -108,20 +121,15 @@ if [ ! -z "$SOURCE_FILES" ] | [ $newDownload ]; then
   echo "See 'data/dbstats.txt' for more details about the contents of the database"
 
   cd ..
+
   # store the file list in the SOURCE_FILES variable 
-  # this is only done in for the inital configuration 
-  # when the SOURCE_FILES var is set to ${SOURCE_FILES_DOWNLOADED}
-  if [ $newDownload ]; then 
+  if [ "$newDownload" == true ]; then 
+
     # Convert the array to a string with a delimiter
     dataFilesString=$(IFS=:; echo "${dataFiles[*]}")
-    export SOURCE_FILES_DOWNLOADED="$dataFilesString"
 
-    # TODO: use other procedure for writing the SOURCE_FILES var back to environment
-    #       to always update this variable not only when set to ${SOURCE_FILES_DOWNLOADED}
-
-    # store the filelist in the SOURCE_FILES variable
-    envsubst < environment > tmp.env 
-    mv tmp.env environment
+    # update the SOURCE_FILES variable in the environment file
+    sed -i "/^export SOURCE_FILES=/c\export SOURCE_FILES=${dataFilesString}" ./environment
 
     echo "SOURCE_FILES variable set to ${dataFilesString}!"
   fi 
@@ -139,7 +147,17 @@ else
   echo "Creating the Fuseki config file"
 
   # create a local copy of the fuseki config file
-  envsubst < ../generic/fuseki-config.ttl > ./fuseki/config.ttl
+  if [ "$unionDefaultGraph" == true ]; then
+  
+    # using nquad requires an addition statement for in the config file
+    envsubst < ../generic/fuseki-config-nquad.ttl > ./fuseki/config.ttl
+
+  else
+
+    # use the default config file
+    envsubst < ../generic/fuseki-config.ttl > ./fuseki/config.ttl
+
+  fi
 
   echo "Creating the LD-Workbench config files"
 
