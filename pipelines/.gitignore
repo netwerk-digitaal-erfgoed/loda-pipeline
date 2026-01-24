@@ -5,6 +5,7 @@
 *.gz
 *.sparqlbook
 */data/*
+!*.gitkeep
 !*/datasetdescription.ttl
 !*/fuseki-config.ttl
 *.sparqlbook
