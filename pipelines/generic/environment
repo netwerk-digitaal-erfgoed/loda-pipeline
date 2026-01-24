@@ -6,6 +6,19 @@ export PRODUCTION=0  # change the value to 1 when the dataset is ready for autom
 # short name for addressing the dataset
 export DATASET=${DATASET}
 
+# specify a URI of an existing dataset present with linked data distributions 
+# registered in the NDE Datasetregister to use as starting point for this dataset
+# if set DOWNLOAD_URL and DATA_FILES are automatically set
+export DATASET_URI=
+
+# or specify either a URL to download the dataset for this pipeline
+# if set DATA_FILES is automatically set
+export DOWNLOAD_URL=
+
+# or specify one or more data files present in the data directory separated by a ","
+# for example: "file1.nt:file2.nt"
+export DATA_FILES=
+
 # full name for the dataprovider
 export DATAPROVIDER=
 
@@ -14,15 +27,8 @@ export DEFAULT_LANGUAGE="nl"
 
 # URL of the base repository where config files are stored
 # this is used for referencing the query files in the dataset description
-# see scripts/make_dataset_description.sh for more details
-export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/"
-
-# specify either a URL to download the dataset for this pipeline
-export SOURCE_URL=
-
-# or put on or more data files in the data directory and specify the path and filename separated by a ","
-# for example: "file1.nt:file2.nt"
-export SOURCE_FILES=
+# see make_dataset_description.sh for more details
+export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines"
 
 ### variables used to automatically create the dataset description
 

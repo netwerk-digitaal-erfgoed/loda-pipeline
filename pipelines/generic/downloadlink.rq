@@ -1,0 +1,49 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sdo: <http://schema.org/>
+
+SELECT ?accessURL {
+  <${DATASET_URI}> dcat:distribution [
+    dcat:accessURL ?accessURL ;
+    dcat:mediaType ?mediaType 
+  ] . 
+
+   # supported RDF mediaTypes by the LODA-pipeline
+   VALUES ?mediaType {
+    <https://www.iana.org/assignments/media-types/text/n3>
+    <https://www.iana.org/assignments/media-types/text/n3+gzip>
+    <https://www.iana.org/assignments/media-types/text/turtle>
+    <https://www.iana.org/assignments/media-types/text/turtle+gzip>
+    <https://www.iana.org/assignments/media-types/application/n-quads>
+    <https://www.iana.org/assignments/media-types/application/n-quads+gzip>
+    <https://www.iana.org/assignments/media-types/application/n-triples>
+    <https://www.iana.org/assignments/media-types/application/n-triples+gzip>
+    <https://www.iana.org/assignments/media-types/application/rdf+xml>
+    <https://www.iana.org/assignments/media-types/application/rdf+xml+gzip>
+  }
+
+  # we prefer zipped download files for effiency
+  BIND(IF(CONTAINS(STR(?mediaType),"zip"),10,0) as ?zipscore)
+
+  # add a subjective score for each format based on tool support and ease of human understanding
+  # currently our tools do not support jsonld natively, manual transformation is necessary
+  BIND(
+    COALESCE(
+    IF(CONTAINS(STR(?mediaType),"n-triples"), 10, 1/0),
+    IF(CONTAINS(STR(?mediaType),"turtle"), 9, 1/0),
+    IF(CONTAINS(STR(?mediaType),"n3"), 8, 1/0),
+    IF(CONTAINS(STR(?mediaType),"n-quads"), 7, 1/0),
+    IF(CONTAINS(STR(?mediaType),"rdf+xml"), 6, 1/0),
+    0
+    ) AS ?fmtscore
+  )
+
+  # determine the final score for the available download options 
+  BIND(?zipscore+?fmtscore as ?score)
+
+}
+# rank the results based on the ?score 
+ORDER BY DESC(?score) 
+
+# limit the resultset to 1, only the highest score
+LIMIT 1

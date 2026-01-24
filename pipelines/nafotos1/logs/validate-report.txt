@@ -1,0 +1,241 @@
+PREFIX :        <http://www.europeana.eu/metis/edm/ext/>
+PREFIX cc:      <http://creativecommons.org/ns#>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX owl:     <http://www.w3.org/2002/07/owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+[ rdf:type     sh:ValidationReport;
+  sh:conforms  false;
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/132734>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/80696>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/148385>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/133856>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/164431>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/151158>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/100176>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/149515>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/143368>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/162470>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/121506>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/156374>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/106303>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/133796>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/122643>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/151688>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/158508>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/147085>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/142860>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/143672>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/166498>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/162102>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/168808>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/116000>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/121231>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/114098>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/40506>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <http://data.beeldengeluid.nl/gtaa/60962>;
+                 sh:resultMessage              "skos:prefLabel must be a literal; only one value per language may be present.";
+                 sh:resultPath                 skos:prefLabel;
+                 sh:resultSeverity             sh:Violation;
+                 sh:sourceConstraintComponent  sh:UniqueLangConstraintComponent;
+                 sh:sourceShape                :skosPrefLabelProperty
+               ]
+] .

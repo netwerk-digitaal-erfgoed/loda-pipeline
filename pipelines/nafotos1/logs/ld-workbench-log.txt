@@ -1,0 +1,15 @@
+Welcome to LD Workbench version 2.8.1
+▶ Starting pipeline “nafotos1”
+- Validating pipeline
+✔ Validating pipeline
+- Loading results from iterator
+✔ Stage “Stage 1 - edm:ProvidedCHO's” resulted in 2,446,540 statements in 197,949 iterations (took 12m 27.2s)
+- Loading results from iterator
+✔ Stage “Stage 2 - ore:Aggregation's” resulted in 1,187,239 statements in 197,949 iterations (took 7m 4.5s)
+- Loading results from iterator
+✔ Stage “Stage 3 - edm:WebResource/svcs:Service's” resulted in 848,540 statements in 197,949 iterations (took 5m 35.5s)
+- Loading results from iterator
+✔ Stage “Stage 4 - skos:Concept's” resulted in 32,627 statements in 8,005 iterations (took 13.8s)
+- Writing results to destination
+✔ Writing results to destination pipelines/nafotos1.nt
+✔ Your pipeline “nafotos1” was completed in 25m 23s using 48 MB of memory

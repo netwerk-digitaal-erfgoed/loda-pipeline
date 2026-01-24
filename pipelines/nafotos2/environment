@@ -6,6 +6,18 @@ export PRODUCTION=0  # change the value to 1 when the dataset is ready for autom
 # short name for addressing the dataset
 export DATASET=nafotos2
 
+# specify a URI of an existing dataset present in the NDE Datasetregister to use as starting point for this dataset
+# if set DOWNLOAD_URL and DATA_FILES are automatically set
+export DATASET_URI=
+
+# or specify either a URL to download the dataset for this pipeline
+# if set DATA_FILES is automatically set
+export DOWNLOAD_URL="https://nde-europeana.ams3.digitaloceanspaces.com/na-fotos-2_24_03-2_24_26.zip"
+
+# or specify one or more data files present in the data directory separated by a ","
+# for example: "file1.nt:file2.nt"
+export DATA_FILES=2-24-03ntfoto.nt:2-24-04-01ntfoto.nt:2-24-04-02ntfoto.nt:2-24-04-03ntfoto.nt:2-24-05-02ntfoto.nt:2-24-06-01ntfoto.nt:2-24-06-02ntfoto.nt:2-24-09ntfoto.nt:2-24-10-01ntfoto.nt:2-24-10-02ntfoto.nt:2-24-11ntfoto.nt:2-24-14-02ntfoto.nt:2-24-15ntfoto.nt:2-24-26ntfoto.nt
+
 # full name for the dataprovider
 export DATAPROVIDER="National Archives"
 
@@ -14,44 +26,29 @@ export DEFAULT_LANGUAGE="nl"
 
 # URL of the base repository where config files are stored
 # this is used for referencing the query files in the dataset description
-# see scripts/make_dataset_description.sh for more details
-export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/"
-
-# specify either a URL to download the dataset for this pipeline
-export SOURCE_URL="https://nde-europeana.ams3.digitaloceanspaces.com/na-fotos-2_24_03-2_24_26.zip"
-
-# or put on or more data files in the data directory and specify the path and filename separated by a ","
-# for example: "file1.nt:file2.nt"
-export SOURCE_FILES=2-24-03ntfoto.nt:2-24-04-01ntfoto.nt:2-24-04-02ntfoto.nt:2-24-04-03ntfoto.nt:2-24-05-02ntfoto.nt:2-24-06-01ntfoto.nt:2-24-06-02ntfoto.nt:2-24-09ntfoto.nt:2-24-10-01ntfoto.nt:2-24-10-02ntfoto.nt:2-24-11ntfoto.nt:2-24-14-02ntfoto.nt:2-24-15ntfoto.nt:2-24-26ntfoto.nt
+# see make_dataset_description.sh for more details
+export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines"
 
 ### variables used to automatically create the dataset description
 
 # language of the dataset description 
-# export DATASET_DESCRIPTION_LANGUAGE="en"  # example
 export DATASET_DESCRIPTION_LANGUAGE="en"
 
 # title of the dataset
-# export DATASET_DESCRIPTION_TITLE="Images of the Dutch Regional Archives of Nijmegen for Europeana"  # example
 export DATASET_DESCRIPTION_TITLE="Photocollection Dutch National Archives for Europeana"
 
 # URI for the organization that created the dataset
-# export DATASET_DESCRIPTION_CREATOR_URI="https://www.regionaalarchiefnijmegen.nl/"  # example
 export DATASET_DESCRIPTION_CREATOR_URI="https://www.nationaalarchief.nl"
 
 # name of the organization that created the dataset
-# export DATASET_DESCRIPTION_CREATOR_NAME="Regional Archives of Nijmegen" # example
 export DATASET_DESCRIPTION_CREATOR_NAME="National Archives"
 
 # creation date of the dataset
-# export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13" # example
-export DATASET_DESCRIPTION_CREATE_DATE="2026-01-10"
+export DATASET_DESCRIPTION_CREATE_DATE="2026-01-24"
 
 # source of the dataset
-# export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example
 # TODO: the current setup require this variable to be a string wrapped URI, this is error prone
 export DATASET_DESCRIPTION_SOURCE_DATASET="<https://archief.nl/id/dataset/toegang/2-24-03ntfoto>"
 
 # base location of the distribution 
-# export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com";
 export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"
-

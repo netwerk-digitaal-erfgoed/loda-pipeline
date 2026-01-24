@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# make sure this script is sourced and not run 
+# so the PATH var will be adjusted in the current shell
+name=$(basename "$0")
+if [[ "$name" == "setpath" ]]; then
+    echo
+    echo "Error: don't run '$name', use the command: 'source setpath'"
+    echo
+    exit 1
+fi
+
+# add the ./bin directory to the $PATH var if it is not already in there
+BIN_DIR="$PWD/bin"
+[[ ":$PATH:" != *":$BIN_DIR:"* ]] && PATH="$BIN_DIR:${PATH}"
+export PATH=$PATH
+
+echo "Path set!"

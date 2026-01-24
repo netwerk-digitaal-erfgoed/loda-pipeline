@@ -1,8 +1,10 @@
 *.nt
+*.ttl
 *.zip
 *.rdf
 *.gz
 *.sparqlbook
 */data/*
-!*/data/datasetdescription.ttl
+!*/datasetdescription.ttl
+!*/fuseki-config.ttl
 *.sparqlbook

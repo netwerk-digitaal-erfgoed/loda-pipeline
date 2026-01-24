@@ -1,1 +1,0 @@
-[2026-01-10 13:16:34] WARN  Config          :: No static content location

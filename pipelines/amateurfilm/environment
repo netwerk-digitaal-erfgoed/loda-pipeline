@@ -1,10 +1,20 @@
 ## general configuration for the dataset
 
 # status for this dataset setup
-export PRODUCTION=1
+export PRODUCTION=0  # change the value to 1 when the dataset is ready for automatic processing
 
 # short name for addressing the dataset
 export DATASET=amateurfilm
+
+# specify a URI of an existing dataset present in the NDE Datasetregister to use as starting point for this dataset
+export DATASET_URI=
+
+# specify either a URL to download the dataset for this pipeline
+export DOWNLOAD_URL="https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20250806_clean.nt"
+
+# specify one or more data files present in the data directory separated by a ","
+# for example: "file1.nt:file2.nt"
+export DATA_FILES=lod_amateurfilm_sdo_20250806_clean.nt
 
 # full name for the dataprovider
 export DATAPROVIDER="Nederlands Instituut voor Beeld en Geluid"
@@ -15,15 +25,7 @@ export DEFAULT_LANGUAGE="nl"
 # URL of the base repository where config files are stored
 # this is used for referencing the query files in the dataset description
 # see scripts/make_dataset_description.sh for more details
-export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/"
-
-# specify either a URL to download the dataset for this pipeline
-# export SOURCE_URL="https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20250806_clean.nt"
-export SOURCE_URL=
-
-# or put on or more data files in the data directory and specify the path and filename separated by a ","
-# for example: "file1.nt,file2.nt"
-export SOURCE_FILES=lod_amateurfilm_sdo_20250806_clean.nt
+export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines"
 
 ### variables used to automatically create the dataset description
 
@@ -45,7 +47,7 @@ export DATASET_DESCRIPTION_CREATOR_NAME="Nederlands Instituut voor Beeld en Gelu
 
 # creation date of the dataset
 # export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13" # example
-export DATASET_DESCRIPTION_CREATE_DATE="2026-01-09"
+export DATASET_DESCRIPTION_CREATE_DATE="2026-01-23"
 
 # source of the dataset
 # export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example

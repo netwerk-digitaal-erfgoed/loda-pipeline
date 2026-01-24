@@ -1,0 +1,55 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix edm: <http://www.europeana.eu/schemas/edm/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://dc4eu.nl/id/datasets/> a dcat:Dataset ;
+	dcterms:title "Amateurfilm collectie"@en ;
+	dcterms:description "Amateurfilm collectie - dataset '' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <https://www.beeldengeluid.nl> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets//dist-nt>, <https://dc4eu.nl/id/datasets//dist-xml> ;
+	dcterms:created "2026-01-23"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-01-23T15:27:17Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:language "nl" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcterms:source <http://data.beeldengeluid.nl/id/dataset/0029> .
+
+<https://www.beeldengeluid.nl> a foaf:Organization ;
+	foaf:name "Nederlands Instituut voor Beeld en Geluid"@en .
+
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU" .
+
+<https://dc4eu.nl/id/datasets//dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of 66166 N-triples."@en ;
+	dcat:byteSize "1415277"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-23T15:27:17Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-23T15:27:17Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.nt.gz> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.nt.gz> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets//dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of 2985 EDM XML files."@en ;
+	dcat:byteSize "4685681"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-23T15:27:17Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-23T15:27:17Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.edmxml.zip> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/amateurfilm.edmxml.zip> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <http://www.iana.org/assignments/media-types/application/rdf+xml> ;
+	dcat:compressFormat <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> ;
+	edm:hasTransformation <#transformation> .
+
+<#transformation> a edm:DataTransformationResource ;
+	rdf:value "https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/amateurfilm/generator-stage-1.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/amateurfilm/iterator-stage-1.rq" ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
+    edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
+

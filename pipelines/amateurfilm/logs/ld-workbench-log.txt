@@ -1,0 +1,9 @@
+Welcome to LD Workbench version 2.8.1
+▶ Starting pipeline “amateurfilm”
+- Validating pipeline
+✔ Validating pipeline
+- Loading results from iterator
+✔ Stage “Stage 1 - Schema2EDM” resulted in 66,166 statements in 2,985 iterations (took 21.2s)
+- Writing results to destination
+✔ Writing results to destination pipelines/amateurfilm.nt
+✔ Your pipeline “amateurfilm” was completed in 21.6s using 98 MB of memory
