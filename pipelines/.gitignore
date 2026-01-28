@@ -3,7 +3,7 @@
 *.zip
 *.rdf
 *.gz
-*.sparqlbook
+*/logs/*
 */data/*
 !*.gitkeep
 !*/datasetdescription.ttl

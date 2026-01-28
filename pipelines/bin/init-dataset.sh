@@ -28,7 +28,7 @@ cat /dev/null > ./logs/.gitkeep
 #mkdir fuseki
 
 echo "Installing 'environment' file"
-echo "Set DATASET name to $dataset in $dataset/environoment" 
+echo "Set DATASET name to $dataset in $dataset/envirnoment" 
 export DATASET=$dataset
 envsubst '$DATASET' < ../generic/environment > ./environment
 

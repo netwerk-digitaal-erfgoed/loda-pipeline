@@ -66,7 +66,7 @@ The next step is automatically downloading the data, creating a Fuseki database 
 
 ```
 $ cd <new-dataset>      # if necessary
-$ ../scripts/configure.sh
+$ configure.sh
 ```
 
 The `configure.sh` script reads the environment variables. It will download or read the datafile(s), create a database for Fuseki and create configuration files for Fuseki and [LD-Workbench](https://github.com/netwerk-digitaal-erfgoed/ld-workbench). It will also install a default set of transformation queries. Consult the logfiles `download-log.txt` and `dbstats.txt` in the `logs` directory for more information about the results of these steps. 
@@ -89,7 +89,7 @@ The next step is starting the local sparql server with using the dataset defined
 
 ```
 $ cd <dataset>      # if necessary
-$ ../scritps/start-sparql-server.sh
+$ start-sparql-server.sh
 ```
 
 The output should be similar to:
@@ -112,7 +112,7 @@ All is set now to do the actual transformation of the data. Make sure the starti
 
 ```
 $ cd <new-dataset>      # if necessary
-$ ../scritps/run-mapping.sh
+$ run-mapping.sh
 ```
 
 This should result something similar to the output below:
@@ -128,7 +128,7 @@ The SPARQL-endpoint is no longer needed, so it can be stopped:
 
 ```
 $ cd <dataset>      # if necessary
-$ ../scritps/stop-sparql-server.sh
+$ stop-sparql-server.sh
 ``` 
 
 ### Running the EDM conversion
@@ -145,7 +145,7 @@ The `convert-to-edm.sh` script performs the folling steps:
 To perform these step run the following command:
 ```
 $ cd <dataset>      # if necessary
-$ ../scritps/convert-to-edm.sh
+$ convert-to-edm.sh
 ```
 
 This result is something similar to the following output:
@@ -170,7 +170,7 @@ After setting the variables the dataset description can be created with the foll
 
 ```
 $ cd <dataset>      # if necessary
-$ ../scritps/make_dataset_description.sh
+$ make_dataset_description.sh
 ``` 
 
 This shoud result in a file called `datasetdescription.ttl` in the main directory that can be used to register the new dataset to the NDE-Datasetregister. In the file `validate-report-datasetdescription.txt` in the `logs` directory the result of the validation is given. See the requirements mentioned above for more information about eventual errors and warnings. 
@@ -181,7 +181,7 @@ After a succesful result for all steps mentioned above the dataset is ready to b
 
 ```
 $ cd pipelines      # if necessary
-$ scritps/run-all.sh [ <dataset> ]   # optional parameter
+$ run-all.sh [ <dataset> ]   # optional parameter
 ``` 
 
 ## Directory structure
