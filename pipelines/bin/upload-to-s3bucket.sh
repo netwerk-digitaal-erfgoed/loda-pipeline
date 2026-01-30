@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source setuser.sh
+
 # pass the dataset name as the first argument
 export DATASETNAME="${1}"
 export DATASET="./${DATASETNAME}"

@@ -1,6 +1,5 @@
 #!/bin/bash
-
-export USER=$(id -u):$(id -g)
+source setuser.sh
 
 # optional flag for Fuseki, set when data is in nquads
 unionDefaultGraph=false

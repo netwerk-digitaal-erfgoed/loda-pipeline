@@ -2,7 +2,7 @@
 set -e
 
 # to prevent docker creating 'root' owned files
-export USER=$(id -u):$(id -g)  
+source setuser.sh
 
 # read the configuration variables for this dataset
 source environment

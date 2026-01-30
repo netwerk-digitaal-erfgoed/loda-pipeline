@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run the process as the current user
-USER=$(id -u):$(id -g)
+source setuser.sh
 
 # read the configuration variables for this dataset
 source environment

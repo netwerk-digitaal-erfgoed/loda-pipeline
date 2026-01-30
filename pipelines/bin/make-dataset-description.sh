@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export USER=$(id -u):$(id -g)  # to prevent docker creating 'root' owned files
+source setuser.sh  # to prevent docker creating 'root' owned files
 
 # read the variables from the 'environment' file
 source environment

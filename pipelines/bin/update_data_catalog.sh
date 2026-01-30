@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source setuser.sh
+
 export S3_BUCKET="nde-europeana"
 
 export DATASET="." # needed for docker compose to use s3cmd somehow...

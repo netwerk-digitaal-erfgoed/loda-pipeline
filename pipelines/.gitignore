@@ -3,6 +3,7 @@
 *.zip
 *.rdf
 *.gz
+*.txt
 */logs/*
 */data/*
 !*.gitkeep

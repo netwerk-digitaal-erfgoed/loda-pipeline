@@ -15,7 +15,7 @@ echo -n "`date`: "
 echo "Starting the SPARQL server for ${DATASET}..."
 
 # run the process as the current user
-USER=$(id -u):$(id -g)
+source setuser.sh
 
 # start with an empty log file for this session
 cat /dev/null > logs/fuseki-log.txt

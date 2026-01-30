@@ -4,14 +4,26 @@
 Clone the repository to your local environment and build docker images.
 
 ```
-git clone https://github.com/EnnoMeijers/loda-pipeline-v2.git
-cd loda-pipeline-v2
-cd pipelines
-docker compose build fuseki
-docker compose build tools
+$ git clone https://github.com/netwerk-digitaal-erfgoed/loda-pipeline.git
+$ cd loda-pipeline
+$ cd pipelines
+$ source setpath
+$ build-all.sh
+```
+This should result in a succesful build of the fuseki and tools image. The output should be similar to:
+
+```
+Using UID=1000 and GID=1000 for building the images
+Building fuseki image, see build_fuseki_log.txt...
+[+] Building 1/1
+ ✔ fuseki  Built0.0s 
+Building tools image, see build_tools_log.txt for details...
+[+] Building 1/1
+ ✔ tools  Built0.0s 
+Ready builing the images!
 ```
 
-Both docker commands should result in a succesful build expressed in a last line that confirms the acknowledge the 'Built' status. The software is now ready for use. Please report any problems with installing or building the software to tech@netwerkdigitaalerfgoed.nl
+The software is now ready for use. Please report any problems installing or building the software to tech@netwerkdigitaalerfgoed.nl, add the logfiles for debugging.
 
 ## 1. Preparation of a new dataset in the pipeline
 To add a new dataset to the pipeline a number of steps must be performed. These steps are the initialization of the dataset, setting some environment variables, automatically creating configuration scripts and edit the sparql queries for the transformation. These steps are described in detail below. 
@@ -19,7 +31,7 @@ To add a new dataset to the pipeline a number of steps must be performed. These 
 **NB Please take note the exact location within the directory structure for each of the steps described below. Running scripts in from the wrong location will give wrong results.**
 
 ### Set path
-To easily find the scripts available in the `bin` dir **always** start with the following command
+To easily find the scripts available in the `bin` dir **always** start the sequence with following command
 ```
 $ source setpath
 ```

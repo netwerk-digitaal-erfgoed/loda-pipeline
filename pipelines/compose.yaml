@@ -13,6 +13,8 @@ services:
             dockerfile: Dockerfile
             args:
             - JENA_VERSION=5.6.0
+            - JENA_UID=$UID
+            - JENA_GID=$GID
         command: '--config=/pipelines/fuseki-config.ttl'
         ports:
             - "3030:3030"
@@ -21,11 +23,10 @@ services:
 
     tools:
         build: ../europeana-tools
-        user: $USER
+        user: $UID:$GID
         volumes:
               - ./${DATASET}:/pipelines
               - ./generic:/generic
-              - ./scripts:/scripts
 #              
 # NEEDS more configuration, should be mount on root pipelines dir
 #    s3cmd:
