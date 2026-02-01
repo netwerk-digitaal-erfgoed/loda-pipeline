@@ -1,6 +1,7 @@
 services:
     map:
         image: ghcr.io/netwerk-digitaal-erfgoed/ld-workbench:latest
+        user: $UID:$GID
         volumes: 
             - ./${DATASET}:/pipelines
         entrypoint: []
