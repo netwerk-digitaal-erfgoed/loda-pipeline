@@ -1,0 +1,93 @@
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX sdo:     <https://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+CONSTRUCT {
+
+    $this a edm:ProvidedCHO ;
+		edm:type ?edm_type ;
+		dc:creator ?creator ;
+		dc:description ?description ;
+		dc:description ?abstract ;
+		dc:type ?genre ;
+		dc:subject ?subject ;
+		dc:title ?name ;
+		dcterms:alternative ?altName ;
+		dc:publisher ?publisher ;
+		dcterms:medium ?material ;
+		dcterms:issued ?issued ;
+		dcterms:isPartOf ?series_id ;
+		edm:pid ?pid .
+
+	?uri_ore a ore:Aggregation ;
+		edm:aggregatedCHO $this ;
+		edm:provider ?provider ;
+		edm:dataProvider ?dataProvider ;
+		edm:rights ?fixed_license ;
+		edm:isShownBy ?isShownBy ;
+		edm:isShownAt ?isShownAt .
+
+} WHERE {
+		
+	BIND(URI(CONCAT(STR($this),"#agg")) as ?uri_ore)
+
+	BIND("DC4EU" as ?provider)
+	BIND("VIDEO" as ?edm_type)
+
+	# Overeenkomstig met andere B&G datasets op Europeana deze constante waarde als string toevoegen: 
+	BIND("Netherlands Institute for Sound & Vision" as ?dataProvider)
+
+	OPTIONAL {
+		$this sdo:description ?description 
+	}
+	OPTIONAL {
+		$this sdo:abstract ?abstract
+	}
+	OPTIONAL {
+	   $this sdo:about ?subject 
+	}
+	OPTIONAL {
+		$this sdo:name ?name 
+	}
+	OPTIONAL {
+		$this sdo:publisher ?publisher 
+	}
+	OPTIONAL {
+		$this sdo:url ?isShownAt
+	}
+	OPTIONAL {
+		$this sdo:creator/sdo:creator ?creator 
+	}
+	OPTIONAL {
+		$this sdo:genre ?genre 
+	}
+	OPTIONAL {
+		$this sdo:license ?license 
+	}
+	# fix licenses: replace CNE and !bound with InC
+	BIND( COALESCE( IF(BOUND(?license), IF(?license = <http://rightsstatements.org/vocab/CNE/1.0/>, 1/0, ?license), 1/0),<http://rightsstatements.org/vocab/InC/1.0/> ) AS ?fixed_license)
+
+	OPTIONAL {
+		$this sdo:alternativeHeadline ?altName
+	}
+	OPTIONAL {
+		$this sdo:material ?material 
+	}
+	OPTIONAL {
+		$this sdo:datePublished ?issued
+	}
+	OPTIONAL {
+		$this sdo:partOfSeries ?series_id .
+	}
+	OPTIONAL {
+		# Europeana requires valid URI for edm:isShownBy 
+		$this sdo:image ?image
+		BIND(IRI(?image) as ?isShownBy)
+	}
+	OPTIONAL {
+		$this sdo:identifier ?identifier
+		BIND( str(?identifier) AS ?pid)
+	}
+}

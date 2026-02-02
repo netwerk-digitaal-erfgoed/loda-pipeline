@@ -10,11 +10,11 @@ export DATASET=amateurfilm
 export DATASET_URI=
 
 # specify either a URL to download the dataset for this pipeline
-export DOWNLOAD_URL="https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20250806_clean.nt"
+export DOWNLOAD_URL="https://data.beeldengeluid.nl/files/amateurfilm/lod_amateurfilm_sdo_20251204_clean.nt"
 
 # specify one or more data files present in the data directory separated by a ","
 # for example: "file1.nt:file2.nt"
-export DATA_FILES=lod_amateurfilm_sdo_20250806_clean.nt
+export DATA_FILES=lod_amateurfilm_sdo_20251204_clean.nt
 
 # full name for the dataprovider
 export DATAPROVIDER="Nederlands Instituut voor Beeld en Geluid"
