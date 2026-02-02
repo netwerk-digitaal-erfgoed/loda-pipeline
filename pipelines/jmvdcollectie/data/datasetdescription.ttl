@@ -1,0 +1,55 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix edm: <http://www.europeana.eu/schemas/edm/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://dc4eu.nl/id/datasets/> a dcat:Dataset ;
+	dcterms:title "Jan Menze van Diepen Collectie"@en ;
+	dcterms:description "Jan Menze van Diepen Collectie - dataset '' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <https://n2t.net/ark:/32838/organisation> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets//dist-nt>, <https://dc4eu.nl/id/datasets//dist-xml> ;
+	dcterms:created "2026-01-10"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-01-10T13:54:57Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:language "nl" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcterms:source <https://n2t.net/ark:/32838/dataset> .
+
+<https://n2t.net/ark:/32838/organisation> a foaf:Organization ;
+	foaf:name "Jan Menze van Diepen Collectie"@en .
+
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU" .
+
+<https://dc4eu.nl/id/datasets//dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of 119548 N-triples."@en ;
+	dcat:byteSize "1658850"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-10T13:54:57Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T13:54:57Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/jmvdcollectie.nt.gz> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/jmvdcollectie.nt.gz> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets//dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of 3589 EDM XML files."@en ;
+	dcat:byteSize "5963361"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-01-10T13:54:57Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:modified "2026-01-10T13:54:57Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/jmvdcollectie.edmxml.zip> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/jmvdcollectie.edmxml.zip> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <http://www.iana.org/assignments/media-types/application/rdf+xml> ;
+	dcat:compressFormat <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> ;
+	edm:hasTransformation <#transformation> .
+
+<#transformation> a edm:DataTransformationResource ;
+	rdf:value "https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/jmvdcollectie/ld-workbench/edm-generator.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines//pipeines/jmvdcollectie/ld-workbench/iterator.rq" ;
+    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
+    edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
+

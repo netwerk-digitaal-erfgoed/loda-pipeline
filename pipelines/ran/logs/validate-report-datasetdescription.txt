@@ -1,0 +1,47 @@
+PREFIX dc:      <http://purl.org/dc/terms/>
+PREFIX dcat:    <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX reg:     <http://terms.netwerkdigitaalerfgoed.nl/ns/register#>
+PREFIX schema:  <https://schema.org/>
+PREFIX sh:      <http://www.w3.org/ns/shacl#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+
+[ rdf:type     sh:ValidationReport;
+  sh:conforms  false;
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://dc4eu.nl/id/datasets/>;
+                 sh:resultMessage              "Datasetbeschrijving zou een een tijdsaanduiding moeten bevatten"@nl , "Dataset description should contain temporal coverage"@en;
+                 sh:resultPath                 dc:temporal;
+                 sh:resultSeverity             sh:Info;
+                 sh:sourceConstraintComponent  sh:MinCountConstraintComponent;
+                 sh:sourceShape                [] 
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://dc4eu.nl/id/datasets/>;
+                 sh:resultMessage              "Datasetbeschrijving zou een gebiedsaanduiding moeten bevatten"@nl , "Dataset description should contain spatial coverage"@en;
+                 sh:resultPath                 dc:spatial;
+                 sh:resultSeverity             sh:Info;
+                 sh:sourceConstraintComponent  sh:MinCountConstraintComponent;
+                 sh:sourceShape                [] 
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://dc4eu.nl/id/datasets/>;
+                 sh:resultMessage              "Datasetbeschrijving zou trefwoorden moeten bevatten"@nl , "Dataset description should contain keywords"@en;
+                 sh:resultPath                 dcat:keyword;
+                 sh:resultSeverity             sh:Info;
+                 sh:sourceConstraintComponent  sh:MinCountConstraintComponent;
+                 sh:sourceShape                [] 
+               ];
+  sh:result    [ rdf:type                      sh:ValidationResult;
+                 sh:focusNode                  <https://dc4eu.nl/id/datasets/>;
+                 sh:resultMessage              "Dataset zou een uitgavedatum moeten bevatten"@nl , "Dataset description  should contain an issued date"@en;
+                 sh:resultPath                 dc:issued;
+                 sh:resultSeverity             sh:Info;
+                 sh:sourceConstraintComponent  sh:MinCountConstraintComponent;
+                 sh:sourceShape                [] 
+               ]
+] .

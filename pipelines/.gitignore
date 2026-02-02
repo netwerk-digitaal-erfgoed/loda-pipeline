@@ -1,0 +1,12 @@
+*.nt
+*.ttl
+*.zip
+*.rdf
+*.gz
+*.txt
+*/logs/*
+*/data/*
+!*.gitkeep
+!*/datasetdescription.ttl
+!*/fuseki-config.ttl
+*.sparqlbook

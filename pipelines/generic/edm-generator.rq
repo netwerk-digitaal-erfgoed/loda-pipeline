@@ -1,0 +1,299 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/> 
+PREFIX dcterms: <http://purl.org/dc/terms/> 
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+
+CONSTRUCT {
+
+    # Mandatory properties for edm:ProvidedCHO:
+    # - dc:title OR dc:description (at least one should be present, if both can be used alongside each other)
+    # - dc:language for edm:type = TEXT
+    # - dc:subject OR dc:type OR dcterms:spatial OR dcterms:temporal 
+    #   ((at least one should be present, if all can be used alongside each other),
+    # - edm:type 
+    # Recommended properties for edm:ProvidedCHO:
+    # - dc:contributor, dc:creator, dc:date, dc:identifier, dc:publisher, dc:source, dcterms:alternative, dcterms:created,
+    #   dcterms:isPartOf, dcterms:issued, edm:isNextInSequence 
+
+    ?providedCHO_URI a edm:ProvidedCHO ;
+#       dc:contributor                 # Use for contributors to the CHO, literal or ref [0..n]
+        dc:coverage ?locationCreated ; # The spatial or temporal topic of the CHO, literal or ref [0..n]
+        dc:creator ?creatorName ;      # For the creator of the CHO, literal or ref [0..n]
+        dc:date ?dateCreated ;         # Use for a significant date in the life of the CHO, literal or ref [0..n]
+        dc:description ?description, ?abstract, ?text ;  # A description of the CHO. , literal or ref [0..n]
+#       dc:format                      # Use for the terms generally applied to indicate the format, literal [0..n]
+        dc:identifier ?identifier,     # An identifier of the original CHO, literal [0..n] 
+                ?identifierDirect ;
+        dc:language "$DEFAULT_LANGUAGE" ; # The language of text CHOs, literal [0..n]
+        dc:publisher "$DATAPROVIDER" ;  # The name of the publisher of the CHO, literal or ref [0..n]
+#       dc:relation                    # The name or identifier of a related resource, literal or ref [0..n]
+        dc:rights "$DATAPROVIDER" ;  # Use to give the name of the rights holder of the CHO, literal or ref [0..n]
+#       dc:source                      # A related resource from which the described resource is derived in whole 
+                                       # or in part i.e. the source of the original CHO, literal or ref [0..n]
+        dc:subject ?genre, ?about ;    # The subject of the CHO, literal or ref [0..n]
+        dc:title ?name ;               # A name given to the CHO, literal [0..n]
+        dc:type ?additionalType ;      # The nature or genre of the CHO, literal or ref [0..n]
+#       dcterms:alternative            # Any alternative title of the CHO, literal [0..n] 
+#       dcterms:conformsTo             # An established standard to which the CHO conforms, literal or ref [0..n]
+        dcterms:created ?dateCreated ; # The date of creation of the CHO, literal or ref [0..n]
+        dcterms:extent ?sizeText ;     # The size or duration of the CHO, literal or ref [0..n] 
+#       dcterms:hasFormat              # A resource related to the CHO that is substantially the 
+                                       # same as the CHO but in another format, literal or ref [0..n] 
+#       dcterms:hasPart                # A resource that is included either physically or logically in the CHO, literal or ref [0..n]
+#       dcterms:hasVersion             # Another, later resource that is a version, edition or adaptation of the CHO, literal or ref [0..n]
+#       dcterms:isFormatOf             # Another resource that is substantially the same as the CHO but in another format, literal or ref [0..n]
+        dcterms:isPartOf ?isPartOf ;   # A resource in which the CHO is physically or logically included, literal or ref [0..n]
+#       dcterms:isReferencedBy         # Another resource that references, cites or otherwise points to the CHO, literal or ref [0..n] 
+#       dcterms:isReplacedBy           # Another resource that supplants , displaces, or supersedes the CHO, literal or ref [0..n] 
+#       dcterms:isRequiredBy           # Another related resource that requires the CHO to support its function, literal or ref [0..n]
+#       dcterms:issued                 # Date of formal issuance or publication of the CHO, literal or ref [0..n]
+#       dcterms:isVersionOf            # Another, earlier resource of which the CHO is a version, literal or ref [0..n] 
+        dcterms:medium ?materialLabel ;# The material or physical carrier of the CHO, literal or ref [0..n] 
+#       dcterms:provenance             # A statement of changes in ownership and custody of the CHO since its creation, literal or ref [0..n]
+#       dcterms:references             # Other resources referenced, cited or otherwise pointed to by the CHO, literal or ref [0..n] 
+#       dcterms:replaces               # A related resource that is supplanted, displaced, or superseded by the CHO, literal or ref [0..n] 
+#       dcterms:requires               # Another resource that is required by the described resource to support its function, literal or ref [0..n]
+        dcterms:spatial ?contentLocation ; # Spatial characteristics of the CHO. i.e. what the CHO represents or depicts in terms of space, literal or ref [0..n]
+#       dcterms:tableOfContents        # A list of sub‐units of the CHO, literal [0..n]
+        dcterms:temporal ?temporalCoverage ; # Temporal characteristics of the CHO. i.e. what the CHO is about or depicts in terms of time, literal or ref [0..n]
+#       edm:currentLocation            # The geographic location whose boundaries presently include the CHO, literal or ref [0..1]
+#       edm:hasMet                     # The identifier of an agent, a place, a time period or any other identifiable entity that the CHO may have “met” in its life, ref [0..n]
+#       edm:hasType                    # The identifier of a concept, or a word or phrase from a controlled vocabulary (thesaurus etc) giving the type of the CHO, literal or ref [0..n] 
+#       edm:incorporates               # The identifier of another resource that is incorporated in the described CHO, ref [0..1]
+#       edm:isDerivativeOf             # The identifier of another resource from which the described CHO has been derived, ref [0..1]
+#       edm:isNextInSequence           # The identifier of the preceding object where both objects are part of the same overall resource, ref [0..1]
+#       edm:isRelatedTo                # The identifier or name of a concept or other resource to which the described CHO is related, literal or ref [0..n]
+#       edm:isRepresentationOf         # The identifier of another object of which the described CHO is a representation, ref [0..1]
+#       edm:isSimilarTo                # The identifier of another resource to which the described CHO is similar, ref [0..1]
+#       edm:isSuccessorOf              # The identifier of a resource to which the described CHO is a successor, ref [0..1]
+        edm:pid $this ;
+#       edm:realizes                   # If the CHO described is of type edm:PhysicalThing it may realize an information object, ref [0..1]
+        edm:type "IMAGE" ;             # The value must be one of the types accepted by Europeana as it will support portal functionality: TEXT, VIDEO, SOUND, IMAGE, 3D, literal [1..1]
+#       owl:sameAs                     # Use to point to your own (linked data) representation of the object, ref [0..1]
+
+        .                              # termination of the edm:ProvidedCHO object (do not remove!)
+
+    # The mandatory properties for ore:Aggregation are:
+    # - edm:dataProvider
+    # - edm:isShownAt OR edm:isShownBy 
+    #   (at least one should be present, recommened to have both and they can be used alongside each other)
+    # - edm:provider
+    # - edm:rights
+    # - edm:aggregatedCHO,
+    # - edm:ugc (if applicable)
+    #
+    # The recommended properties are:
+    # - edm:object
+    # - edm:intermediateProvider
+
+    ?aggregation_URI a ore:Aggregation ;
+        edm:aggregatedCHO ?providedCHO_URI ; # The identifier of the source object e.g. the Mona Lisa itself, ref [1..1]
+        edm:dataProvider "$DATAPROVIDER" ; # The name or identifier of the data provider of the object, literal, ref [1..1] 
+        edm:hasView ?contentUrl, ?thumbnailUrl ; # The URL of a web resource which is a digital representation of the CHO, ref [0..m] 
+                                             # This may be the source object itself in the case of a born digital cultural heritage object.
+                                             # edm:hasView should only be used where there are several views of the CHO and one (or both) 
+                                             # of the mandatory edm:isShownAt or edm:isShownBy properties have already been used, ref [0..1]
+        edm:isShownAt $this ;                # The URL of a web view of the object in full information context, ref [0..1]
+        edm:isShownBy ?webresource_URI ;           # The URL of a web view of the object. An edm:isShownBy must be provided, ref [0..1]
+        edm:object ?contentUrl ;             # The URL of a representation of the CHO which will be used for generating previews for use in the Europeana portal, ref [0..1] 
+        
+        # fixed value for this pipelines
+        edm:provider "DC4EU" ;               # The name or identifier of the provider of the object, literal, ref [1..1]
+        edm:intermediateProvider "NDE" ;     # The name or identifier of the intermediate organization that selects, collates, or curates data from a Data Provider that is then aggregated by a Provider from which Europeana harvests, literal, ref [0..n]
+        
+        edm:rights ?license ;                # This is a mandatory property and the value given here should be the rights statement that applies to the digital representation, ref [1..1]
+#       edm:ugcProperty                      # This is a mandatory property for objects that are user generated or user created that have been collected by crowdsourcing or project activity, literal [0..1] 
+        
+
+        .                                    # termination of the ore:Aggregation object (do not remove!)
+
+    # the following classes are used to model the access to the IIIF Presentation API
+    ?webresource_URI a edm:WebResource ;
+        dcterms:isReferencedBy ?IIIF_Presentation_API_URI ; # A related resource that references, cites, or otherwise points to the described resource. 
+                                                            # In IIIF, dcterms:isReferencedBy can be used to connect an edm:WebResource to a IIIF manifest URI.
+        svcs:has_service ?service_URI   # The identifier of the svcs:Service required to consume the edm:WebResource. 
+
+        .                              # termination of the edm:WebResource object (do not remove!)
+
+    ?service_URI a svcs:Service ;
+        dcterms:conformsTo "http://iiif.io/api/presentation" ; # An established standard to which the web resource or service conforms.
+                                        # If the Service describes a IIIF resource, dcterms:conformsTo must be used 
+                                        # to describe the IIIF protocol the resource is conforming to.
+
+        doap:implements ?encodingFormatPresentationAPI ;  # A specification that a project implements. In IIIF doap:implements refers 
+                                        # to the the protocol implemented in IIIF.
+
+        .                               # # termination of the svcs:Service object (do not remove!)
+
+}
+
+# available properties for sdo:CreativeWork for the jmvdcollectie
+# v = supported, x = ignored for now
+#
+# dcterms:created (x), dcterms:modified (x), rdf:type (v), rdfs:seeAlso (x)
+# sdo:about (v), sdo:additionalType (v)
+# sdo:associatedMedia (v), sdo:contributor (x), sdo:copyrightNotice (x), sdo:creator (v)
+# sdo:dateCreated (v), sdo:description (v),sdo:hasPart (x), sdo:identifier (v), 
+# sdo:isPartOf (v), sdo:locationCreated (v), sdo:material (v)
+# sdo:name (v), sdo:relatedTo (x), sdo:size, sdo:text (v)
+#
+# not available in this data but defined in the NDE Schema.org profile for sdo:CreativeWork:
+# sdo:abstract, sdo:contentLocation, sdo:genre, sdo:temporalCoverage (x)
+
+where {
+    # start with the required properties for CreativeWork
+    $this a sdo:CreativeWork ;
+        sdo:name ?name ;
+
+        # sdo:creator is described in a complex way for the jmvdcollectie
+        # voorkomende rollen zijn: fotograaf, graveur, maker, ontwerper, plateelbakkerij, schilder, schrijver, Tekenaar, Uitgever, vervaardiger
+        # TODO: find out how often this is described like this for LDMAX/Axiell (and other) datasets?
+        sdo:creator [
+            a sdo:Role ;                             # assume creator is modeled as Role 
+            sdo:creator ?creatorURI ;               # URI that defines the creator
+            sdo:creator/foaf:name ?_creatorName ; # label of the creator
+            ] ;
+
+        # according to the profile an schema:MediaObject is expected 
+        sdo:associatedMedia ?associatedMediaObjectURI .
+
+    # mint a URI for the edm:ProvidedCHO object 
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+
+    # mint a URI for the ore:Aggregation object 
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+
+    # mint a URI for the edm:Webresource and svcs:Service object used for describing the IIIF API(s)
+    BIND(URI(CONCAT(STR($this),"#webres")) as ?webresource_URI)
+    BIND(URI(CONCAT(STR($this),"#service")) as ?service_URI)
+
+    # in some case the sdo:CreativeWork is not the toplevel of the record
+    FILTER(!ISBLANK($this))
+
+    # names and descriptions require to have a language tag
+    BIND(IF(LANG(?_creatorName)="",STRLANG(?_creatorName,"nl"),?_creatorName) as ?creatorName)
+
+	OPTIONAL {
+	    $this sdo:isPartOf ?_isPartOf .
+        BIND(
+            IF(REGEX(STR(?_isPartOf), "^https?://"),  # test if the string contains an URI
+               IRI(STR(?_isPartOf)),                  # Cast to IRI
+               STRLANG(STR(?_isPartOf), "nl")         # Cast to literal with language tag "nl"
+            ) AS ?isPartOf)
+	}
+
+    # make the property for schema:MediaObject explicit
+    ?associatedMediaObjectURI 
+        sdo:contentUrl ?_contentUrl ;
+        sdo:license ?_license ;
+        sdo:thumbnailUrl ?_thumbnailUrl .
+
+    # set datatype to IRI       
+    BIND(IRI(?_contentUrl) as ?contentUrl)
+    BIND(IRI(?_license) as ?license)    
+    BIND(IRI(?_thumbnailUrl) as ?thumbnailUrl)
+
+    # see if an IIIF-Image API is defined
+    OPTIONAL { 
+        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Image_API_URI .
+        ?IIIF_Image_API_URI sdo:encodingFormat ?encodingFormatImageAPI .
+        FILTER(?encodingFormatImageAPI="application/ld+json;profile='http://iiif.io/api/image/3/context.json'")
+    }
+
+    # see if an IIIF-Presentation API is defined
+    OPTIONAL { 
+        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Presentation_API_URI .
+        ?IIIF_Presentation_API_URI sdo:encodingFormat ?encodingFormatPresentationAPI .
+        FILTER(?encodingFormatPresentationAPI="application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'")
+    }
+
+    # collect the 'sdo:abstract' info if available
+    OPTIONAL { 
+        $this sdo:abstract ?_abstract .
+        BIND(IF(LANG(?_abstract)="",STRLANG(?_abstract,"nl"),?_abstract) as ?abstract)
+    }
+
+    # collect the 'additionalType' URI if not a blank node
+    OPTIONAL { 
+        $this sdo:additionalType ?additionalTypeURI .
+        FILTER(!ISBLANK(?additionalTypeURI))
+    }
+
+    # try to find the 'additionalType' label
+    OPTIONAL { 
+        $this sdo:additionalType/sdo:name ?_additionalType .
+        BIND(IF(LANG(?_additionalType)="",STRLANG(?_additionalType,"nl"),?_additionalType) as ?additionalType)
+    }
+
+    # collect the 'contentLocation' info
+    OPTIONAL { $this sdo:contentLocation/sdo:name ?contentLocation }
+
+    # find the description is available, 
+    OPTIONAL { $this sdo:description ?_description 
+        BIND(IF(LANG(?_description)="",STRLANG(?_description,"nl"),?_description) as ?description)
+    }
+
+    # collect the 'genre'  info 
+    OPTIONAL { $this sdo:genre ?genre } 
+
+    # read the identifier defined as Literal or URI
+    OPTIONAL { 
+        $this sdo:identifier ?identifierDirect .
+        FILTER(!ISBLANK(?identifierDirect))
+    }
+
+    # read the identifier if defined using a blank node
+    OPTIONAL {
+        $this sdo:identifier ?identifier_bn .
+        ?identifier_bn sdo:propertyID ?propertyID ;
+                    sdo:value ?identifierValue .
+        BIND(CONCAT(STR(?identifierValue)," (",STR(?propertyID),")") as ?identifier)
+    }
+
+    # collect the materials information
+    OPTIONAL {
+        $this sdo:material ?materialURI .
+        ?materialURI sdo:name ?_material .
+        BIND(IF(LANG(?_material)="",STRLANG(?_material,"nl"),?_material) as ?materialLabel)
+    }
+
+    # construct a string that contains the size details
+    OPTIONAL {
+        $this sdo:size ?sizeObject .
+        ?sizeObject sdo:value ?sizeValue ;
+            		sdo:name ?sizeName ;
+            		sdo:unitText ?sizeUnitText .
+        BIND(STRLANG(CONCAT(?sizeName," ",STR(?sizeValue)," ",?sizeUnitText),"nl") as ?sizeText)
+    }
+
+    # collect the 'temporalCoverage' info
+    OPTIONAL {
+        $this sdo:temporalCoverage ?temporalCoverage .
+    }
+
+    # collect the 'text' info
+    OPTIONAL {
+        $this sdo:text ?text .
+    }
+
+    # collect the 'locationCreated' info
+    OPTIONAL {
+        $this sdo:locationCreated/sdo:name ?_locationCreated .
+        BIND(IF(LANG(?_locationCreated)="",STRLANG(?_locationCreated,"nl"),?_locationCreated) as ?locationCreated)
+    }
+
+    # collect the 'dateCreated' info
+    OPTIONAL {
+        $this sdo:dateCreated ?dateCreated .
+    }
+
+    # skipping sdo:about - in this collection only duplicate info for sdo:description
+    OPTIONAL {
+        $this sdo:about ?about .
+    }
+
+}

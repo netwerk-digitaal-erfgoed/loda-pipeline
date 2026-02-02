@@ -1,0 +1,83 @@
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX skos:    <http://www.w3.org/2004/02/skos/core#>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX nao:     <https://archief.nl/def/ontologie/>
+PREFIX odrl:    <http://www.w3.org/ns/odrl/2/>
+
+CONSTRUCT {
+	?uri_cho a edm:ProvidedCHO ;
+		edm:type ?edm_type ;
+		dc:creator ?creator ;
+		dc:description ?description ;
+		dc:type ?genre ;
+		dc:subject ?subjecturi ;
+		dc:subject ?subjectliteral ;
+		dcterms:spatial ?spatial ;
+		dcterms:medium ?material ;
+		dc:rights ?license ;
+		dc:identifier ?identifier ;
+		dc:date ?date ;
+		dcterms:isPartOf ?is_part_of ;
+		edm:pid ?isShownAt . 
+} WHERE {
+
+	BIND( ("IMAGE") as ?edm_type )
+	BIND( ("Foto") as ?genre )
+	
+	?this ore:aggregates ?uri_cho .
+
+	?uri_ore foaf:primaryTopic ?uri_cho .
+	?uri_ore odrl:hasPolicy <https://archief.nl/def/Policy/set_b_rechtenvrij__publiek_domein> . 
+
+	?this dc:identifier ?identifier ;
+		  dcterms:creator/skos:prefLabel ?_creator . 
+	BIND(STRLANG(?_creator, "nl") AS ?creator)
+	
+	?this edm:isShownAt ?isShownAt .
+	
+	OPTIONAL { 
+		?uri_cho nao:isMateriaaltype ?_material .  
+		BIND(STRLANG(?_material, "nl") AS ?material)
+	}
+
+	# TODO: onderzoeken wat er gebeurt bij 2 ?descriptions
+	
+	OPTIONAL {
+		?uri_ore dc:description ?_description . 	
+		BIND(STRLANG(?_description, "nl") AS ?description)  
+	}
+	OPTIONAL { 
+		?uri_ore nao:toelichting ?_description .  	
+		BIND(STRLANG(?_description, "nl") AS ?description) 
+	}
+	
+	OPTIONAL { 
+		?uri_ore dcterms:subject ?subjecturi . 
+	}
+	
+	OPTIONAL { 
+		?uri_ore nao:trefwoordAlgemeen ?_subjectliteral . 
+		BIND(STRLANG(?_subjectliteral, "nl") AS ?subjectliteral)  
+	}
+	OPTIONAL { 
+		?uri_ore nao:trefwoordLocatie ?_spatial . 
+		BIND(STRLANG(?_spatial, "nl") AS ?spatial) 
+	}
+	OPTIONAL { ?uri_ore dcterms:date ?date  }
+	
+	# TODO: onderzoeken wat er gebeurt bij 2 ?is_part_of
+	
+	OPTIONAL { 
+		?uri_ore nao:titelFotocollectie ?_is_part_of . 
+		BIND(STRLANG(?_is_part_of, "nl") AS ?is_part_of) 
+	}
+	
+	OPTIONAL { 
+		?uri_ore nao:titelFotoserie ?_is_part_of . 
+		BIND(STRLANG(?_is_part_of, "nl") AS ?is_part_of) 
+	}
+
+}

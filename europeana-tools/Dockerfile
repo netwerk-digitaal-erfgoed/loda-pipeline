@@ -1,4 +1,4 @@
-# Build stage
+# Build Europeana conversion tool
 FROM maven:3.6.0-jdk-11-slim AS build
 
 WORKDIR /app/crawler
@@ -14,8 +14,13 @@ RUN mvn --quiet -e -f ./pom.xml clean assembly:assembly
 FROM stain/jena AS jena-tools
 
 WORKDIR /app/crawler
+ENV JVM_ARGS="-Xmx8G -Xms8G"
 
+# copy the europeana coversion tool
 COPY --from=build /app/crawler/target/cc-lod-crawler-DockerApplication .
+
+# copy the qy tool to this image
+COPY --from=mikefarah/yq /usr/bin/yq /usr/bin/yq
 
 RUN chmod 777 /app/crawler
 RUN chmod 777 /app/crawler/rdf2edm.sh
