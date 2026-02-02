@@ -10,20 +10,16 @@ CONSTRUCT {
 		edm:type ?edm_type ;
 		dc:creator ?creator ;
 		dc:description ?description ;
+		dc:description ?abstract ;
 		dc:type ?genre ;
 		dc:subject ?subject ;
 		dc:title ?name ;
-		dcterms:abstract ?abstract ;
 		dcterms:alternative ?altName ;
 		dc:publisher ?publisher ;
-		dcterms:spatial ?spatial ;
-		dcterms:temporal ?temporal ;
 		dcterms:medium ?material ;
 		dcterms:issued ?issued ;
-		edm:isPartOf ?series_id ;
+		dcterms:isPartOf ?series_id ;
 		edm:pid ?pid .
-
-	?series_id sdo:name ?series_title .
 
 	?uri_ore a ore:Aggregation ;
 		edm:aggregatedCHO $this ;
@@ -77,13 +73,6 @@ CONSTRUCT {
 		$this sdo:alternativeHeadline ?altName
 	}
 	OPTIONAL {
-		$this sdo:about ?spatial .
-		?spatial skos:inScheme <http://data.beeldengeluid.nl/gtaa/GeografischeNamen> .
-	}
-	OPTIONAL {
-		$this sdo:temporal ?temporal 
-	}
-	OPTIONAL {
 		$this sdo:material ?material 
 	}
 	OPTIONAL {
@@ -91,7 +80,6 @@ CONSTRUCT {
 	}
 	OPTIONAL {
 		$this sdo:partOfSeries ?series_id .
-		?series_id sdo:name ?series_title
 	}
 	OPTIONAL {
 		# Europeana requires valid URI for edm:isShownBy 
