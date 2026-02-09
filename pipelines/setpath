@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# make sure this script is sourced and not run 
-# so the PATH var will be adjusted in the current shell
-name=$(basename "$0")
-if [[ "$name" == "setpath" ]]; then
+# make sure this script is sourced and not run
+name=$(basename "${BASH_SOURCE[0]}")
+if [[ "$name" == "setpath" && "${BASH_SOURCE[0]}" == "$0" ]]; then
     echo
     echo "Error: don't run '$name', use the command: 'source setpath'"
     echo
