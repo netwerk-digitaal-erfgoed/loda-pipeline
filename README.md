@@ -25,6 +25,8 @@ Ready builing the images!
 
 The software is now ready for use. Please report any problems installing or building the software to tech@netwerkdigitaalerfgoed.nl, add the logfiles for debugging.
 
+Tip: in some cases the Windows Subsystem for Linux (WSL) seems to use a lot of extra memory which can lead to Out of Memory problems in the configure step. Possible solutions are to use a native Linux system or increase the memory setting documented in the 'compose.yaml' file.
+
 ## 1. Preparation of a new dataset in the pipeline
 To add a new dataset to the pipeline a number of steps must be performed. These steps are the initialization of the dataset, setting some environment variables, automatically creating configuration scripts and edit the sparql queries for the transformation. These steps are described in detail below. 
 

@@ -4,8 +4,8 @@ set -e
 # Usage:
 # set de current working director to 'pipelines'
 # 
-# './scripts/run-all.sh' runs all pipelines that have the PRODUCTION var set to 1
-# './runall.sh 'example' only runs the 'example' pipeline
+# 'run-all.sh' runs all pipelines that have the PRODUCTION var set to 1
+# 'runall.sh 'example' only runs the 'example' pipeline
 
 process_dataset () {
 	local DATASET=$1
@@ -58,7 +58,7 @@ else
 		  echo "Ignoring $dir (no 'environment' file found)" 
 
 		fi
-	done < <(find . -maxdepth 1 -type d ! -name "." ! -name "generic" ! -name ".s3" ! -name "scripts" -exec basename {} \; | sort -n)
+	done < <(find . -maxdepth 1 -type d ! -name "." ! -name "generic" ! -name ".s3" ! -name "bin" -exec basename {} \; | sort -n)
 fi
 
 # Loop through the array and print each item
