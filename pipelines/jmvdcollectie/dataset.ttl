@@ -1,0 +1,3 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+<https://n2t.net/ark:/32838/dataset> a dcat:Dataset .
