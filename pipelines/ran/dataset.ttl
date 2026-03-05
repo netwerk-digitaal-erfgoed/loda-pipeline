@@ -1,0 +1,3 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten> a dcat:Dataset .

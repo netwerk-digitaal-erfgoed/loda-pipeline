@@ -1,0 +1,20 @@
+{
+  "name": "@loda/pipeline",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@lde/dataset": "^0",
+    "@lde/dataset-registry-client": "^0",
+    "@lde/pipeline": "^0",
+    "@lde/pipeline-console-reporter": "^0",
+    "@lde/sparql-qlever": "^0",
+    "n3": "^1"
+  },
+  "devDependencies": {
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

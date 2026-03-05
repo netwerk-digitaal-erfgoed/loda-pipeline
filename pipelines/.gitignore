@@ -8,5 +8,6 @@
 */data/*
 !*.gitkeep
 !*/datasetdescription.ttl
+!*/dataset.ttl
 !*/fuseki-config.ttl
 *.sparqlbook
