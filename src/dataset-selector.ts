@@ -31,7 +31,12 @@ export async function createDatasetSelector(
   // Registry-backed dataset: use RegistrySelector filtered to this IRI.
   return new RegistrySelector({
     registry: new Client(REGISTRY_ENDPOINT),
-    criteria: {$id: datasetIri.toString()},
+    criteria: {
+      $id: datasetIri.toString(),
+      distribution: {
+        accessURL: {$filter: '!CONTAINS(STR(?value), "edm")'},
+      },
+    },
   });
 }
 
