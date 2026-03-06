@@ -14,7 +14,7 @@ import {ConsoleReporter} from '@lde/pipeline-console-reporter';
 import {scanStages} from './scan-stages.js';
 import {createDatasetSelector} from './dataset-selector.js';
 
-export async function buildPipeline(pipelineDir: string) {
+export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
   const absoluteDir = path.resolve(pipelineDir);
 
   // Set up QLever for importing data.
@@ -29,8 +29,8 @@ export async function buildPipeline(pipelineDir: string) {
     {importer: qlever.importer, server: qlever.server}
   );
 
-  // Resolve dataset from dataset.ttl.
-  const datasetSelector = await createDatasetSelector(absoluteDir);
+  // Resolve dataset.
+  const datasetSelector = await createDatasetSelector(datasetIri, absoluteDir);
 
   // Scan .rq files and build stages in parallel.
   const stageDefs = await scanStages(absoluteDir);
