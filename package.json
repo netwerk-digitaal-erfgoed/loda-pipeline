@@ -2,6 +2,9 @@
   "name": "@loda/pipeline",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "start": "tsx src/index.ts"
   },

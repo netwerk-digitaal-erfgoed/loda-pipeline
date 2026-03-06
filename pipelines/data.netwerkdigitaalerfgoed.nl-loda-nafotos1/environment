@@ -1,0 +1,12 @@
+# Variables for dataset description generation and publishing.
+# TODO: migrate to TypeScript.
+
+export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines"
+
+export DATASET_DESCRIPTION_LANGUAGE="en"
+export DATASET_DESCRIPTION_TITLE="Photocollection Dutch National Archives for Europeana"
+export DATASET_DESCRIPTION_CREATOR_URI="https://www.nationaalarchief.nl"
+export DATASET_DESCRIPTION_CREATOR_NAME="National Archives"
+export DATASET_DESCRIPTION_CREATE_DATE="2026-01-24"
+export DATASET_DESCRIPTION_SOURCE_DATASET="<https://archief.nl/id/dataset/toegang/2.10.62>"
+export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"

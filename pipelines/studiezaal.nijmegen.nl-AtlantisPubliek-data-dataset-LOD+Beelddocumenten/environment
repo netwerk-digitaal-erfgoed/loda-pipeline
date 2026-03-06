@@ -1,0 +1,8 @@
+# Variables for dataset description generation and publishing.
+# Title, language, creator, and source dataset are in the NDE Dataset Register.
+# TODO: migrate to TypeScript.
+
+export DATASET_DESCRIPTION_CREATE_DATE="2026-01-23"
+
+export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines"
+export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"
