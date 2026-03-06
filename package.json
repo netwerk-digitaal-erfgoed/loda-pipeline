@@ -10,11 +10,11 @@
   },
   "dependencies": {
     "@lde/dataset": "^0.7.0",
-    "@lde/dataset-registry-client": "^0.7.0",
+    "@lde/dataset-registry-client": "^0.7.1",
     "@lde/pipeline": "^0.15.0",
     "@lde/pipeline-console-reporter": "^0.4.0",
     "@lde/sparql-qlever": "^0.8.3",
-    "n3": "^1.26.0"
+    "n3": "^2.0.1"
   },
   "devDependencies": {
     "tsx": "^4.19.4",
