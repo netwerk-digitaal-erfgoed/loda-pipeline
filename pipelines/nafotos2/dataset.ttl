@@ -1,6 +1,0 @@
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
-
-<urn:loda:nafotos2> a dcat:Dataset ;
-  dcat:distribution [
-    dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/na-fotos-2_24_03-2_24_26.zip>
-  ] .
