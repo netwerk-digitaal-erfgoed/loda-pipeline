@@ -56,6 +56,14 @@ async function readLocalDistributions(
     .flatMap(distQuad =>
       store
         .getQuads(distQuad.object, DCAT + 'accessURL', null, null)
-        .map(urlQuad => new Distribution(new URL(urlQuad.object.value)))
+        .map(urlQuad => {
+          const mediaType = store.getQuads(
+            distQuad.object,
+            DCAT + 'mediaType',
+            null,
+            null
+          )[0]?.object.value;
+          return new Distribution(new URL(urlQuad.object.value), mediaType);
+        })
     );
 }

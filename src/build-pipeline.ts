@@ -1,4 +1,5 @@
-import path from 'node:path';
+import {mkdir} from 'node:fs/promises';
+import {basename, resolve} from 'node:path';
 import {
   Pipeline,
   Stage,
@@ -15,18 +16,21 @@ import {scanStages} from './scan-stages.js';
 import {createDatasetSelector} from './dataset-selector.js';
 
 export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
-  const absoluteDir = path.resolve(pipelineDir);
+  const absoluteDir = resolve(pipelineDir);
 
   // Set up QLever for importing data.
+  const importsDir = resolve('imports');
+  await mkdir(importsDir, {recursive: true});
   const qlever = createQlever({
     mode: 'docker',
     image: 'adfreiburg/qlever',
+    mountDir: importsDir,
   });
 
-  // Wrap with ImportResolver: tries SPARQL endpoints first, falls back to import.
+  // Always import data dumps into QLever rather than using remote SPARQL endpoints.
   const distributionResolver = new ImportResolver(
     new SparqlDistributionResolver(),
-    {importer: qlever.importer, server: qlever.server}
+    {importer: qlever.importer, server: qlever.server, strategy: 'import'}
   );
 
   // Resolve dataset.
@@ -47,13 +51,14 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
         name: `Stage ${def.stageNumber}`,
         executors,
         itemSelector: new SparqlItemSelector({query: selectorQuery}),
-        batchSize: 1000,
+        batchSize: 3000,
+        maxConcurrency: 20,
       });
     })
   );
 
   const pipeline = new Pipeline({
-    name: path.basename(absoluteDir),
+    name: basename(absoluteDir),
     datasetSelector,
     distributionResolver,
     stages,

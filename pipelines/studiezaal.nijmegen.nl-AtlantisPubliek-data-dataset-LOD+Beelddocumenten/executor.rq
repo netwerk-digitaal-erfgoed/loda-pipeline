@@ -59,8 +59,8 @@ CONSTRUCT {
 		$this sdo:contentLocation ?spatial .
 	}
 	OPTIONAL {
-	    $this sdo:about ?_subject .
-	    BIND(
+	    $this sdo:about ?_subject .
+	    BIND(
             IF(REGEX(STR(?_subject), "^https?://"),
                IRI(STR(?_subject)), # Cast to IRI
                STR(?_subject)       # Cast to simple literal (xsd:string)
@@ -70,7 +70,7 @@ CONSTRUCT {
 	   $this sdo:abdateCreatedout ?created 
 	}
 	OPTIONAL {
-	    $this sdo:isPartOf ?_isPartOf .
+	    $this sdo:isPartOf ?_isPartOf .
         BIND(
             IF(REGEX(STR(?_isPartOf), "^https?://"),
                IRI(STR(?_isPartOf)),                  # Cast to IRI
