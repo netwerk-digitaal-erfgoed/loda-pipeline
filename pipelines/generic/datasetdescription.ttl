@@ -4,16 +4,17 @@
 @prefix edm: <http://www.europeana.eu/schemas/edm/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-<https://dc4eu.nl/id/datasets/$DATASETNAME> a dcat:Dataset ;
+<https://dc4eu.nl/id/datasets/$DATASET> a dcat:Dataset ;
 	dcterms:title "$DATASET_DESCRIPTION_TITLE"@en ;
-	dcterms:description "$DATASET_DESCRIPTION_TITLE - dataset '$DATASETNAME' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:description "$DATASET_DESCRIPTION_TITLE - dataset '$DATASET' - converted via LODA-pipeline to the EDM datamodel."@en ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <$DATASET_DESCRIPTION_CREATOR_URI> ;
-	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASET/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASET/dist-xml> ;
 	dcterms:created "$DATASET_DESCRIPTION_CREATE_DATE"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "$DATASET_DESCRIPTION_LANGUAGE" ;
 	dcterms:publisher <https://dc4eu.nl> ;
+	dcat:keyword "LODA-pipeline","Europeana" ;
 	dcterms:source $DATASET_DESCRIPTION_SOURCE_DATASET .
 
 <$DATASET_DESCRIPTION_CREATOR_URI> a foaf:Organization ;
@@ -22,7 +23,7 @@
 <https://dc4eu.nl> a foaf:Organization ;
 	foaf:name "DC4EU" .
 
-<https://dc4eu.nl/id/datasets/$DATASETNAME/dist-nt> a dcat:Distribution ;
+<https://dc4eu.nl/id/datasets/$DATASET/dist-nt> a dcat:Distribution ;
 	dcterms:description "Gzipped distribution of $DISTRIBUTION_NUMBER_TRIPLES N-triples."@en ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_NTRIPLES"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
@@ -34,7 +35,7 @@
 	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
 	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
 
-<https://dc4eu.nl/id/datasets/$DATASETNAME/dist-xml>  a dcat:Distribution ;
+<https://dc4eu.nl/id/datasets/$DATASET/dist-xml>  a dcat:Distribution ;
 	dcterms:description "Zipped distribution of $DISTRIBUTION_NUMBER_XML EDM XML files."@en ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_XMLZIP"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
@@ -50,6 +51,5 @@
 
 <#transformation> a edm:DataTransformationResource ;
 	rdf:value $QUERY_FILES ;
-    dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
-    edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
-
+	dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
+	edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
