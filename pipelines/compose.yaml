@@ -31,9 +31,8 @@ services:
 #        environment:             # uncomment these lines and adjust the setting when running into Out of Memory problems
 #            - JVM_ARGS=-Xmx24G   # the default setting is 8Gb
 
-# NEEDS more configuration, should be mount on root pipelines dir
-#    s3cmd:
-#        image: d3fk/s3cmd
-#        volumes:
-#              - ./${DATASET}:/s3
-#              - .s3:/root
+    s3cmd:
+        image: d3fk/s3cmd
+        volumes:
+              - ./${DATASET}:/s3
+              - ${PWD}/.s3:/root:ro
