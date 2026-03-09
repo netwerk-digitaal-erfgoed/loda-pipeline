@@ -184,7 +184,7 @@ After setting the variables the dataset description can be created with the foll
 
 ```
 $ cd <dataset>      # if necessary
-$ make_dataset_description.sh
+$ make-dataset-description.sh
 ``` 
 
 This shoud result in a file called `datasetdescription.ttl` in the main directory that can be used to register the new dataset to the NDE-Datasetregister. In the file `validate-report-datasetdescription.txt` in the `logs` directory the result of the validation is given. See the requirements mentioned above for more information about eventual errors and warnings. 
