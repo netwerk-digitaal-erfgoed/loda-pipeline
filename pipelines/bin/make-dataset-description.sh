@@ -1,10 +1,15 @@
 #!/bin/bash
 set -e
 
-source setuser.sh  # to prevent docker creating 'root' owned files
+# to prevent docker creating 'root' owned files
+source setuser.sh
 
-# read the variables from the 'environment' file
+# read the configuration variables for this dataset
 source environment
+
+if [ -z $DATASET ]; then
+  echo "Please swith to a dataset directory" 
+fi
 
 if [ -z "${DATASET_DESCRIPTION_LANGUAGE}" ]; then
  	echo "DATASET_DESCRIPTION_LANGUAGE not set"
