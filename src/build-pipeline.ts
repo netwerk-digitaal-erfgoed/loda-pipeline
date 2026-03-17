@@ -25,7 +25,7 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
   const qlever = createQlever({
     mode: 'docker',
     image: 'adfreiburg/qlever',
-    mountDir: importsDir,
+    dataDir: importsDir,
   });
 
   // Always import data dumps into QLever rather than using remote SPARQL endpoints.
