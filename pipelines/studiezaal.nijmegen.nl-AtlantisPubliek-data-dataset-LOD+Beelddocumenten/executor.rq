@@ -40,7 +40,7 @@ CONSTRUCT {
 		$this sdo:about ?_subject .
 		BIND(IF(REGEX(STR(?_subject), "^https?://"), IRI(STR(?_subject)), STR(?_subject)) AS ?subject)
 	}
-	UNION { $this sdo:abdateCreatedout ?created }
+	UNION { $this sdo:dateCreated ?created }
 	UNION {
 		$this sdo:isPartOf ?_isPartOf .
 		BIND(IF(REGEX(STR(?_isPartOf), "^https?://"), IRI(STR(?_isPartOf)), STRLANG(STR(?_isPartOf), "nl")) AS ?isPartOf)
