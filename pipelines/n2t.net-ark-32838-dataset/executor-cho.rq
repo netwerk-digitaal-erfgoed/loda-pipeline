@@ -1,0 +1,93 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+
+# Multi-valued ProvidedCHO properties.
+# UNION prevents cross-products between multi-valued properties.
+CONSTRUCT {
+    ?providedCHO_URI
+        dc:coverage ?locationCreated ;
+        dc:creator ?creatorName ;
+        dc:date ?dateCreated ;
+        dc:description ?description ;
+        dc:identifier ?identifier ;
+        dc:identifier ?identifierDirect ;
+        dc:subject ?genre ;
+        dc:subject ?about ;
+        dc:title ?name ;
+        dc:type ?additionalType ;
+        dcterms:created ?dateCreated ;
+        dcterms:extent ?sizeText ;
+        dcterms:isPartOf ?isPartOf ;
+        dcterms:medium ?materialLabel ;
+        dcterms:spatial ?contentLocation ;
+        dcterms:temporal ?temporalCoverage .
+} WHERE {
+    BIND(URI(CONCAT(STR($this), "#cho")) AS ?providedCHO_URI)
+
+    {
+        $this sdo:name ?name
+    }
+    UNION {
+        $this sdo:creator [
+            a sdo:Role ;
+            sdo:creator/foaf:name ?_creatorName
+        ] .
+        BIND(IF(LANG(?_creatorName) = "", STRLANG(?_creatorName, "nl"), ?_creatorName) AS ?creatorName)
+    }
+    UNION {
+        $this sdo:description ?_description .
+        BIND(IF(LANG(?_description) = "", STRLANG(?_description, "nl"), ?_description) AS ?description)
+    }
+    UNION {
+        $this sdo:abstract ?_abstract .
+        FILTER NOT EXISTS { $this sdo:description ?_abstract }
+        BIND(IF(LANG(?_abstract) = "", STRLANG(?_abstract, "nl"), ?_abstract) AS ?description)
+    }
+    UNION { $this sdo:text ?description }
+    UNION { $this sdo:about ?about }
+    UNION { $this sdo:genre ?genre }
+    UNION {
+        $this sdo:additionalType/sdo:name ?_additionalType .
+        BIND(IF(LANG(?_additionalType) = "", STRLANG(?_additionalType, "nl"), ?_additionalType) AS ?additionalType)
+    }
+    UNION {
+        $this sdo:identifier ?identifierDirect .
+        FILTER(!ISBLANK(?identifierDirect))
+    }
+    UNION {
+        $this sdo:identifier ?identifier_bn .
+        ?identifier_bn sdo:propertyID ?propertyID ;
+                       sdo:value ?identifierValue .
+        BIND(CONCAT(STR(?identifierValue), " (", STR(?propertyID), ")") AS ?identifier)
+    }
+    UNION {
+        $this sdo:material ?materialURI .
+        ?materialURI sdo:name ?_material .
+        BIND(IF(LANG(?_material) = "", STRLANG(?_material, "nl"), ?_material) AS ?materialLabel)
+    }
+    UNION {
+        $this sdo:isPartOf ?_isPartOf .
+        BIND(
+            IF(REGEX(STR(?_isPartOf), "^https?://"),
+               IRI(STR(?_isPartOf)),
+               STRLANG(STR(?_isPartOf), "nl")
+            ) AS ?isPartOf)
+    }
+    UNION { $this sdo:contentLocation/sdo:name ?contentLocation }
+    UNION { $this sdo:temporalCoverage ?temporalCoverage }
+    UNION {
+        $this sdo:locationCreated/sdo:name ?_locationCreated .
+        BIND(IF(LANG(?_locationCreated) = "", STRLANG(?_locationCreated, "nl"), ?_locationCreated) AS ?locationCreated)
+    }
+    UNION { $this sdo:dateCreated ?dateCreated }
+    UNION {
+        $this sdo:size ?sizeObject .
+        ?sizeObject sdo:value ?sizeValue ;
+                    sdo:name ?sizeName ;
+                    sdo:unitText ?sizeUnitText .
+        BIND(STRLANG(CONCAT(?sizeName, " ", STR(?sizeValue), " ", ?sizeUnitText), "nl") AS ?sizeText)
+    }
+}
