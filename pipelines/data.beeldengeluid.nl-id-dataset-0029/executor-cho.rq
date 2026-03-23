@@ -18,7 +18,11 @@ CONSTRUCT {
 		dcterms:isPartOf ?series_id ;
 		edm:pid ?pid .
 } WHERE {
-	{ $this sdo:description|sdo:abstract ?description }
+	{ $this sdo:description ?description }
+	UNION {
+		$this sdo:abstract ?description .
+		FILTER NOT EXISTS { $this sdo:description ?description }
+	}
 	UNION { $this sdo:about ?subject }
 	UNION { $this sdo:name ?name }
 	UNION { $this sdo:publisher ?publisher }
