@@ -1,0 +1,37 @@
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX sdo:     <https://schema.org/>
+
+# ProvidedCHO type + Aggregation.
+# OPTIONALs are safe here: all properties are single-valued, so no cross-products.
+CONSTRUCT {
+	$this a edm:ProvidedCHO ;
+		edm:type "VIDEO" .
+
+	?uri_ore a ore:Aggregation ;
+		edm:aggregatedCHO $this ;
+		edm:provider ?provider ;
+		edm:dataProvider ?dataProvider ;
+		edm:rights ?fixed_license ;
+		edm:isShownBy ?isShownBy ;
+		edm:isShownAt ?isShownAt .
+} WHERE {
+	BIND(URI(CONCAT(STR($this), "#agg")) AS ?uri_ore)
+	BIND("DC4EU" AS ?provider)
+	BIND("Netherlands Institute for Sound & Vision" AS ?dataProvider)
+
+	OPTIONAL { $this sdo:url ?isShownAt }
+	OPTIONAL { $this sdo:license ?license }
+	OPTIONAL {
+		$this sdo:image ?image .
+		BIND(IRI(?image) AS ?isShownBy)
+	}
+
+	# Replace CNE and unbound licenses with InC.
+	BIND(COALESCE(
+		IF(BOUND(?license),
+			IF(?license = <http://rightsstatements.org/vocab/CNE/1.0/>, 1/0, ?license),
+			1/0),
+		<http://rightsstatements.org/vocab/InC/1.0/>
+	) AS ?fixed_license)
+}

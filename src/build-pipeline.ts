@@ -23,9 +23,11 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
   const importsDir = resolve('imports');
   await mkdir(importsDir, {recursive: true});
   const qlever = createQlever({
-    mode: 'docker',
+    mode: 'native',
     image: 'adfreiburg/qlever',
+    containerName: 'loda-qlever',
     dataDir: importsDir,
+    serverOptions: {'memory-max-size': '8G'},
   });
 
   // Always import data dumps into QLever rather than using remote SPARQL endpoints.
@@ -50,7 +52,7 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
       const [selectorQuery, executors] = await Promise.all([
         readQueryFile(def.selectorFile),
         Promise.all(
-          def.executorFiles.map(f => SparqlConstructExecutor.fromFile(f))
+          def.executorFiles.map(f => SparqlConstructExecutor.fromFile(f, {lineBuffer: true}))
         ),
       ]);
 
