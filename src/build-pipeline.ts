@@ -23,7 +23,7 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
   const importsDir = resolve('imports');
   await mkdir(importsDir, {recursive: true});
   const qlever = createQlever({
-    mode: 'native',
+    mode: 'docker',
     image: 'adfreiburg/qlever',
     containerName: 'loda-qlever',
     dataDir: importsDir,
