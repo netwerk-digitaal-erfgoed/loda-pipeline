@@ -1,0 +1,35 @@
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX sdo:     <https://schema.org/>
+
+# Multi-valued ProvidedCHO properties.
+# UNION prevents cross-products between multi-valued properties.
+CONSTRUCT {
+    $this dc:creator ?creator ;
+		dc:description ?description ;
+		dc:type ?genre ;
+		dc:subject ?subject ;
+		dc:title ?name ;
+		dcterms:alternative ?altName ;
+		dc:publisher ?publisher ;
+		dcterms:medium ?material ;
+		dcterms:issued ?issued ;
+		dcterms:isPartOf ?series_id ;
+		edm:pid ?pid .
+} WHERE {
+	{ $this sdo:description|sdo:abstract ?description }
+	UNION { $this sdo:about ?subject }
+	UNION { $this sdo:name ?name }
+	UNION { $this sdo:publisher ?publisher }
+	UNION { $this sdo:creator/sdo:creator ?creator }
+	UNION { $this sdo:genre ?genre }
+	UNION { $this sdo:alternativeHeadline ?altName }
+	UNION { $this sdo:material ?material }
+	UNION { $this sdo:datePublished ?issued }
+	UNION { $this sdo:partOfSeries ?series_id }
+	UNION {
+		$this sdo:identifier ?identifier .
+		BIND(STR(?identifier) AS ?pid)
+	}
+}

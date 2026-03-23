@@ -147,19 +147,23 @@ CONSTRUCT {
 where {
     # start with the required properties for CreativeWork
     $this a sdo:CreativeWork ;
-        sdo:name ?name ;
+        sdo:name ?name .
 
-        # sdo:creator is described in a complex way for the jmvdcollectie
-        # voorkomende rollen zijn: fotograaf, graveur, maker, ontwerper, plateelbakkerij, schilder, schrijver, Tekenaar, Uitgever, vervaardiger
-        # TODO: find out how often this is described like this for LDMAX/Axiell (and other) datasets?
-        sdo:creator [
-            a sdo:Role ;                             # assume creator is modeled as Role 
+    # sdo:creator is described in a complex way for the jmvdcollectie
+    # voorkomende rollen zijn: fotograaf, graveur, maker, ontwerper, plateelbakkerij, schilder, schrijver, Tekenaar, Uitgever, vervaardiger
+    # TODO: find out how often this is described like this for LDMAX/Axiell (and other) datasets?
+    # Optional: not all creators have foaf:name (some are sdo:Person with sdo:name).
+    OPTIONAL {
+        $this sdo:creator [
+            a sdo:Role ;                             # assume creator is modeled as Role
             sdo:creator ?creatorURI ;               # URI that defines the creator
             sdo:creator/foaf:name ?_creatorName ; # label of the creator
-            ] ;
+            ] .
+    }
 
-        # according to the profile an schema:MediaObject is expected 
-        sdo:associatedMedia ?associatedMediaObjectURI .
+    # according to the profile an schema:MediaObject is expected
+    # Optional: not all items have an associated MediaObject.
+    OPTIONAL { $this sdo:associatedMedia ?associatedMediaObjectURI . }
 
     # mint a URI for the edm:ProvidedCHO object 
     BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
@@ -187,14 +191,16 @@ where {
 	}
 
     # make the property for schema:MediaObject explicit
-    ?associatedMediaObjectURI 
-        sdo:contentUrl ?_contentUrl ;
-        sdo:license ?_license ;
-        sdo:thumbnailUrl ?_thumbnailUrl .
+    OPTIONAL {
+        ?associatedMediaObjectURI
+            sdo:contentUrl ?_contentUrl ;
+            sdo:license ?_license ;
+            sdo:thumbnailUrl ?_thumbnailUrl .
 
-    BIND(IRI(STR(?_contentUrl)) as ?contentUrl)
-    BIND(IRI(STR(?_license)) as ?license)    
-    BIND(IRI(STR(?_thumbnailUrl)) as ?thumbnailUrl)
+        BIND(IRI(STR(?_contentUrl)) as ?contentUrl)
+        BIND(IRI(STR(?_license)) as ?license)
+        BIND(IRI(STR(?_thumbnailUrl)) as ?thumbnailUrl)
+    }
     
     # see if an IIIF-Image API is defined
     OPTIONAL { 

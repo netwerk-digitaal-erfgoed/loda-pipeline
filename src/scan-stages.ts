@@ -11,11 +11,11 @@ export interface StageDefinition {
  * Scan a pipeline directory for .rq files and return stage definitions.
  *
  * Filename patterns:
- * - selector.rq         → selector for all stages (single-stage pipeline)
- * - selector-N.rq       → selector for stage N
- * - selector-N-M-O.rq   → shared selector for stages N, M, O
- * - executor.rq         → executor for stage 1 (single-stage pipeline)
- * - executor-N.rq       → executor for stage N
+ * - selector.rq              → selector for all stages (single-stage pipeline)
+ * - selector-N.rq            → selector for stage N
+ * - selector-N-M-O.rq        → shared selector for stages N, M, O
+ * - executor*.rq             → executor for stage 1 (e.g. executor.rq, executor-aggregation.rq)
+ * - executor-N*.rq           → executor for stage N (e.g. executor-2.rq, executor-2-aggregation.rq)
  */
 export async function scanStages(dir: string): Promise<StageDefinition[]> {
   const files = await readdir(dir);
@@ -37,16 +37,11 @@ export async function scanStages(dir: string): Promise<StageDefinition[]> {
       for (const num of nums) {
         selectorForStage.set(num, file);
       }
-    } else if (base === 'executor') {
-      const list = executors.get(1) ?? [];
+    } else if (base.startsWith('executor')) {
+      const stageNumber = parseExecutorStage(base);
+      const list = executors.get(stageNumber) ?? [];
       list.push(file);
-      executors.set(1, list);
-    } else if (base.startsWith('executor-')) {
-      const num = parseInt(base.slice('executor-'.length), 10);
-      if (Number.isNaN(num)) continue;
-      const list = executors.get(num) ?? [];
-      list.push(file);
-      executors.set(num, list);
+      executors.set(stageNumber, list);
     }
   }
 
@@ -78,4 +73,21 @@ export async function scanStages(dir: string): Promise<StageDefinition[]> {
   }
   stages.sort((a, b) => a.stageNumber - b.stageNumber);
   return stages;
+}
+
+/**
+ * Extract the stage number from an executor filename (without extension).
+ *
+ * "executor"              → 1
+ * "executor-foo"          → 1  (no leading digit after "executor-")
+ * "executor-2"            → 2
+ * "executor-2-aggregation"→ 2  (leading digit is the stage number)
+ */
+function parseExecutorStage(base: string): number {
+  const suffix = base.slice('executor'.length);
+  if (suffix === '') return 1;
+  // suffix starts with "-"; check if the first segment is a number.
+  const firstSegment = suffix.slice(1).split('-')[0];
+  const num = parseInt(firstSegment, 10);
+  return Number.isNaN(num) ? 1 : num;
 }
