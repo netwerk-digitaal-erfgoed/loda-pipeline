@@ -42,5 +42,18 @@ until $(curl --output /dev/null --silent --fail --data "query=select*{?s%20?p%20
     exit 1
   fi
 done
+
+COUNT=$(
+  curl -s "http://localhost:3030/$DATASET/sparql?query=SELECT%20%28COUNT%28%2A%29%20AS%20%3Faantal%29%20WHERE%20%7B%3Fs%20%3Fp%20%3Fo%7D" \
+  | while IFS= read -r line; do
+      if [[ $line == *'"value"'* ]]; then
+          val=${line##*\"value\": \"}
+          val=${val%%\"*}
+          echo "$val"
+          break
+      fi
+    done
+)
+
 echo -n "`date`: "
-echo "Sparql server available!"
+echo "Sparql server available with $COUNT triples in it!"
