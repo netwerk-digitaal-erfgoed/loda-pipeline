@@ -1,0 +1,159 @@
+# If the source data is not conform SCHEMA-AP-NDE the result dataset will probably be empty.
+# As a temporary measure, we could transform the source data to SCHEMA-AP-NDE ourselves,
+# this way we can use the default SCHEMA-AP-NDE to EDM mapping. 
+# This is an extra DC4EU task which we wanted to avoid (it's hard to figure out the source model
+# and to make an error-free SPARQL construct), but feel this step is necessary
+# as NDE-compatible systems are still being implemented and SCHEMA-AP-NDE specifically
+# isn't the current output format.
+#
+# To transform the denbosch.nt schema.org dump into SCHEMA-AP-NDE conformant data
+# we can use a standalone whole-graph CONSTRUCT. Run with Apache Jena ARQ, e.g.:
+#   arq --data data/denbosch.nt --query schema-ap-nde.rq --results=NT > data/denbosch-nde.nt
+#
+# TODO @enno: implement this as a ld-workbench solution, or maybe better, include it into the loda-pipeline.
+#
+# Current pipeline steps (in pipelines/denbosch/):
+# - configure.sh (downloads the disitribution)
+# - run transformation (arq --data data/denbosch.nt --query schema-ap-nde.rq --results=NT > data/denbosch-nde.nt)
+# - edit environment > export DATA_FILES=denbosch-nde.nt (instead of denbosch.nt)
+# - configure.sh (reloads the convered data in into Jena)
+# - start-sparql-server.sh
+# - run-mapping.sh
+# - ....
+#
+# Caveats door denbosch data:
+# - the URI's on Media object level are "promoted" to the URI of the CreativeWork resources
+# - the objects do not have an name, constructing one in construct
+# - media licenses are missing in source data, use of https://creativecommons.org/publicdomain/zero/1.0/ is hardcoded.
+
+PREFIX schema: <https://schema.org/>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+  ?record a schema:CreativeWork ;
+      schema:name              ?name ;
+      schema:identifier        ?identifier ;
+      schema:description       ?description ;
+      schema:temporalCoverage  ?temporalCoverage ;
+      schema:genre             ?genre ;
+      schema:keywords          ?keyword ;
+      schema:material          ?material ;
+      schema:creator           ?creatorURI ;
+      schema:contentLocation   ?placeURI ;
+      schema:associatedMedia   ?mediaURI .
+
+  ?creatorURI a schema:Person ;
+      schema:name              ?creatorName ;
+      schema:jobTitle          ?creatorJob .
+
+  ?placeURI a schema:Place ;
+      schema:name              ?placeName ;
+      schema:address           ?addrURI .
+
+  ?addrURI a schema:PostalAddress ;
+      schema:streetAddress     ?street ;
+      schema:addressLocality   ?locality .
+
+  ?mediaURI a schema:MediaObject ;
+      schema:license           <https://creativecommons.org/publicdomain/zero/1.0/> ;
+      schema:contentUrl        ?contentUrl ;
+      schema:encodingFormat    ?encFormat ;
+      schema:thumbnailUrl      ?thumbUrl .
+}
+WHERE {
+  # top-level heritage records only (persistent Handle URIs, never blank nodes)
+  ?record a schema:MediaObject .
+  FILTER(!isBlank(?record))
+
+  OPTIONAL { ?record schema:identifier ?identifier }
+
+  OPTIONAL {
+    ?record schema:description ?descRaw .
+    BIND(IF(LANG(?descRaw)="", STRLANG(?descRaw,"nl"), ?descRaw) AS ?description)
+  }
+
+  OPTIONAL { ?record schema:temporalCoverage ?temporalCoverage }
+
+  OPTIONAL {
+    ?record schema:genre ?genreRaw .
+    BIND(IF(LANG(?genreRaw)="", STRLANG(?genreRaw,"nl"), ?genreRaw) AS ?genre)
+  }
+
+  OPTIONAL {
+    ?record schema:keywords ?kw .
+    BIND(IF(LANG(?kw)="", STRLANG(?kw,"nl"), ?kw) AS ?keyword)
+  }
+
+  OPTIONAL {
+    ?record schema:material ?mat .
+    BIND(IF(LANG(?mat)="", STRLANG(?mat,"nl"), ?mat) AS ?material)
+  }
+
+  # creator (source uses schema:author -> Person blank node)
+  OPTIONAL {
+    ?record schema:author ?authorBN .
+    BIND(IRI(CONCAT(STR(?record),"#creator")) AS ?creatorURI)
+    OPTIONAL {
+      ?authorBN schema:name ?cn .
+      BIND(IF(LANG(?cn)="", STRLANG(?cn,"nl"), ?cn) AS ?creatorName)
+    }
+    OPTIONAL {
+      ?authorBN schema:jobTitle ?cj .
+      BIND(IF(LANG(?cj)="", STRLANG(?cj,"nl"), ?cj) AS ?creatorJob)
+    }
+  }
+
+  # depicted location; minted URIs replace blank nodes.
+  # NB: the Place and its PostalAddress are matched in two SEPARATE single-level
+  # OPTIONALs (address via a property path), NOT nested. A BIND inside a doubly
+  # nested OPTIONAL is dropped by ARQ, which would silently lose ?addrURI.
+  OPTIONAL {
+    ?record schema:contentLocation ?placeBN .
+    BIND(IRI(CONCAT(STR(?record),"#place")) AS ?placeURI)
+  }
+  OPTIONAL {
+    ?record schema:contentLocation/schema:address ?addrBN .
+    BIND(IRI(CONCAT(STR(?record),"#address")) AS ?addrURI)
+    OPTIONAL { ?addrBN schema:streetAddress ?street }
+    OPTIONAL { ?addrBN schema:addressLocality ?locality }
+    # place name from street (+ locality if literal); STR(?street) errors -> unbound when no street
+    BIND(STRLANG(
+           CONCAT(STR(?street),
+                  IF(BOUND(?locality) && isLiteral(?locality), CONCAT(", ", STR(?locality)), "")),
+           "nl") AS ?placeName)
+  }
+
+  # associatedMedia: IIIF manifest -> contentUrl, icoon.ico literal -> thumbnailUrl
+  OPTIONAL {
+    ?record schema:image ?anyImg .
+    BIND(IRI(CONCAT(STR(?record),"#media")) AS ?mediaURI)
+  }
+  OPTIONAL {
+    ?record schema:image ?imgLit .
+    FILTER(isLiteral(?imgLit))
+    BIND(IRI(STR(?imgLit)) AS ?thumbUrl)
+  }
+  OPTIONAL {
+    ?record schema:image ?mediaBN .
+    FILTER(isBlank(?mediaBN))
+    ?mediaBN schema:contentUrl ?cu .
+    BIND(IRI(STR(?cu)) AS ?contentUrl)
+    OPTIONAL { ?mediaBN schema:encodingFormat ?encFormat }
+  }
+
+  # ---- required schema:name : composite "Genre - Street, Locality" ----
+  BIND(COALESCE(STR(?genreRaw), "") AS ?g)
+  BIND(COALESCE(STR(?street), "")   AS ?s)
+  BIND(IF(BOUND(?locality) && isLiteral(?locality), STR(?locality), "") AS ?l)
+  BIND(
+    IF(?g != "",
+       CONCAT(?g,
+              IF(?s != "", CONCAT(" - ", ?s), ""),
+              IF(?l != "", CONCAT(", ", ?l), "")),
+       IF(?s != "",
+          CONCAT(?s, IF(?l != "", CONCAT(", ", ?l), "")),
+          COALESCE(STR(?descRaw), "Beeldbank 's-Hertogenbosch"))
+    ) AS ?titleStr)
+  BIND(STRLANG(?titleStr, "nl") AS ?name)
+}
