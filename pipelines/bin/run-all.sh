@@ -26,10 +26,10 @@ process_dataset () {
 
 	convert-to-edm.sh
 
-	make-dataset-description.sh 
-	
-	# upload-to-s3bucket.sh $DATASET
+	#upload-to-s3bucket.sh
 
+	#make-dataset-description.sh 
+	
 	cd ..
 }
 

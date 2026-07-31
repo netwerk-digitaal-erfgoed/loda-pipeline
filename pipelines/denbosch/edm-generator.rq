@@ -70,7 +70,7 @@ CONSTRUCT {
 #       edm:isRepresentationOf         # The identifier of another object of which the described CHO is a representation, ref [0..1]
 #       edm:isSimilarTo                # The identifier of another resource to which the described CHO is similar, ref [0..1]
 #       edm:isSuccessorOf              # The identifier of a resource to which the described CHO is a successor, ref [0..1]
-        edm:pid $this ;
+        edm:pid ?pidstr ;              # A long-lasting identifier for the resource. (optional property)
 #       edm:realizes                   # If the CHO described is of type edm:PhysicalThing it may realize an information object, ref [0..1]
         edm:type "IMAGE" ;             # The value must be one of the types accepted by Europeana as it will support portal functionality: TEXT, VIDEO, SOUND, IMAGE, 3D, literal [1..1]
 #       owl:sameAs                     # Use to point to your own (linked data) representation of the object, ref [0..1]
@@ -93,12 +93,15 @@ CONSTRUCT {
     ?aggregation_URI a ore:Aggregation ;
         edm:aggregatedCHO ?providedCHO_URI ; # The identifier of the source object e.g. the Mona Lisa itself, ref [1..1]
         edm:dataProvider "Stadsarchief" ; # The name or identifier of the data provider of the object, literal, ref [1..1] 
-        edm:hasView ?contentUrl, ?thumbnailUrl ; # The URL of a web resource which is a digital representation of the CHO, ref [0..m] 
+ #       edm:hasView ?contentUrl, ?thumbnailUrl ; # The URL of a web resource which is a digital representation of the CHO, ref [0..m] 
                                              # This may be the source object itself in the case of a born digital cultural heritage object.
                                              # edm:hasView should only be used where there are several views of the CHO and one (or both) 
                                              # of the mandatory edm:isShownAt or edm:isShownBy properties have already been used, ref [0..1]
         edm:isShownAt $this ;                # The URL of a web view of the object in full information context, ref [0..1]
-        edm:isShownBy ?webresource_URI ;           # The URL of a web view of the object. An edm:isShownBy must be provided, ref [0..1]
+
+#       Temp. fix because IIIF manifest is not useable
+#        edm:isShownBy ?webresource_URI ;           # The URL of a web view of the object. An edm:isShownBy must be provided, ref [0..1]
+        edm:isShownBy ?thumbnailUrl ;
         edm:object ?contentUrl ;             # The URL of a representation of the CHO which will be used for generating previews for use in the Europeana portal, ref [0..1] 
         
         # fixed value for this pipelines
@@ -152,6 +155,10 @@ where {
         # according to the profile an schema:MediaObject is expected
         sdo:associatedMedia ?associatedMediaObjectURI .
 
+    # the resource URI is assumed to be the persisten identifier
+    # Europeana requires edm:pid to be of type xsd:string. 
+    BIND(STR($this) as ?pidstr )
+
     # sdo:creator is modeled as a schema:Person: the source schema:author was
     # normalised into a "#creator" schema:Person node (see data/schema-ap-nde.rq),
     # carrying schema:name (and optionally schema:jobTitle). Optional so records
@@ -169,10 +176,10 @@ where {
     BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
 
     # mint a URI for the edm:Webresource and svcs:Service object used for describing the IIIF API(s)
-    BIND(URI(CONCAT(STR($this),"#webres")) as ?webresource_URI)
-    BIND(URI(CONCAT(STR($this),"#service")) as ?service_URI)
+    #BIND(URI(CONCAT(STR($this),"#webres")) as ?webresource_URI)
+    #BIND(URI(CONCAT(STR($this),"#service")) as ?service_URI)
 
-    # in some case the sdo:CreativeWork is not the toplevel of the record
+    # in some cases the sdo:CreativeWork is not the toplevel of the record
     FILTER(!ISBLANK($this))
 
     # names and descriptions require to have a language tag
@@ -189,28 +196,30 @@ where {
 
     # make the property for schema:MediaObject explicit
     ?associatedMediaObjectURI 
-        sdo:contentUrl ?_contentUrl ;
+        #sdo:contentUrl ?_contentUrl ;
         sdo:license ?_license ;
         sdo:thumbnailUrl ?_thumbnailUrl .
 
-    # set datatype to IRI       
-    BIND(IRI(?_contentUrl) as ?contentUrl)
+    # temp fix because we cannot use the IIIF manifest    
+    #BIND(IRI(?_contentUrl) as ?contentUrl)
+    BIND(IRI(?_thumbnailUrl) as ?contentUrl) 
+
     BIND(IRI(?_license) as ?license)    
     BIND(IRI(?_thumbnailUrl) as ?thumbnailUrl)
 
-    # see if an IIIF-Image API is defined
-    OPTIONAL { 
-        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Image_API_URI .
-        ?IIIF_Image_API_URI sdo:encodingFormat ?encodingFormatImageAPI .
-        FILTER(?encodingFormatImageAPI="application/ld+json;profile='http://iiif.io/api/image/3/context.json'")
-    }
+    # see if an IIIF-Image API is defined - because of a mime type type in the manifest, we can not use the IIIF interface
+    #OPTIONAL { 
+    #    ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Image_API_URI .
+    #    ?IIIF_Image_API_URI sdo:encodingFormat ?encodingFormatImageAPI .
+    #    FILTER(?encodingFormatImageAPI="application/ld+json;profile='http://iiif.io/api/image/3/context.json'")
+    #}
 
     # see if an IIIF-Presentation API is defined
-    OPTIONAL { 
-        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Presentation_API_URI .
-        ?IIIF_Presentation_API_URI sdo:encodingFormat ?encodingFormatPresentationAPI .
-        FILTER(?encodingFormatPresentationAPI="application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'")
-    }
+    #OPTIONAL { 
+    #    ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Presentation_API_URI .
+    #    ?IIIF_Presentation_API_URI sdo:encodingFormat ?encodingFormatPresentationAPI .
+    #    FILTER(?encodingFormatPresentationAPI="application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'")
+    #}
 
     # collect the 'sdo:abstract' info if available
     OPTIONAL { 

@@ -111,6 +111,8 @@ CONSTRUCT {
 
         .                                    # termination of the ore:Aggregation object (do not remove!)
 
+    # TODO: check with https://europeana.atlassian.net/wiki/x/eYB9gg for the correct implementation
+
     # the following classes are used to model the access to the IIIF Presentation API
     ?webresource_URI a edm:WebResource ;
         dcterms:isReferencedBy ?IIIF_Presentation_API_URI ; # A related resource that references, cites, or otherwise points to the described resource. 

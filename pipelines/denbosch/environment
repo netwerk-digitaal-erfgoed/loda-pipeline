@@ -9,10 +9,12 @@ export DATASET=denbosch
 # specify a URI of an existing dataset present with linked data distributions 
 # registered in the NDE Datasetregister to use as starting point for this dataset
 # if set DOWNLOAD_URL and DATA_FILES are automatically set
-#export DATASET_URI=https://denbosch.hosting.deventit.net/AtlantisPubliek/data/dataset/Dataset%2BBeeldbank%2BErfgoed%2B%2527s-Hertogenbosch
+#export DATASET_URI="https://denbosch.hosting.deventit.net/AtlantisPubliek/data/dataset/Dataset+Beeldbank+Erfgoed+%27s-Hertogenbosch"
 
 # or specify either a URL to download the dataset for this pipeline
 # if set DATA_FILES is automatically set
+
+# NB: the default name of this download file will make the loading proces for Jena crash, for now renaming by hand is necessary
 #export DOWNLOAD_URL=https://denbosch.hosting.deventit.net/AtlantisPubliek/data/set/Dataset+Beeldbank+Erfgoed+%27s-Hertogenbosch.nt
 
 # or specify one or more data files present in the data directory separated by a ","
@@ -34,30 +36,32 @@ export PIPELINES_REPO="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline
 
 # language of the dataset description 
 # export DATASET_DESCRIPTION_LANGUAGE="en"  # example
-export DATASET_DESCRIPTION_LANGUAGE=
+export DATASET_DESCRIPTION_LANGUAGE="nl"
 
 # title of the dataset
 # export DATASET_DESCRIPTION_TITLE="Images of the Dutch Regional Archives of Nijmegen for Europeana"  # example
-export DATASET_DESCRIPTION_TITLE=
+export DATASET_DESCRIPTION_TITLE="Dataset Beeldbank Erfgoed 's-Hertogenbosch"
 
 # URI for the organization that created the dataset
 # export DATASET_DESCRIPTION_CREATOR_URI="https://www.regionaalarchiefnijmegen.nl/"  # example
-export DATASET_DESCRIPTION_CREATOR_URI=
+export DATASET_DESCRIPTION_CREATOR_URI="https://www.erfgoedshertogenbosch.nl" 
 
 # name of the organization that created the dataset
 # export DATASET_DESCRIPTION_CREATOR_NAME="Regional Archives of Nijmegen" # example
-export DATASET_DESCRIPTION_CREATOR_NAME=
+export DATASET_DESCRIPTION_CREATOR_NAME="Erfgoed 's-Hertogenbosch"
 
 # creation date of the dataset
 # export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13" # example
-export DATASET_DESCRIPTION_CREATE_DATE=
+export DATASET_DESCRIPTION_CREATE_DATE="2026-07-21"
 
 # source of the dataset
 # export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example
 # TODO: the current setup require this variable to be a string wrapped URI, this is error prone
-export DATASET_DESCRIPTION_SOURCE_DATASET=
+export DATASET_DESCRIPTION_SOURCE_DATASET="<https://denbosch.hosting.deventit.net/AtlantisPubliek/data/dataset/Dataset%2BBeeldbank%2BErfgoed%2B%2527s-Hertogenbosch>"
 
 # base location of the distribution 
 # export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com";
-export DATASET_DESCRIPTION_DISTRUTION_BASE=
+export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"
 
+# name of the S3 bucket used for storing the generated distributions files
+export S3_BUCKET="nde-europeana"

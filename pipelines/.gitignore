@@ -10,4 +10,4 @@
 !*/datasetdescription.ttl
 !*/fuseki-config.ttl
 *.sparqlbook
-ran/.s3/
+*/.s3/

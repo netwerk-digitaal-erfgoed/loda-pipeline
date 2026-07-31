@@ -42,10 +42,8 @@ fi
 
 echo "Creating dataset description for $DATASET..."
 
-# make gzipped version to distribute
-gzip -c data/${DATASET}-distinct.nt > ${DATASET}.nt.gz
-
 export DISTRIBUTION_NUMBER_TRIPLES=$(wc -l < data/${DATASET}-distinct.nt)
+
 export DISTRIBUTION_NUMBER_XML=$(unzip -l ${DATASET}.zip | grep ".edm.xml" | wc -l)
 
 DATE_CREATED=$(stat -c %W "${DATASET}.nt.gz")
@@ -54,7 +52,7 @@ export DISTRIBUTION_DATE_CREATED=$(date -d @$DATE_CREATED -u +"%Y-%m-%dT%H:%M:%S
 
 export DISTRIBUTION_CONTENT_URL_NTRIPLES="${DATASET_DESCRIPTION_DISTRUTION_BASE}/${DATASET}.nt.gz"
 export DISTRIBUTION_SIZE_NTRIPLES=$(stat -c %s "${DATASET}.nt.gz")
-export DISTRIBUTION_CONTENT_XMLZIP="${DATASET_DESCRIPTION_DISTRUTION_BASE}/${DATASET}.edmxml.zip"
+export DISTRIBUTION_CONTENT_URL_XMLZIP="${DATASET_DESCRIPTION_DISTRUTION_BASE}/${DATASET}.edmxml.zip"
 export DISTRIBUTION_SIZE_XMLZIP=$(stat -c %s "${DATASET}.zip")
 
 repository="$PIPELINES_REPO/$DATASET"
@@ -79,6 +77,46 @@ export QUERY_FILES=$queryFileStr
 
 envsubst < ../generic/datasetdescription.ttl > datasetdescription.ttl
 
-docker compose run --rm tools /bin/bash -c "shacl validate --data /pipelines/datasetdescription.ttl --shapes https://raw.githubusercontent.com/netwerk-digitaal-erfgoed/dataset-register/refs/heads/main/requirements/shacl.ttl > /pipelines/logs/validate-report-datasetdescription.txt"
+echo "Dataset description created - now validating against Datasetregister validation endpoint..."
+http_response=$(curl -o logs/datasetdescription-validation-result.jsonld -w "%{response_code}" \
+			-X POST https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets/validate \
+			-H 'accept: application/ld+json' \
+			-H 'Content-Type: text/turtle' \
+			--data-binary '@datasetdescription.ttl') 
+
+if [ $http_response != "200" ]; then
+    echo "Validation errors where found, see 'ds-description-validation-result.jsonld' for more information"
+	echo "The errors need to be fixed before proceeding!"
+	echo "Http response: $http_response"
+	exit
+else
+    echo "Validation succesful, see 'ds-description-validation-result.jsonld' for warnings and possible improvements"
+fi
+
+echo "Storing the datasetdescription in the S3 storage"
+
+if [ ! -d .s3 ] || [ ! -f .s3/.s3cfg ]; then
+    echo "No S3 configuration found, run the upload-to-s3bucket.sh first!"
+	exit
+fi
+
+if [ ! -f datasetdescription.ttl ]; then
+    echo "File datasetdescription.ttl not found,"
+	echo "NOT uploading ${DATASET} files to S3 bucket ..."
+	exit	
+else 
+	echo "Uploading ${DATASET} distribution files to S3 bucket ${S3_BUCKET}..."
+	docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=text/turtle --acl-public put datasetdescription.ttl s3://${S3_BUCKET}/${DATASET}.datasetdescription.ttl
+fi
+
+echo "Registering dataset description https://${S3_BUCKET}.ams3.digitaloceanspaces.com/${DATASET}.datasetdescription.ttl"
+
+curl -v -X 'POST' \
+  'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' \
+  -H 'accept: application/ld+json' \
+  -H 'Content-Type: application/ld+json' \
+  -d '{ "@id": "https://'$S3_BUCKET'.ams3.digitaloceanspaces.com/'$DATASET'.datasetdescription.ttl" }'
+
+#curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",#<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":""}'
 
 #curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":"https://nde-europeana.ams3.digitaloceanspaces.com/nafotos.datasetdescription.ttl"}'

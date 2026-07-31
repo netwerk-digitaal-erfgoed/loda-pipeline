@@ -17,10 +17,7 @@ echo "Deduplicate the output from LDWorkbench..."
 docker compose run --rm tools /bin/bash -c "sparql --data /pipelines/${DATASET}.nt --query /generic/distinct.rq --results=N-Triples > /pipelines/data/${DATASET}-distinct.nt"
 
 echo "Validate the result against the EDM shape constraints..."
-docker compose run --rm tools /bin/bash -c "shacl validate --data /pipelines/data/${DATASET}-distinct.nt --shapes /generic/edm_ext_shacl_shapes.ttl > /pipelines/logs/validate-report.txt"
-
-# TODO: use the Europeana Shape file that is under construction, currently the `edm:pid`` was discarded as an unknown property
-#docker compose run --rm tools /bin/bash -c "shacl validate --data /pipelines/data/${DATASET}-distinct.nt --shapes https://raw.githubusercontent.com/europeana/metis-edm-ext-schema/refs/heads/main/src/main/resources/schema/edm_ext_shacl_shapes.ttl > /pipelines/data/validate-report.txt"
+docker compose run --rm tools /bin/bash -c "shacl validate --data /pipelines/data/${DATASET}-distinct.nt --shapes https://raw.githubusercontent.com/europeana/metis-edm-ext-schema/refs/heads/main/src/main/resources/schema/edm_ext_shacl_shapes.ttl > /pipelines/logs/validate-report.txt"
 
 echo "Convert the data file to a RDF/XML serialization..."
 docker compose run --rm tools /bin/bash -c "riot --output=rdfxml /pipelines/data/${DATASET}-distinct.nt > /pipelines/data/${DATASET}.rdf"

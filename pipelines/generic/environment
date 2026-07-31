@@ -61,3 +61,5 @@ export DATASET_DESCRIPTION_SOURCE_DATASET=
 # export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com";
 export DATASET_DESCRIPTION_DISTRUTION_BASE=
 
+# name of the S3 bucket used for storing the generated distributions files
+export S3_BUCKET="nde-europeana"

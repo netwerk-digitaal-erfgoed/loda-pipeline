@@ -11,8 +11,10 @@ if [ -z $DATASET ]; then
   echo "Please swith to a dataset directory" 
 fi
 
-# TODO move to environment
-export S3_BUCKET="nde-europeana"
+# make gzipped version to distribute
+echo "Creating a gzip version of the N-triples distribution..."
+gzip -c data/${DATASET}-distinct.nt > ${DATASET}.nt.gz
+
 
 if [ ! -d .s3 ] || [ ! -f .s3/.s3cfg ]; then
     echo "No S3 configuration found, create via"
@@ -33,24 +35,10 @@ if [ ! -d .s3 ] || [ ! -f .s3/.s3cfg ]; then
 	# change the value of public_url_use_https from False to True
 fi
 
-if [ ! -f datasetdescription.ttl ]; then
-    echo "File datasetdescription.ttl not found,"
-	echo "NOT uploading ${DATASET} files to S3 bucket ..."	
-fi
+echo "Uploading ${DATASET} distribution files to S3 bucket ${S3_BUCKET}..."
 
-echo "Uploading ${DATASET} files to S3 bucket ..."
-
+# Note: already renamed to edmxml.zip
 echo "- ${DATASET}.zip"
 docker compose run --rm s3cmd --config=/root/.s3cfg -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/zip --acl-public put /s3/${DATASET}.zip s3://${S3_BUCKET}/${DATASET}.edmxml.zip
 echo "- ${DATASET}.nt.gz"
-docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/n-triples+gzip --acl-public put ${DATASET}.nt.gz s3://${S3_BUCKET}/${DATASET}.nt.gz
-echo "- ${DATASET}.datasetdescription.ttl"
-docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=text/turtle --acl-public put datasetdescription.ttl s3://${S3_BUCKET}/${DATASET}.datasetdescription.ttl
-
-echo "Registering dataset description https://${S3_BUCKET}.ams3.digitaloceanspaces.com/${DATASET}.datasetdescription.ttl"
-curl -v -X 'POST' \
-  'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' \
-  -H 'accept: application/ld+json' \
-  -H 'Content-Type: application/ld+json' \
-  -d '{ "@id": "https://'$S3_BUCKET'.ams3.digitaloceanspaces.com/'$DATASET'.datasetdescription.ttl" }'
-#curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":""}'
+docker compose run --rm s3cmd --config=/root/.s3cfg -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/n-triples+gzip --acl-public put ${DATASET}.nt.gz s3://${S3_BUCKET}/${DATASET}.nt.gz

@@ -11,37 +11,41 @@
 	dcterms:creator <$DATASET_DESCRIPTION_CREATOR_URI> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASET/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASET/dist-xml> ;
 	dcterms:created "$DATASET_DESCRIPTION_CREATE_DATE"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:issued "$DATASET_DESCRIPTION_CREATE_DATE"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcterms:language "$DATASET_DESCRIPTION_LANGUAGE" ;
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcat:keyword "LODA-pipeline","Europeana" ;
-	dcterms:source $DATASET_DESCRIPTION_SOURCE_DATASET .
+	# TODO ad dcat:contactPoint with value "dc4eu@beeldengeluid.nl" ;
+	dcterms:source "$DATASET_DESCRIPTION_SOURCE_DATASET" .
 
 <$DATASET_DESCRIPTION_CREATOR_URI> a foaf:Organization ;
-	foaf:name "$DATASET_DESCRIPTION_CREATOR_NAME"@en .
+	foaf:name "$DATASET_DESCRIPTION_CREATOR_NAME"@nl .
 
 <https://dc4eu.nl> a foaf:Organization ;
-	foaf:name "DC4EU" .
+	foaf:name "DC4EU"@nl .
 
 <https://dc4eu.nl/id/datasets/$DATASET/dist-nt> a dcat:Distribution ;
 	dcterms:description "Gzipped distribution of $DISTRIBUTION_NUMBER_TRIPLES N-triples."@en ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_NTRIPLES"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:issued "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
 	dcat:accessURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
 	dcat:downloadURL <$DISTRIBUTION_CONTENT_URL_NTRIPLES> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
-	dcterms:format "application/n-triples" ;
-	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples> ;
+	dcterms:format "application/n-triples+gzip" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples+gzip> ;
 	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
 
 <https://dc4eu.nl/id/datasets/$DATASET/dist-xml>  a dcat:Distribution ;
 	dcterms:description "Zipped distribution of $DISTRIBUTION_NUMBER_XML EDM XML files."@en ;
 	dcat:byteSize "$DISTRIBUTION_SIZE_XMLZIP"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
 	dcterms:created "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:issued "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#date> ;
 	dcterms:modified "$DISTRIBUTION_DATE_CREATED"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
-	dcat:accessURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
-	dcat:downloadURL <$DISTRIBUTION_CONTENT_XMLZIP> ;
+	dcat:accessURL <$DISTRIBUTION_CONTENT_URL_XMLZIP> ;
+	dcat:downloadURL <$DISTRIBUTION_CONTENT_URL_XMLZIP> ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:format "application/zip" ;
 	dcat:mediaType <http://www.iana.org/assignments/media-types/application/rdf+xml> ;

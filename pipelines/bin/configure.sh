@@ -128,6 +128,9 @@ load_data() {
         rm -rf ./DB
     fi
 
+    # TODO: some datasets have strange names like ""Dataset+Beeldbank+Erfgoed+'s-Hertogenbosch.nt" 
+    # currently this breaks the Fuseke loader script.
+    #
     # create the TDB2 database in the data dir with the name 'DB'
     docker compose run --rm tools /bin/bash -c "tdb2.tdbloader --loc /pipelines/data/DB $filelist"
     echo "Fuseki Database created!"
