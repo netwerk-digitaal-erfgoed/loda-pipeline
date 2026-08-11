@@ -1,0 +1,51 @@
+PREFIX sdo:     <https://schema.org/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+
+CONSTRUCT {
+
+    ?aggregation_URI a ore:Aggregation ;
+        edm:aggregatedCHO ?providedCHO_URI ; # The identifier of the source object e.g. the Mona Lisa itself, ref [1..1]
+        edm:dataProvider "Teylers Museum" ; # The name or identifier of the data provider of the object, literal, ref [1..1] 
+        edm:isShownAt $this ;                # The URL of a web view of the object in full information context, ref [0..1]
+        edm:provider "DC4EU" ;               # The name or identifier of the provider of the object, literal, ref [1..1]
+        edm:intermediateProvider "NDE" ;     # The name or identifier of the intermediate organization that selects, collates, or curates data from a Data Provider that is then aggregated by a Provider from which Europeana harvests, literal, ref [0..n]
+        edm:isShownBy ?sampleContentUrl ;          # The URL of a web view of the object. An edm:isShownBy must be provided, ref [0..1]
+        edm:object ?sampleContentUrl ;             # The URL of a representation of the CHO which will be used for generating previews for use in the Europeana portal, ref [0..1] 
+#        edm:hasView ?contentUrl, ?thumbnailUrl ;  
+        edm:rights ?license ;                # This is a mandatory property and the value given here should be the rights statement that applies to the digital representation, ref [1..1]
+
+        .                                    # termination of the ore:Aggregation object (do not remove!)
+}
+where {
+    # start with the required properties for CreativeWork
+    $this a sdo:CreativeWork ;
+      sdo:name ?name ;
+      sdo:identifier ?identifier .
+    
+    # in some case the sdo:CreativeWork is not the toplevel of the record
+    FILTER(!ISBLANK($this))
+
+    # mint a URIs for the different parts 
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+
+    $this sdo:associatedMedia ?associatedMedia .
+
+    ?associatedMedia 
+        sdo:contentUrl ?_sampleContentUrl ;  # note: ?sampleContentUrl is set in the inner select!
+        sdo:license ?_license .
+    BIND(IRI(REPLACE(STR(?_license), "https", "http")) AS ?license)
+    BIND(IRI(STR(?_sampleContentUrl)) as ?sampleContentUrl)
+    #?this sdo:associatedMedia/sdo:contentUrl ?contentUrl .         # these would be used for edm:hasView but make the pipeline crash
+    #?this sdo:associatedMedia/sdo:thumbnailUrl ?thumbnailUrl .     # because of the very large nummer of associatedMedia resources
+     {  
+        # this select only one of the contentUrls returned in ?sampleContentUrl
+        # this variable is used in the outer select to determine the related associatedMedia and primairy URI 
+        SELECT (SAMPLE(?_contentUrl) as ?_sampleContentUrl)  {
+            ?all sdo:associatedMedia ?associatedMedia .
+            ?associatedMedia sdo:contentUrl ?_contentUrl .
+        } GROUP BY ?all
+    }
+}

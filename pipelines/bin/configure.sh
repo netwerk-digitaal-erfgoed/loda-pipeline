@@ -78,7 +78,7 @@ download_data_files() {
             unzip $file ;;
         *.nt | *.nt.gz | *.rdf | *.rdf.gz | *.ttl | *.ttl.gz | *.owl | *.owl.gz)
             echo "Known file type, no extra processing needed!" ;;    
-        *.nq | *.nquads | *.nquads.gz)
+        *.nq | *.nquads | *.nquads.gz | *.nq.gz )
             echo "Known file type, no extra processing needed!" 
             echo "Detected nq types, setting the tdb2:unionDefaultGraph parameter to true in fuseki/config.ttl"
             # this var is used to select the nquad config file
@@ -92,7 +92,7 @@ download_data_files() {
     # build al list from the RDF files in the data direct
     echo "Creating a list of RDF files for building the database"
     shopt -s nullglob  # only read matches with existing files
-    dataFiles=(*.rdf *.rdf.gz *.ttl *.ttl.gz *.owl *.owl.gz *.nt *.nt.gz *.nq *.nquads *.nquads.gz)
+    dataFiles=(*.rdf *.rdf.gz *.ttl *.ttl.gz *.owl *.owl.gz *.nt *.nt.gz *.nq *.nquads *.nquads.gz *.nq.gz)
 
     # Convert the array to a string with a delimiter
     dataFilesString=$(IFS=:; echo "${dataFiles[*]}")

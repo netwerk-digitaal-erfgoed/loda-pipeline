@@ -1,0 +1,10 @@
+PREFIX sdo: <https://schema.org/>
+
+SELECT DISTINCT $this
+WHERE {
+    $this a sdo:CreativeWork ;
+      sdo:name ?name ;
+      sdo:identifier ?identifier .
+    FILTER(!ISBLANK($this))
+
+} 

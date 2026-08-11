@@ -12,7 +12,7 @@ where {
         ?s ?p ?_o
         FILTER(?p=edm:isShownBy) 
       }
-      GROUP BY ?s ?p   
+      GROUP BY ?s ?p  
     }
     UNION
     # edm:object can only have one value so select a random one when multiple values are present
@@ -26,8 +26,20 @@ where {
     UNION
     {
       select distinct ?s ?p ?o { 
-        ?s ?p ?o 
+        ?s ?p ?o .
+        # Failed attempt through away records that will are violating the Europeana ingestion rules
+        # ?s dc:subject ?subject ;
+        #    dc:type ?type ;
+        #    dcterms:spatial ?spatial ;
+        #    dcterms:temporal ?temporal .
+        # FILTER( ! (
+        #             ( BOUND(?subject) && STR(?subject)="" ) &&
+        #             ( BOUND(?type) && STR(?type)="" ) && 
+        #             ( BOUND(?spatial) && STR(?spatial)="" ) &&
+        #             ( BOUND(?temporal) && STR(?temporal)="" )
+        #           )
+        #       )
         FILTER( ?p != edm:isShownBy && ?p != edm:object )
       }
     }
-}
+} 

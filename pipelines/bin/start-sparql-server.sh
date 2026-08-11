@@ -4,11 +4,17 @@ set -e
 # Initialize the DATASETS array
 unset DATASET
 
-# read the configuration variables for this dataset
-source environment
+if [ -f 'environment' ]; then 
+  # read the configuration variables for this dataset
+  source environment
+else
+  echo "No environment file found, please switch to a dataset directory"
+  exit
+fi
 
 if [ -z $DATASET ]; then
-  echo "Please swith to a dataset directory" 
+  echo "No Dataset configuration found, please run configure.sh first"
+  exit 
 fi
 
 echo -n "`date`: "
