@@ -13,11 +13,11 @@ export DATASET_URI="https://atlantislite.deventit.nl/AtlantisPubliek/data/datase
 
 # or specify either a URL to download the dataset for this pipeline
 # if set DATA_FILES is automatically set
-export DOWNLOAD_URL=
+export DOWNLOAD_URL=https://atlantislite.deventit.nl/AtlantisPubliek/data/set/MHD+-+Eerste+Wereldoorlog.nt
 
 # or specify one or more data files present in the data directory separated by a ","
 # for example: "file1.nt:file2.nt"
-export DATA_FILES=
+export DATA_FILES=MHD+-+Eerste+Wereldoorlog.nt
 
 # full name for the dataprovider
 export DATAPROVIDER="Museum Huis Doorn"
@@ -38,7 +38,7 @@ export DATASET_DESCRIPTION_LANGUAGE="nl"
 
 # title of the dataset
 # export DATASET_DESCRIPTION_TITLE="Images of the Dutch Regional Archives of Nijmegen for Europeana"  # example
-export DATASET_DESCRIPTION_TITLE="MHD - Eerste Wereldoorlog"
+export DATASET_DESCRIPTION_TITLE="Museum Huis Doorn - Eerste Wereldoorlog"
 
 # URI for the organization that created the dataset
 # export DATASET_DESCRIPTION_CREATOR_URI="https://www.regionaalarchiefnijmegen.nl/"  # example
@@ -50,7 +50,7 @@ export DATASET_DESCRIPTION_CREATOR_NAME="Museum Huis Doorn"
 
 # creation date of the dataset
 # export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13" # example
-export DATASET_DESCRIPTION_CREATE_DATE="2026-08-03"
+export DATASET_DESCRIPTION_CREATE_DATE="2026-08-11"
 
 # source of the dataset
 # export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example

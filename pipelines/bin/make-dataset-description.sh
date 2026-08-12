@@ -85,12 +85,12 @@ http_response=$(curl -o logs/datasetdescription-validation-result.jsonld -w "%{r
 			--data-binary '@datasetdescription.ttl') 
 
 if [ $http_response != "200" ]; then
-    echo "Validation errors where found, see 'ds-description-validation-result.jsonld' for more information"
+    echo "Validation errors where found, see 'datasetdescription-validation-result.jsonld' for more information"
 	echo "The errors need to be fixed before proceeding!"
 	echo "Http response: $http_response"
 	exit
 else
-    echo "Validation succesful, see 'ds-description-validation-result.jsonld' for warnings and possible improvements"
+    echo "Validation succesful, see 'datasetdescription-validation-result.jsonld' for warnings and possible improvements"
 fi
 
 echo "Storing the datasetdescription in the S3 storage"

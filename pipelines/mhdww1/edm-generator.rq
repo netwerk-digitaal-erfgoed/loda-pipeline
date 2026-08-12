@@ -1,0 +1,246 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/> 
+PREFIX dcterms: <http://purl.org/dc/terms/> 
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccl: <http://creativecommons.org/>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+
+    # Mandatory properties for edm:ProvidedCHO:
+    ?providedCHO_URI a edm:ProvidedCHO ;
+        dc:coverage ?locationCreated ; 
+        dc:creator ?creatorName ;      
+        dc:date ?dateCreated ;         
+        dc:description ?description, ?abstract, ?text ;  
+        dc:identifier ?identifierDirect ;    
+        dc:language "nl" ; 
+        dc:publisher "MHD - Museum Huis Doorn"@nl ;  
+        dc:rights "MHD - Museum Huis Doorn"@nl ;  
+        dc:subject ?genre, ?about ;    
+        dc:title ?nameWithLang ;             
+        dc:type ?getty_type ;
+        dc:type ?additionalTypeAttr, ?extractedTypeLabel, ?extractedCrmLabel ;      
+        dcterms:created ?dateCreated ; 
+        dcterms:extent ?sizeText ;     
+        dcterms:isPartOf ?isPartOf ;   
+        dcterms:medium ?materialLabel, ?extractedCrmLabel ;
+        dcterms:spatial ?contentLocation ; 
+        dcterms:temporal ?temporalCoverage ; 
+        edm:pid ?pid ;
+        edm:type "IMAGE" .            
+
+    ?aggregation_URI a ore:Aggregation ;
+        edm:aggregatedCHO ?providedCHO_URI ; 
+        edm:dataProvider "MHD - Museum Huis Doorn" ; 
+        edm:hasView ?contentUrl, ?thumbnailUrl ; 
+        edm:isShownAt $this ;                
+        edm:isShownBy ?iiifImage  ;           
+        edm:object ?iiifImage ;              
+        edm:provider "DC4EU" ;               
+        edm:intermediateProvider "NDE" ;     
+        edm:rights ?license ;                
+        edm:rights <http://creativecommons.org/publicdomain/zero/1.0/> .
+
+  
+    #?webresource_URI a edm:WebResource ;
+    #    dcterms:isReferencedBy ?manifest_URI ;
+    #    svcs:has_service ?service_URI .
+
+    # Service definition for the IIIF Image API
+    #?service_URI a svcs:Service ;
+    #    dcterms:conformsTo <http://iiif.io/api/image> .
+}
+where {
+    $this a sdo:CreativeWork .
+    
+    OPTIONAL {$this rdfs:label ?name . }
+
+    OPTIONAL {
+        $this sdo:creator [
+            a sdo:Role ;                             
+            sdo:creator ?creatorURI ;               
+            sdo:creator/foaf:name ?_creatorName ; 
+            ] .
+    }
+    
+    OPTIONAL { 
+        $this sdo:image ?img .
+        FILTER(isLiteral(?img))
+
+        BIND(
+            REPLACE(
+                STR(?img),
+                "^.*file=([0-9]+).*$",
+                "$1"
+            ) AS ?fileId
+        )
+
+        BIND(
+            IRI(CONCAT(
+                "https://atlantislite.deventit.nl/IIIF/image/3.0/",
+                ?fileId,
+                "/full/max/0/default.jpg"
+            )) AS ?iiifImage
+        )
+        
+        BIND(
+            IRI(CONCAT(
+                "https://atlantislite.deventit.nl/IIIF/presentation/3.0/",
+                REPLACE(STR($this), "^.*/LITE_", ""),
+                "/manifest.json"
+            )) AS ?manifest_URI
+        )
+    }
+
+    OPTIONAL { $this sdo:associatedMedia ?associatedMediaObjectURI . }
+    
+    OPTIONAL {
+        $this <http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by> ?identifier .
+        ?identifier <http://www.cidoc-crm.org/cidoc-crm/P2_has_type> ?getty_type .
+        FILTER(REGEX(STR(?getty_type), "vocab.getty"))
+    }
+
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+
+    BIND(?iiifImage AS ?webresource_URI)
+    BIND(
+        IRI(CONCAT(
+            "https://atlantislite.deventit.nl/IIIF/image/3.0/",
+            ?fileId
+        )) AS ?service_URI
+    )
+
+    FILTER(!ISBLANK($this))
+
+    BIND(STRDT(STR($this), xsd:string) AS ?pid)
+
+    BIND(IF(LANG(?_creatorName)="",STRLANG(?_creatorName,"nl"),?_creatorName) as ?creatorName)
+    BIND(IF(LANG(?name)="",STRLANG(?name,"nl"),?name) as ?nameWithLang)
+
+    OPTIONAL {
+        $this sdo:isPartOf ?_isPartOf .
+        BIND(
+            IF(REGEX(STR(?_isPartOf), "^https?://"),  # test if the string contains an URI
+               IRI(STR(?_isPartOf)),                  # Cast to IRI
+               STRLANG(STR(?_isPartOf), "nl")         # Cast to literal with language tag "nl"
+            ) AS ?isPartOf)
+    }
+    
+    OPTIONAL {
+        ?associatedMediaObjectURI 
+        sdo:contentUrl ?_contentUrl ;
+        sdo:license ?_license ;
+        sdo:thumbnailUrl ?_thumbnailUrl .
+     }
+
+    BIND(IRI(?_contentUrl) as ?contentUrl)
+    BIND(IRI(?_license) as ?license)    
+    BIND(IRI(?_thumbnailUrl) as ?thumbnailUrl)
+
+    OPTIONAL { 
+        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Image_API_URI .
+        ?IIIF_Image_API_URI sdo:encodingFormat ?encodingFormatImageAPI .
+        FILTER(?encodingFormatImageAPI="application/ld+json;profile='http://iiif.io/api/image/3/context.json'")
+    }
+
+    OPTIONAL { 
+        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Presentation_API_URI .
+        ?IIIF_Presentation_API_URI sdo:encodingFormat ?encodingFormatPresentationAPI .
+        FILTER(?encodingFormatPresentationAPI="application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'")
+    }
+
+    OPTIONAL { 
+        $this sdo:abstract ?_abstract .
+        BIND(IF(LANG(?_abstract)="",STRLANG(?_abstract,"nl"),?_abstract) as ?abstract)
+    }
+
+    OPTIONAL { 
+        $this sdo:additionalType ?additionalTypeAttr .
+        FILTER(!ISBLANK(?additionalTypeAttr))
+    }
+
+    OPTIONAL {
+        $this ?typeProp ?typeRes .
+        FILTER(?typeProp IN (sdo:additionalType, dc:type))
+        FILTER(ISBLANK(?typeRes) || ISURI(?typeRes))
+        { ?typeRes rdfs:label ?_typeResLabel . }
+        UNION
+        { ?typeRes sdo:name ?_typeResLabel . }
+        BIND(IF(LANG(?_typeResLabel)="", STRLANG(?_typeResLabel, "nl"), ?_typeResLabel) AS ?extractedTypeLabel)
+    }
+
+    OPTIONAL {
+        $this ?anyCrmProp ?crmTypeRes .
+        ?crmTypeRes a <http://www.cidoc-crm.org/cidoc-crm/E55_Type> .
+        { ?crmTypeRes rdfs:label ?_crmLabel . }
+        UNION
+        { ?crmTypeRes sdo:name ?_crmLabel . }
+        BIND(IF(LANG(?_crmLabel)="", STRLANG(?_crmLabel, "nl"), ?_crmLabel) AS ?extractedCrmLabel)
+    }
+
+    OPTIONAL { $this sdo:contentLocation/sdo:name ?contentLocation }
+
+    OPTIONAL { 
+        $this sdo:description ?_description .
+        BIND(IF(LANG(?_description)="",STRLANG(?_description,"nl"),?_description) as ?description)
+    }
+
+    OPTIONAL { $this sdo:genre ?genre } 
+
+    OPTIONAL { 
+        $this sdo:identifier ?identifierDirect .
+        FILTER(!ISBLANK(?identifierDirect))
+    }
+
+    OPTIONAL {
+        $this sdo:identifier ?identifier_bn .
+        ?identifier_bn sdo:propertyID ?propertyID ;
+                    sdo:value ?identifierValue .
+        BIND(CONCAT(STR(?identifierValue)," (",STR(?propertyID),")") as ?identifier)
+    }
+
+    OPTIONAL {
+        $this sdo:material ?materialURI .
+        { ?materialURI sdo:name ?_material . }
+        UNION
+        { ?materialURI rdfs:label ?_material . }
+        BIND(IF(LANG(?_material)="",STRLANG(?_material,"nl"),?_material) as ?materialLabel)
+    }
+
+    OPTIONAL {
+        $this sdo:size ?sizeObject .
+        ?sizeObject sdo:value ?sizeValue ;
+                    sdo:name ?sizeName ;
+                    sdo:unitText ?sizeUnitText .
+        BIND(STRLANG(CONCAT(?sizeName," ",STR(?sizeValue)," ",?sizeUnitText),"nl") as ?sizeText)
+    }
+
+    OPTIONAL {
+        $this sdo:temporalCoverage ?temporalCoverage .
+    }
+
+    OPTIONAL {
+        $this sdo:text ?text .
+    }
+
+    OPTIONAL {
+        $this sdo:locationCreated/sdo:name ?_locationCreated .
+        BIND(IF(LANG(?_locationCreated)="",STRLANG(?_locationCreated,"nl"),?_locationCreated) as ?locationCreated)
+    }
+
+    OPTIONAL {
+        $this sdo:dateCreated ?dateCreated .
+    }
+
+    OPTIONAL {
+        $this sdo:about ?about .
+    }
+}

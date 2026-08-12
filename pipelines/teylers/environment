@@ -50,7 +50,7 @@ export DATASET_DESCRIPTION_CREATOR_NAME="Teylers Museum"
 
 # creation date of the dataset
 # export DATASET_DESCRIPTION_CREATE_DATE="2025-11-13" # example
-export DATASET_DESCRIPTION_CREATE_DATE="2026-08-03"
+export DATASET_DESCRIPTION_CREATE_DATE="2026-08-12"
 
 # source of the dataset
 # export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example

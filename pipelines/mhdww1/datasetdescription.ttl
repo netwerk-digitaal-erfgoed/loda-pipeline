@@ -1,0 +1,59 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix edm: <http://www.europeana.eu/schemas/edm/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://dc4eu.nl/id/datasets/mhdww1> a dcat:Dataset ;
+	dcterms:title "Museum Huis Doorn - Eerste Wereldoorlog"@en ;
+	dcterms:description "Museum Huis Doorn - Eerste Wereldoorlog - dataset 'mhdww1' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <https://www.huisdoorn.nl> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets/mhdww1/dist-nt>, <https://dc4eu.nl/id/datasets/mhdww1/dist-xml> ;
+	dcterms:created "2026-08-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:issued "2026-08-11"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:language "nl" ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcat:keyword "LODA-pipeline","Europeana" ;
+	# TODO ad dcat:contactPoint with value "dc4eu@beeldengeluid.nl" ;
+	dcterms:source "https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD+-+Eerste+Wereldoorlog" .
+
+<https://www.huisdoorn.nl> a foaf:Organization ;
+	foaf:name "Museum Huis Doorn"@nl .
+
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU"@nl .
+
+<https://dc4eu.nl/id/datasets/mhdww1/dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of 2331 N-triples."@en ;
+	dcat:byteSize "30247"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:issued "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/mhdww1.nt.gz> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/mhdww1.nt.gz> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples+gzip" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples+gzip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets/mhdww1/dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of 100 EDM XML files."@en ;
+	dcat:byteSize "138997"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:issued "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "2026-08-12T12:14:07Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/mhdww1.edmxml.zip> ;
+	dcat:downloadURL <https://nde-europeana.ams3.digitaloceanspaces.com/mhdww1.edmxml.zip> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <http://www.iana.org/assignments/media-types/application/rdf+xml> ;
+	dcat:compressFormat <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> ;
+	edm:hasTransformation <#transformation> .
+
+<#transformation> a edm:DataTransformationResource ;
+	rdf:value "https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/mhdww1/edm-generator.rq","https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/raw/refs/heads/main/pipelines/mhdww1/iterator.rq" ;
+	dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
+	edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
