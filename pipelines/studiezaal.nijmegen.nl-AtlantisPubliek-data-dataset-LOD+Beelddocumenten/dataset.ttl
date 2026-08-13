@@ -1,0 +1,6 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+[] dcat:distribution [
+  dcat:accessURL <https://nde-europeana.ams3.cdn.digitaloceanspaces.com/studiezaal.nijmegen.nl!AtlantisPubliek!data!set!LOD+Beelddocumenten.nt> ;
+  dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples>
+] .

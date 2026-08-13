@@ -1,0 +1,7 @@
+PREFIX sdo: <https://schema.org/>
+
+SELECT $this WHERE {
+  $this a sdo:CreativeWork .
+  FILTER(!ISBLANK($this))
+}
+ORDER BY $this

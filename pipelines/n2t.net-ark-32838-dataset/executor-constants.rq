@@ -1,0 +1,37 @@
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+
+# Constant and single-valued triples for ProvidedCHO, Aggregation,
+# WebResource and Service. No UNION needed: one row per resource.
+CONSTRUCT {
+    ?providedCHO_URI a edm:ProvidedCHO ;
+        dc:language "nl" ;
+        dc:publisher "Jan Menze van Diepen Collectie" ;
+        dc:rights "Jan Menze van Diepen Collectie" ;
+        edm:pid $this ;
+        edm:type "IMAGE" .
+
+    ?aggregation_URI a ore:Aggregation ;
+        edm:aggregatedCHO ?providedCHO_URI ;
+        edm:dataProvider "Jan Menze van Diepen Collectie" ;
+        edm:isShownAt $this ;
+        edm:isShownBy ?webresource_URI ;
+        edm:provider "DC4EU" ;
+        edm:intermediateProvider "NDE" .
+
+    ?webresource_URI a edm:WebResource ;
+        svcs:has_service ?service_URI .
+
+    ?service_URI a svcs:Service ;
+        dcterms:conformsTo "http://iiif.io/api/presentation" .
+} WHERE {
+    BIND(URI(CONCAT(STR($this), "#cho")) AS ?providedCHO_URI)
+    BIND(URI(CONCAT(STR($this), "#agg")) AS ?aggregation_URI)
+    BIND(URI(CONCAT(STR($this), "#webres")) AS ?webresource_URI)
+    BIND(URI(CONCAT(STR($this), "#service")) AS ?service_URI)
+
+    FILTER(!ISBLANK($this))
+}

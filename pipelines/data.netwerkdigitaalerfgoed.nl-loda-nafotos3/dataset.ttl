@@ -1,0 +1,6 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+[] dcat:distribution [
+  dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/na-fotos-7_000spaondntfoto_2.zip> ;
+  dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples>
+] .

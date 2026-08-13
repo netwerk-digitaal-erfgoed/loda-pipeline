@@ -1,0 +1,8 @@
+# Metadata not available in the NDE Dataset Register.
+# TODO: migrate to TypeScript.
+
+export DATASET_DESCRIPTION_LANGUAGE="en"
+export DATASET_DESCRIPTION_TITLE="Photocollection Dutch National Archives for Europeana"
+export DATASET_DESCRIPTION_CREATOR_URI="https://www.nationaalarchief.nl"
+export DATASET_DESCRIPTION_CREATOR_NAME="National Archives"
+export DATASET_DESCRIPTION_SOURCE_DATASET="<https://archief.nl/id/dataset/toegang/2-24-03ntfoto>"

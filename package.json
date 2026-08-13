@@ -1,0 +1,24 @@
+{
+  "name": "@loda/pipeline",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@lde/dataset": "^0.7.2",
+    "@lde/dataset-registry-client": "^0.7.4",
+    "@lde/pipeline": "^0.28.2",
+    "@lde/pipeline-console-reporter": "^0.19.5",
+    "@lde/pipeline-shacl-validator": "^0.10.2",
+    "@lde/sparql-qlever": "^0.14.1",
+    "n3": "^2.0.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.2"
+  }
+}
