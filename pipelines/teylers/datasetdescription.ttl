@@ -6,7 +6,7 @@
 
 <https://dc4eu.nl/id/datasets/teylers> a dcat:Dataset ;
 	dcterms:title "Teylers Museum"@en ;
-	dcterms:description "Teylers Museum - dataset 'teylers' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:description "EDM version of dataset Teylers Museum - converted via LODA-pipeline for delivery to Euroepana."@en ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <https://www.wikidata.org/wiki/Q474563> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/teylers/dist-nt>, <https://dc4eu.nl/id/datasets/teylers/dist-xml> ;
@@ -17,7 +17,7 @@
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcat:keyword "LODA-pipeline","Europeana" ;
 	# TODO ad dcat:contactPoint with value "dc4eu@beeldengeluid.nl" ;
-	dcterms:source "https://n2t.net/ark:/72166/dataset" .
+	dcterms:source "https://datasetregister.netwerkdigitaalerfgoed.nl/dataset?uri=https://n2t.net/ark:/72166/dataset" .
 
 <https://www.wikidata.org/wiki/Q474563> a foaf:Organization ;
 	foaf:name "Teylers Museum"@nl .

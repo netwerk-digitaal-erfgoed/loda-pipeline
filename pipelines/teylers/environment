@@ -55,7 +55,7 @@ export DATASET_DESCRIPTION_CREATE_DATE="2026-08-12"
 # source of the dataset
 # export DATASET_DESCRIPTION_SOURCE_DATASET="<https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten>" # example
 # TODO: the current setup require this variable to be a string wrapped URI, this is error prone
-export DATASET_DESCRIPTION_SOURCE_DATASET="https://n2t.net/ark:/72166/dataset"
+export DATASET_DESCRIPTION_SOURCE_DATASET="https://datasetregister.netwerkdigitaalerfgoed.nl/dataset?uri=https://n2t.net/ark:/72166/dataset"
 
 # base location of the distribution 
 # export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"

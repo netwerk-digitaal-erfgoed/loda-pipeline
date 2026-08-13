@@ -6,7 +6,7 @@
 
 <https://dc4eu.nl/id/datasets/mhdww1> a dcat:Dataset ;
 	dcterms:title "Museum Huis Doorn - Eerste Wereldoorlog"@en ;
-	dcterms:description "Museum Huis Doorn - Eerste Wereldoorlog - dataset 'mhdww1' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:description "EDM version of dataset Museum Huis Doorn - Eerste Wereldoorlog - converted via LODA-pipeline for delivery to Euroepana."@en ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <https://www.huisdoorn.nl> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/mhdww1/dist-nt>, <https://dc4eu.nl/id/datasets/mhdww1/dist-xml> ;
@@ -17,7 +17,7 @@
 	dcterms:publisher <https://dc4eu.nl> ;
 	dcat:keyword "LODA-pipeline","Europeana" ;
 	# TODO ad dcat:contactPoint with value "dc4eu@beeldengeluid.nl" ;
-	dcterms:source "https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD+-+Eerste+Wereldoorlog" .
+	dcterms:source "https://datasetregister.netwerkdigitaalerfgoed.nl/dataset?uri=https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD%2B-%2BEerste%2BWereldoorlog" .
 
 <https://www.huisdoorn.nl> a foaf:Organization ;
 	foaf:name "Museum Huis Doorn"@nl .

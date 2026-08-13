@@ -6,7 +6,7 @@
 
 <https://dc4eu.nl/id/datasets/$DATASET> a dcat:Dataset ;
 	dcterms:title "$DATASET_DESCRIPTION_TITLE"@en ;
-	dcterms:description "$DATASET_DESCRIPTION_TITLE - dataset '$DATASET' - converted via LODA-pipeline to the EDM datamodel."@en ;
+	dcterms:description "EDM version of dataset $DATASET_DESCRIPTION_TITLE - converted via LODA-pipeline for delivery to Euroepana."@en ;
 	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
 	dcterms:creator <$DATASET_DESCRIPTION_CREATOR_URI> ;
 	dcat:distribution <https://dc4eu.nl/id/datasets/$DATASET/dist-nt>, <https://dc4eu.nl/id/datasets/$DATASET/dist-xml> ;
