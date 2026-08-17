@@ -29,9 +29,9 @@ CONSTRUCT {
         dc:identifier ?identifier,     # An identifier of the original CHO, literal [0..n] 
                 ?identifierDirect ;
         dc:language "nl" ; # The language of text CHOs, literal [0..n]
-        dc:publisher "Stadsarchief" ;  # The name of the publisher of the CHO, literal or ref [0..n]
+        dc:publisher "Stadsarchief Den Bosch" ;  # The name of the publisher of the CHO, literal or ref [0..n]
 #       dc:relation                    # The name or identifier of a related resource, literal or ref [0..n]
-        dc:rights "Stadsarchief" ;  # Use to give the name of the rights holder of the CHO, literal or ref [0..n]
+        dc:rights "Stadsarchief Den Bosch" ;  # Use to give the name of the rights holder of the CHO, literal or ref [0..n]
 #       dc:source                      # A related resource from which the described resource is derived in whole 
                                        # or in part i.e. the source of the original CHO, literal or ref [0..n]
         dc:subject ?genre, ?about ;    # The subject of the CHO, literal or ref [0..n]

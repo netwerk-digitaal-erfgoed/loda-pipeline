@@ -7,7 +7,7 @@
 */logs/*
 */data/*
 !*.gitkeep
-!*/datasetdescription.ttl
+!generic/datasetdescription.ttl
 !*/fuseki-config.ttl
 *.sparqlbook
 */.s3/

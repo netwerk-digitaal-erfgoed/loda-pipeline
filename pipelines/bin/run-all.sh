@@ -16,7 +16,7 @@ process_dataset () {
 
     # TODO: add configure step but only when first setup is done
 	# so the Fuseki and LD-Workbench config files must already be present
-	# configure.sh
+	configure.sh
 
 	start-sparql-server.sh
 

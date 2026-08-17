@@ -1,7 +1,7 @@
 ## general configuration for the dataset
 
 # status for this dataset setup
-export PRODUCTION=0  # change the value to 1 when the dataset is ready for automatic processing
+export PRODUCTION=1  # change the value to 1 when the dataset is ready for automatic processing
 
 # short name for addressing the dataset
 export DATASET=denbosch
@@ -22,7 +22,7 @@ export DATASET=denbosch
 export DATA_FILES=denbosch-nde.nt
 
 # full name for the dataprovider
-export DATAPROVIDER=Stadsarchief Den Bosch
+export DATAPROVIDER="Stadsarchief Den Bosch"
 
 # default language
 export DEFAULT_LANGUAGE="nl"

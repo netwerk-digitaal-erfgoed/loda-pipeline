@@ -7,14 +7,14 @@ export PRODUCTION=0  # change the value to 1 when the dataset is ready for autom
 export DATASET=ran
 
 # specify a URI of an existing dataset present in the NDE Datasetregister to use as starting point for this dataset
-export DATASET_URI="https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten"
+#export DATASET_URI="https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten"
 
 # specify either a URL to download the dataset for this pipeline
-export DOWNLOAD_URL=https://studiezaal.nijmegen.nl/AtlantisPubliek/data/set/LOD+Beelddocumenten.nt.gz
+export DOWNLOAD_URL=https://studiezaal.nijmegen.nl/AtlantisPubliek/data/set/LOD+Beelddocumenten.rdf
 
 # specify one or more data files present in the data directory separated by a ","
 # for example: "file1.nt:file2.nt"
-export DATA_FILES=LOD+Beelddocumenten.nt.gz
+export DATA_FILES=LOD+Beelddocumenten.rdf
 
 # full name for the dataprovider
 export DATAPROVIDER="Regional Archives of Nijmegen"

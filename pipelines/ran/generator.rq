@@ -67,7 +67,7 @@ CONSTRUCT {
             ) AS ?subject)
 	}
 	OPTIONAL {
-	   $this sdo:abdateCreatedout ?created 
+	   $this sdo:dateCreated ?created 
 	}
 	OPTIONAL {
 	    $this sdo:isPartOf ?_isPartOf .
@@ -97,7 +97,8 @@ CONSTRUCT {
 	BIND(("Regionaal Archief Nijmegen") as ?dataProvider)
 	
 	$this sdo:url ?isShownAt .
-	$this sdo:url ?pid .
+	#$this sdo:url ?pid .
+	BIND(STR(?isShownAt) AS ?pid)
 	$this sdo:image ?isShownBy . 
 	$this sdo:license ?license .
 	
