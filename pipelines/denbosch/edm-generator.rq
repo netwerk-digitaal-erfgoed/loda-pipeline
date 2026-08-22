@@ -92,7 +92,7 @@ CONSTRUCT {
 
     ?aggregation_URI a ore:Aggregation ;
         edm:aggregatedCHO ?providedCHO_URI ; # The identifier of the source object e.g. the Mona Lisa itself, ref [1..1]
-        edm:dataProvider "Stadsarchief" ; # The name or identifier of the data provider of the object, literal, ref [1..1] 
+        edm:dataProvider "Stadsarchief Den Bosch" ; # The name or identifier of the data provider of the object, literal, ref [1..1] 
  #       edm:hasView ?contentUrl, ?thumbnailUrl ; # The URL of a web resource which is a digital representation of the CHO, ref [0..m] 
                                              # This may be the source object itself in the case of a born digital cultural heritage object.
                                              # edm:hasView should only be used where there are several views of the CHO and one (or both) 
