@@ -3,12 +3,12 @@ import {basename, resolve} from 'node:path';
 import {
   Pipeline,
   Stage,
-  SparqlConstructExecutor,
   SparqlItemSelector,
   ImportResolver,
   SparqlDistributionResolver,
   FileWriter,
   readQueryFile,
+  SparqlConstructReader,
 } from '@lde/pipeline';
 import {createQlever} from '@lde/sparql-qlever';
 import {ConsoleReporter} from '@lde/pipeline-console-reporter';
@@ -42,23 +42,23 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
   // Set up SHACL validation.
   const validator = new ShaclValidator({
     shapesFile: resolve('pipelines/generic/edm_ext_shacl_shapes.ttl'),
-    reportDir: './output/validation',
+    reportWriters: [new FileWriter({ outputDir: './output/validation' })],
   });
 
   // Scan .rq files and build stages in parallel.
   const stageDefs = await scanStages(absoluteDir);
   const stages = await Promise.all(
     stageDefs.map(async def => {
-      const [selectorQuery, executors] = await Promise.all([
+      const [selectorQuery, readers] = await Promise.all([
         readQueryFile(def.selectorFile),
         Promise.all(
-          def.executorFiles.map(f => SparqlConstructExecutor.fromFile(f, {lineBuffer: true}))
+          def.executorFiles.map(f => SparqlConstructReader.fromFile(f, {lineBuffer: true})),
         ),
       ]);
 
       return new Stage({
         name: `Stage ${def.stageNumber}`,
-        executors,
+        readers,
         itemSelector: new SparqlItemSelector({query: selectorQuery}),
         batchSize: 2000,
         maxConcurrency: 30,
