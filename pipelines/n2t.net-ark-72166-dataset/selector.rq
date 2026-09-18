@@ -6,5 +6,5 @@ WHERE {
       sdo:name ?name ;
       sdo:identifier ?identifier .
     FILTER(!ISBLANK($this))
-
 } 
+ORDER BY $this
