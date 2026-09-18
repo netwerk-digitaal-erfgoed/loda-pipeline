@@ -15,7 +15,8 @@
     "@lde/pipeline-console-reporter": "^0.27.6",
     "@lde/pipeline-shacl-validator": "^0.19.6",
     "@lde/sparql-qlever": "^0.16.1",
-    "n3": "^2.7.12"
+    "n3": "^2.7.12",
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "tsx": "^4.23.13",

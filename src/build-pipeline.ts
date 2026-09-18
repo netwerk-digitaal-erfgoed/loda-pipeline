@@ -16,9 +16,7 @@ import {ShaclValidator} from '@lde/pipeline-shacl-validator';
 import {scanStages} from './scan-stages.js';
 import {createDatasetSelector} from './dataset-selector.js';
 
-export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
-  const absoluteDir = resolve(pipelineDir);
-
+async function createDistributionResolver() {
   // Set up QLever for importing data.
   const importsDir = resolve('imports');
   await mkdir(importsDir, {recursive: true});
@@ -31,10 +29,14 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
   });
 
   // Always import data dumps into QLever rather than using remote SPARQL endpoints.
-  const distributionResolver = new ImportResolver(
+  return new ImportResolver(
     new SparqlDistributionResolver(),
     {importer: qlever.importer, server: qlever.server, strategy: 'import'}
   );
+}
+
+export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
+  const absoluteDir = resolve(pipelineDir);
 
   // Resolve dataset.
   const datasetSelector = await createDatasetSelector(datasetIri, absoluteDir);
@@ -66,6 +68,8 @@ export async function buildPipeline(datasetIri: URL, pipelineDir: string) {
       });
     })
   );
+
+  const  distributionResolver = await createDistributionResolver()
 
   const pipeline = new Pipeline({
     name: basename(absoluteDir),
