@@ -4,6 +4,7 @@ import { createQlever } from "@lde/sparql-qlever";
 
 export async function createQleverImportResolver(
 	importsDir: string,
+	qleverMemoryGb: number,
 ): Promise<ImportResolver> {
 	// Set up QLever for importing data.
 	await mkdir(importsDir, { recursive: true });
@@ -13,7 +14,7 @@ export async function createQleverImportResolver(
 		image: "adfreiburg/qlever",
 		containerName: "loda-qlever",
 		dataDir: importsDir,
-		serverOptions: { "memory-max-size": "8G" },
+		serverOptions: { "memory-max-size": `${qleverMemoryGb}G` },
 	});
 
 	// Always import data dumps into QLever rather than using remote SPARQL endpoints.

@@ -18,6 +18,7 @@ export async function build(config: {
 
 	const distributionResolver = await createQleverImportResolver(
 		config.app.importsDir,
+		config.app.qleverMemoryGb,
 	);
 
 	const validator = createEdmShaclValidator(
