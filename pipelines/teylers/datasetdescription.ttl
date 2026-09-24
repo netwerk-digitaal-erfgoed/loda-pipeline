@@ -1,0 +1,8 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+# https://n2t.net/ark:/72166/dataset
+
+[] dcat:distribution [
+	dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/teylers.nt.gz> ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples+gzip> ;
+] .

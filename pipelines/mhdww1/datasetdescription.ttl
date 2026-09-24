@@ -1,0 +1,8 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+# https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD+-+Eerste+Wereldoorlog
+
+[] dcat:distribution [
+  dcat:accessURL <https://nde-europeana.ams3.digitaloceanspaces.com/mhdww1.nt.gz> ;
+  dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples+gzip> ;
+] .
