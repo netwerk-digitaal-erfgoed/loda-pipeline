@@ -20,25 +20,34 @@ export type PipelineConfig = z.infer<typeof PipelineConfig>;
 
 // Global application configurations, regardless of pipeline
 const ApplicationConfig = z.object({
-	registry_endpoint: z.url(),
-	imports_directory: z.string().default(path.resolve("imports")),
+	registryEndpoint: z.url(),
+	importsDir: z.string().default(path.resolve("imports")),
+	outputDir: z.string().default(path.resolve("output")),
+	validationEdmShapesPath: z.string(),
+	validationOutputDir: z.string(),
 	// Stage configuration, including batch size and concurrency. See its definition for defaults
 	stage: StageConfig,
 });
 
 export type ApplicationConfig = z.infer<typeof ApplicationConfig>;
 
+const resolveOrUndefined = (val: string | undefined): string | undefined =>
+	val ? path.resolve(val) : undefined;
+
+const asNumberOrUndefined = (val: string | undefined): number | undefined =>
+	val ? parseInt(val, 10) : undefined;
+
 export const applicationConfig = ApplicationConfig.parse({
-	registry_endpoint: process.env.REGISTRY_ENDPOINT,
-	imports_directory: process.env.IMPORT_DIR,
-	// TODO handle numberic values properly via Zod
+	registryEndpoint: process.env.REGISTRY_ENDPOINT,
+	importsDir: resolveOrUndefined(process.env.IMPORT_DIR),
+	outputDir: resolveOrUndefined(process.env.OUTPUT_DIR),
+	validationEdmShapesPath: resolveOrUndefined(
+		process.env.VALIDATION_EDM_SHAPES_PATH,
+	),
+	validationOutputDir: resolveOrUndefined(process.env.VALIDATION_OUTPUT_DIR),
 	stage: {
-		batchSize: process.env.STAGE_BATCH_SIZE
-			? parseInt(process.env.STAGE_BATCH_SIZE, 10)
-			: undefined,
-		maxConcurrency: process.env.STAGE_MAX_CONCURRENCY
-			? parseInt(process.env.STAGE_MAX_CONCURRENCY, 10)
-			: undefined,
+		batchSize: asNumberOrUndefined(process.env.STAGE_BATCH_SIZE),
+		maxConcurrency: asNumberOrUndefined(process.env.STAGE_MAX_CONCURRENCY),
 	},
 });
 

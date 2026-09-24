@@ -13,14 +13,17 @@ export async function build(config: {
 	const datasetSelector = await createDatasetSelector(
 		new URL(config.pipeline.dataset.uri),
 		config.pipeline.directory,
-		new URL(config.app.registry_endpoint),
+		new URL(config.app.registryEndpoint),
 	);
 
 	const distributionResolver = await createQleverImportResolver(
-		config.app.imports_directory,
+		config.app.importsDir,
 	);
 
-	const validator = createEdmShaclValidator();
+	const validator = createEdmShaclValidator(
+		config.app.validationEdmShapesPath,
+		config.app.validationOutputDir,
+	);
 
 	const stages = await createStages(
 		config.pipeline.directory,
@@ -33,7 +36,7 @@ export async function build(config: {
 		datasetSelector,
 		distributionResolver,
 		stages,
-		writers: new FileWriter({ outputDir: "./output" }),
+		writers: new FileWriter({ outputDir: config.app.outputDir }),
 		reporter: new ConsoleReporter(),
 	});
 
