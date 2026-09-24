@@ -1,25 +1,28 @@
-import { mkdirSync } from "node:fs";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { buildPipeline } from "./build-pipeline.js";
-import { createDefaultConfig, getConfig, writeConfig } from "./config.js";
+import {
+	applicationConfig,
+	getPipelineConfig,
+	initPipelineConfig,
+} from "./config.js";
+import { build } from "./pipeline/build.js";
 
-function init(pipelineDir: string) {
-	mkdirSync(pipelineDir, { recursive: true });
-	writeConfig(pipelineDir, createDefaultConfig());
+async function init(pipelineDir: string): Promise<void> {
+	await mkdir(pipelineDir, { recursive: true });
+	await initPipelineConfig(pipelineDir);
 
 	console.log(`Created ${pipelineDir}`);
 	console.log("Add selector.rq and executor.rq query files to this directory.");
 }
 
-async function run(pipelineDir: string) {
-	const config = getConfig(pipelineDir);
-	const datasetIri = new URL(config.dataset.uri);
+async function run(pipelineDir: string): Promise<void> {
+	const pipelineConfig = await getPipelineConfig(pipelineDir);
 
-	const { pipeline, distributionResolver } = await buildPipeline(
-		datasetIri,
-		pipelineDir,
-	);
+	const { pipeline, distributionResolver } = await build({
+		app: applicationConfig,
+		pipeline: pipelineConfig,
+	});
 
 	try {
 		await pipeline.run();
@@ -35,7 +38,6 @@ async function main() {
 	let dirName: string;
 
 	switch (positionals.length) {
-		// biome-ignore lint/suspicious/noFallthroughSwitchClause: <explanation>
 		case 2:
 			command = positionals.shift();
 		case 1:
@@ -53,7 +55,7 @@ async function main() {
 	const pipelineDir = path.resolve("pipelines", dirName);
 
 	if (command === "init") {
-		init(pipelineDir);
+		await init(pipelineDir);
 		process.exit(0);
 	}
 

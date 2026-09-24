@@ -16,7 +16,8 @@
     "@lde/pipeline-shacl-validator": "^0.19.6",
     "@lde/sparql-qlever": "^0.16.1",
     "n3": "^2.7.12",
-    "yaml": "^2.9.1"
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
