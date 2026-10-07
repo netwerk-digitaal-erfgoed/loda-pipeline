@@ -1,11 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { loadEnvFile } from "node:process";
+import envSchema, { type JSONSchemaType } from "env-schema";
 import yaml from "yaml";
 import * as z from "zod";
-import { StageConfig } from "./pipeline/stage.js";
-
-loadEnvFile();
 
 // Configuration for an individual pipeline
 const PipelineConfig = z.object({
@@ -18,40 +15,43 @@ const PipelineConfig = z.object({
 
 export type PipelineConfig = z.infer<typeof PipelineConfig>;
 
-// Global application configurations, regardless of pipeline
-const ApplicationConfig = z.object({
-	registryEndpoint: z.url(),
-	importsDir: z
-		.string()
-		.default("imports")
-		.transform((val) => path.resolve(val)),
-	outputDir: z
-		.string()
-		.default("output")
-		.transform((val) => path.resolve(val)),
-	validationEdmShapesPath: z.string().transform((val) => path.resolve(val)),
-	validationOutputDir: z.string().transform((val) => path.resolve(val)),
-	qleverMemoryGb: z.number().min(1).default(8),
-	// Stage configuration, including batch size and concurrency. See its definition for defaults
-	stage: StageConfig,
-});
+// Global application configurations, regardless of pipeline.
+export interface ApplicationConfig {
+	REGISTRY_ENDPOINT: string;
+	IMPORT_DIR: string;
+	OUTPUT_DIR: string;
+	VALIDATION_EDM_SHAPES_PATH: string;
+	VALIDATION_OUTPUT_DIR: string;
+	QLEVER_MEMORY_GB: number;
+	STAGE_BATCH_SIZE: number;
+	STAGE_MAX_CONCURRENCY: number;
+}
 
-export type ApplicationConfig = z.infer<typeof ApplicationConfig>;
-
-const asNumberOrUndefined = (val: string | undefined): number | undefined =>
-	val ? parseInt(val, 10) : undefined;
-
-export const applicationConfig = ApplicationConfig.parse({
-	registryEndpoint: process.env.REGISTRY_ENDPOINT,
-	importsDir: process.env.IMPORT_DIR,
-	outputDir: process.env.OUTPUT_DIR,
-	validationEdmShapesPath: process.env.VALIDATION_EDM_SHAPES_PATH,
-	validationOutputDir: process.env.VALIDATION_OUTPUT_DIR,
-	qleverMemoryGb: asNumberOrUndefined(process.env.QLEVER_MEMORY_GB),
-	stage: {
-		batchSize: asNumberOrUndefined(process.env.STAGE_BATCH_SIZE),
-		maxConcurrency: asNumberOrUndefined(process.env.STAGE_MAX_CONCURRENCY),
+const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
+	type: "object",
+	required: [],
+	properties: {
+		REGISTRY_ENDPOINT: {
+			type: "string",
+			default:
+				"https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry",
+		},
+		IMPORT_DIR: { type: "string", default: "imports" },
+		OUTPUT_DIR: { type: "string", default: "output" },
+		VALIDATION_EDM_SHAPES_PATH: {
+			type: "string",
+			default: "pipelines/generic/edm_ext_shacl_shapes.ttl",
+		},
+		VALIDATION_OUTPUT_DIR: { type: "string", default: "output/validation" },
+		QLEVER_MEMORY_GB: { type: "integer", minimum: 1, default: 8 },
+		STAGE_BATCH_SIZE: { type: "integer", minimum: 10, default: 2000 },
+		STAGE_MAX_CONCURRENCY: { type: "integer", minimum: 1, default: 30 },
 	},
+};
+
+export const applicationConfig = envSchema<ApplicationConfig>({
+	schema: applicationConfigSchema,
+	dotenv: true,
 });
 
 const getConfigFilePath = (pipelineDir: string) =>

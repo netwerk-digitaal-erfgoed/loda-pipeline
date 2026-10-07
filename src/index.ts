@@ -1,11 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import {
-	applicationConfig,
-	getPipelineConfig,
-	initPipelineConfig,
-} from "./config.js";
+import { getPipelineConfig, initPipelineConfig } from "./config.js";
 import { build } from "./pipeline/build.js";
 
 async function init(pipelineDir: string): Promise<void> {
@@ -19,10 +15,7 @@ async function init(pipelineDir: string): Promise<void> {
 async function run(pipelineDir: string): Promise<void> {
 	const pipelineConfig = await getPipelineConfig(pipelineDir);
 
-	const { pipeline, distributionResolver } = await build({
-		app: applicationConfig,
-		pipeline: pipelineConfig,
-	});
+	const { pipeline, distributionResolver } = await build(pipelineConfig);
 
 	try {
 		await pipeline.run();

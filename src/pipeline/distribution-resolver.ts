@@ -1,4 +1,5 @@
 import { mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
 import { ImportResolver, SparqlDistributionResolver } from "@lde/pipeline";
 import { createQlever } from "@lde/sparql-qlever";
 
@@ -13,7 +14,7 @@ export async function createQleverImportResolver(
 		mode: "docker",
 		image: "adfreiburg/qlever",
 		containerName: "loda-qlever",
-		dataDir: importsDir,
+		dataDir: resolve(importsDir),
 		serverOptions: { "memory-max-size": `${qleverMemoryGb}G` },
 	});
 

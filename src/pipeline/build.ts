@@ -1,43 +1,39 @@
 import { FileWriter, Pipeline } from "@lde/pipeline";
 import { ConsoleReporter } from "@lde/pipeline-console-reporter";
-import type { ApplicationConfig, PipelineConfig } from "../config.js";
+import { applicationConfig, type PipelineConfig } from "../config.js";
 import { createDatasetSelector } from "./dataset-selector.js";
 import { createQleverImportResolver } from "./distribution-resolver.js";
 import { createStages } from "./stage.js";
 import { createEdmShaclValidator } from "./validator.js";
 
-export async function build(config: {
-	app: ApplicationConfig;
-	pipeline: PipelineConfig;
-}) {
+export async function build(pipelineConfig: PipelineConfig) {
 	const datasetSelector = await createDatasetSelector(
-		new URL(config.pipeline.dataset.uri),
-		config.pipeline.directory,
-		new URL(config.app.registryEndpoint),
+		new URL(pipelineConfig.dataset.uri),
+		pipelineConfig.directory,
+		new URL(applicationConfig.REGISTRY_ENDPOINT),
 	);
 
 	const distributionResolver = await createQleverImportResolver(
-		config.app.importsDir,
-		config.app.qleverMemoryGb,
+		applicationConfig.IMPORT_DIR,
+		applicationConfig.QLEVER_MEMORY_GB,
 	);
 
 	const validator = createEdmShaclValidator(
-		config.app.validationEdmShapesPath,
-		config.app.validationOutputDir,
+		applicationConfig.VALIDATION_EDM_SHAPES_PATH,
+		applicationConfig.VALIDATION_OUTPUT_DIR,
 	);
 
-	const stages = await createStages(
-		config.pipeline.directory,
-		validator,
-		config.app.stage,
-	);
+	const stages = await createStages(pipelineConfig.directory, validator, {
+		batchSize: applicationConfig.STAGE_BATCH_SIZE,
+		maxConcurrency: applicationConfig.STAGE_MAX_CONCURRENCY,
+	});
 
 	const pipeline = new Pipeline({
-		name: config.pipeline.name,
+		name: pipelineConfig.name,
 		datasetSelector,
 		distributionResolver,
 		stages,
-		writers: new FileWriter({ outputDir: config.app.outputDir }),
+		writers: new FileWriter({ outputDir: applicationConfig.OUTPUT_DIR }),
 		reporter: new ConsoleReporter(),
 	});
 
