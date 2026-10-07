@@ -1,6 +1,5 @@
 node_modules/
-dist/
-imports/*
-!imports/.gitkeep
+build/
+imports/
 output/
 .env

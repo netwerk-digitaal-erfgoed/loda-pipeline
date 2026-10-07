@@ -6,7 +6,11 @@
     "node": ">=26"
   },
   "scripts": {
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "lint": "eslint . && prettier --check src/",
+    "clean": "rm -rf build/ imports/ output/",
+    "compile": "tsc",
+    "fix": "eslint --fix . && prettier --write src/"
   },
   "dependencies": {
     "@lde/dataset": "^0.7.9",
@@ -21,8 +25,15 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-n": "^18.4.1",
+    "eslint-plugin-prettier": "^5.5.6",
+    "prettier": "^3.9.9",
     "tsx": "^4.23.13",
-    "typescript": "^7.0.2"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.1"
   },
   "allowScripts": {
     "cpu-features@0.0.10": true,
