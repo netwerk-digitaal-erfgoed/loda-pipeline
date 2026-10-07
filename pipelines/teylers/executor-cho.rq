@@ -1,0 +1,105 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/> 
+PREFIX dcterms: <http://purl.org/dc/terms/> 
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+
+CONSTRUCT {
+    ?providedCHO_URI a edm:ProvidedCHO ;
+        dc:creator ?creatorName ;      # For the creator of the CHO, literal or ref [0..n]
+        dc:description ?description,   # A description of the CHO. , literal or ref [0..n]
+                       ?abstract,      # the NDE-Schema.org profile allows description, abstract and text  
+                       ?text ;         # 
+        dc:identifier ?identifier,     # An identifier of the original CHO, literal [0..n] 
+                ?identifierDirect ;
+        dc:language "nl" ;             # The language of text CHOs, literal [0..n]
+        dc:publisher "Teylers Museum" ;# The name of the publisher of the CHO, literal or ref [0..n]
+        dc:rights "Teylers Museum" ;   # Use to give the name of the rights holder of the CHO, literal or ref [0..n]
+        dc:subject ?about ,            # The subject of the CHO, literal or ref [0..n]
+                   ?aboutURI ,
+                   ?keyword ;
+        dc:title ?name ;               # A name given to the CHO, literal [0..n]
+        dc:type ?additionalType,       # The nature or genre of the CHO, literal or ref [0..n]
+                ?additionalTypeURI,    #
+                ?materialLabel ;       # NOTE: 'hack' have more records validated proper type is missing in the data
+        dcterms:created ?dateCreated ; # The date of creation of the CHO, literal or ref [0..n]
+        dcterms:extent ?sizeText ;     # The size or duration of the CHO, literal or ref [0..n] 
+        dcterms:spatial ?locationCreated ; # Spatial characteristics of the CHO. i.e. what the CHO represents or depicts in terms of space, literal or ref [0..n]
+        dcterms:temporal ?temporalCoverage ; # Temporal characteristics of the CHO. i.e. what the CHO is about or depicts in terms of time, literal or ref [0..n]
+        edm:pid ?pidstr ;
+        edm:type "IMAGE" .                              # termination of the edm:ProvidedCHO object (do not remove!)
+} WHERE {
+    $this a sdo:CreativeWork .
+
+    # mint a URIs for the different parts 
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+    BIND(STR($this) as ?pidstr )
+
+    {
+        $this sdo:name ?_name .
+        BIND(IF(LANG(?_name)="",STRLANG(?_name,"nl"),?_name) as ?name) # add language tag
+    } UNION {
+        # LDMax uses a complex way to model creator information
+        $this sdo:creator/sdo:creator/sdo:name ?_creatorName . 
+        BIND(IF(LANG(?_creatorName)="",STRLANG(?_creatorName,"nl"),?_creatorName) as ?creatorName) # add language tag
+    } UNION{ 
+        $this sdo:description ?_description 
+        BIND(IF(LANG(?_description)="",STRLANG(?_description,"nl"),?_description) as ?description)
+    } UNION { 
+        $this sdo:keywords ?_keyword 
+        BIND(IF(LANG(?_keyword)="",STRLANG(?_keyword,"nl"),?_keyword) as ?keyword)
+    } UNION {
+        $this sdo:text ?_text 
+        BIND(IF(LANG(?_text)="",STRLANG(?_text,"nl"),?_text) as ?text)
+    } UNION { 
+        $this sdo:abstract ?_abstract .
+        BIND(IF(LANG(?_abstract)="",STRLANG(?_abstract,"nl"),?_abstract) as ?abstract)
+    } UNION {
+        $this sdo:locationCreated/sdo:name ?_locationCreated .
+        BIND(IF(LANG(?_locationCreated)="",STRLANG(?_locationCreated,"nl"),?_locationCreated) as ?locationCreated)
+    } UNION {
+        $this sdo:temporalCoverage ?temporalCoverage .  # not used in this dataset?
+    } UNION { 
+        $this sdo:additionalType ?additionalTypeURI 
+        FILTER(isLiteral(?additionalTypeURI))
+    } UNION { 
+        $this sdo:additionalType/sdo:name ?_additionalType .
+        BIND(IF(LANG(?_additionalType)="",STRLANG(?_additionalType,"nl"),?_additionalType) as ?additionalType)
+    } UNION { 
+        $this sdo:about ?aboutURI 
+        FILTER(isLiteral(?aboutURI))
+    } UNION {
+        OPTIONAL { 
+            $this sdo:about/sdo:name ?_about .
+            BIND(IF(LANG(?_about)="",STRLANG(?_about,"nl"),?_about) as ?about)
+        }
+        # skipping sdo:about - in this collection only duplicate info for sdo:description
+        OPTIONAL {
+            $this sdo:about ?about .
+        }
+    } UNION {
+        $this sdo:dateCreated ?_dateCreated .
+        BIND(STR(?_dateCreated) as ?dateCreated)
+    } UNION { 
+        $this sdo:identifier ?identifierDirect .
+        FILTER(isLiteral(?identifierDirect))
+    } UNION {
+        $this sdo:identifier/sdo:value ?_identifier .
+        BIND(STR(?_identifier) as ?identifier)
+    } UNION {
+        $this sdo:material ?materialURI .
+        ?materialURI sdo:name ?_material .
+        BIND(IF(LANG(?_material)="",STRLANG(?_material,"nl"),?_material) as ?materialLabel)
+    } UNION {
+        $this sdo:size ?sizeObject .
+        ?sizeObject sdo:value ?sizeValue ;
+            		sdo:name ?sizeName ;
+            		sdo:unitText ?sizeUnitText .
+        BIND(STRLANG(CONCAT(?sizeName," ",STR(?sizeValue)," ",?sizeUnitText),"nl") as ?sizeText)
+    }
+
+}

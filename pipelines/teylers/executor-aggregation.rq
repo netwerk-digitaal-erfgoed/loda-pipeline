@@ -1,0 +1,41 @@
+PREFIX sdo:     <https://schema.org/>
+PREFIX foaf:    <http://xmlns.com/foaf/0.1/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+
+CONSTRUCT {
+
+    ?aggregation_URI a ore:Aggregation ;
+        edm:aggregatedCHO ?providedCHO_URI ;
+        edm:dataProvider "Teylers Museum" ;
+        edm:isShownAt $this ;
+        edm:provider "DC4EU" ;
+        edm:intermediateProvider "NDE" ;
+        edm:isShownBy ?sampleContentUrl ;
+        edm:object ?sampleContentUrl ;
+        edm:rights ?license .
+}
+where {
+    $this a sdo:CreativeWork ;
+      sdo:name ?name ;
+      sdo:identifier ?identifier .
+
+    # mint a URIs for the different parts 
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+
+    $this sdo:associatedMedia ?associatedMedia .
+
+    # TODO consider replacing SAMPLE with MIN to avoid variance in data generation
+    {  
+        SELECT $this (SAMPLE(?_contentUrl) as ?_sampleContentUrl)  {
+            $this sdo:associatedMedia/sdo:contentUrl ?_contentUrl .
+        } GROUP BY $this
+    }
+
+    ?associatedMedia 
+        sdo:contentUrl ?_sampleContentUrl ;  # note: ?sampleContentUrl is set in the inner select!
+        sdo:license ?_license .
+    BIND(IRI(REPLACE(STR(?_license), "https", "http")) AS ?license)
+    BIND(IRI(STR(?_sampleContentUrl)) as ?sampleContentUrl)
+}

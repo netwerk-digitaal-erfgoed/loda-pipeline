@@ -1,0 +1,53 @@
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sdo:     <http://schema.org/>
+
+# ProvidedCHO properties.
+# UNION prevents cross-products between multi-valued properties.
+# Common license filter is joined before the UNION.
+CONSTRUCT {
+    $this ?rdf_type edm:ProvidedCHO ;
+		dc:identifier ?identifier ;
+		edm:pid ?pid ;
+		dc:title ?name ;
+		edm:type ?edm_type ;
+		dc:type ?genre ;
+		dcterms:spatial ?spatial ;
+		dc:subject ?subject ;
+		dcterms:created ?created ;
+		dcterms:isPartOf ?isPartOf ;
+		dc:rights ?rights ;
+		dc:creator ?creator ;
+		dc:description ?description ;
+	.
+} WHERE {
+	$this sdo:license ?license .
+	FILTER(?license != <http://rightsstatements.org/vocab/InC/1.0/> )
+
+	{ BIND(rdf:type AS ?rdf_type) . BIND("IMAGE" AS ?edm_type) }
+	UNION {
+		$this sdo:identifier ?_identifier .
+		BIND(STR(?_identifier) AS ?identifier)
+	}
+	UNION {
+		$this sdo:name ?_name .
+		BIND(STRLANG(STR(?_name), "nl") AS ?name)
+	}
+	UNION { $this sdo:url ?pid }
+	UNION { $this sdo:genre ?genre }
+	UNION { $this sdo:contentLocation ?spatial }
+	UNION {
+		$this sdo:about ?_subject .
+		BIND(IF(REGEX(STR(?_subject), "^https?://"), IRI(STR(?_subject)), STR(?_subject)) AS ?subject)
+	}
+	UNION { $this sdo:dateCreated ?created }
+	UNION {
+		$this sdo:isPartOf ?_isPartOf .
+		BIND(IF(REGEX(STR(?_isPartOf), "^https?://"), IRI(STR(?_isPartOf)), STRLANG(STR(?_isPartOf), "nl")) AS ?isPartOf)
+	}
+	UNION { $this sdo:copyrightHolder ?rights }
+	UNION { $this sdo:creator ?creator }
+	UNION { $this sdo:comment ?description }
+}

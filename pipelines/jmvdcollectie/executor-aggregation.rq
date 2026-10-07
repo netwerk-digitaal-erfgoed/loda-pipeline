@@ -1,0 +1,41 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+
+# Multi-valued Aggregation properties from MediaObject + IIIF.
+# UNION prevents cross-products between MediaObject and IIIF branches.
+CONSTRUCT {
+    ?aggregation_URI
+        edm:hasView ?contentUrl ;
+        edm:hasView ?thumbnailUrl ;
+        edm:object ?contentUrl ;
+        edm:rights ?license .
+
+    ?webresource_URI dcterms:isReferencedBy ?IIIF_Presentation_API_URI .
+    ?service_URI doap:implements ?encodingFormatPresentationAPI .
+} WHERE {
+    BIND(URI(CONCAT(STR($this), "#agg")) AS ?aggregation_URI)
+    BIND(URI(CONCAT(STR($this), "#webres")) AS ?webresource_URI)
+    BIND(URI(CONCAT(STR($this), "#service")) AS ?service_URI)
+
+    FILTER(!ISBLANK($this))
+
+    {
+        $this sdo:associatedMedia ?associatedMediaObjectURI .
+        ?associatedMediaObjectURI
+            sdo:contentUrl ?_contentUrl ;
+            sdo:license ?_license ;
+            sdo:thumbnailUrl ?_thumbnailUrl .
+
+        BIND(IRI(STR(?_contentUrl)) AS ?contentUrl)
+        BIND(IRI(STR(?_license)) AS ?license)
+        BIND(IRI(STR(?_thumbnailUrl)) AS ?thumbnailUrl)
+    }
+    UNION {
+        $this sdo:associatedMedia ?associatedMediaObjectURI .
+        ?associatedMediaObjectURI sdo:isBasedOn ?IIIF_Presentation_API_URI .
+        ?IIIF_Presentation_API_URI sdo:encodingFormat ?encodingFormatPresentationAPI .
+        FILTER(?encodingFormatPresentationAPI = "application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'")
+    }
+}
