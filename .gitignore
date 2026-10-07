@@ -3,3 +3,4 @@ dist/
 imports/*
 !imports/.gitkeep
 output/
+.env
