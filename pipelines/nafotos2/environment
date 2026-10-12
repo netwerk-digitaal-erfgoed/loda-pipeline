@@ -12,7 +12,7 @@ export DATASET_URI=
 
 # or specify either a URL to download the dataset for this pipeline
 # if set DATA_FILES is automatically set
-export DOWNLOAD_URL="https://nde-europeana.ams3.digitaloceanspaces.com/na-fotos-2_24_03-2_24_26.zip"
+export DOWNLOAD_URL="https://files.nde.nl/europeana/na-fotos-2_24_03-2_24_26.zip"
 
 # or specify one or more data files present in the data directory separated by a ","
 # for example: "file1.nt:file2.nt"
@@ -51,4 +51,4 @@ export DATASET_DESCRIPTION_CREATE_DATE="2026-01-24"
 export DATASET_DESCRIPTION_SOURCE_DATASET="<https://archief.nl/id/dataset/toegang/2-24-03ntfoto>"
 
 # base location of the distribution 
-export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"
+export DATASET_DESCRIPTION_DISTRUTION_BASE="https://files.nde.nl/europeana"

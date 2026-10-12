@@ -3,7 +3,7 @@ set -euo pipefail
 
 source setuser.sh
 
-export S3_BUCKET="nde-europeana"
+export S3_BUCKET="europeana"
 
 export DATASET="." # needed for docker compose to use s3cmd somehow...
 
@@ -46,6 +46,6 @@ cat > $DATACATALOG <<EOF
 ${DATASETDESCRIPTIONS}
 EOF
 
-docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=text/turle --acl-public put ${DATACATALOG} s3://${S3_BUCKET}/${DATACATALOG}
+docker compose run --rm s3cmd -f --no-preserve --no-mime-magic --mime-type=text/turtle put ${DATACATALOG} s3://${S3_BUCKET}/${DATACATALOG}
 echo ""
-echo "Datacatalog now available via  https://ams3.digitaloceanspaces.com/${S3_BUCKET}/${DATACATALOG}"
+echo "Datacatalog now available via  https://files.nde.nl/${S3_BUCKET}/${DATACATALOG}"

@@ -55,6 +55,6 @@ export DATASET_DESCRIPTION_CREATE_DATE="2026-01-23"
 export DATASET_DESCRIPTION_SOURCE_DATASET="<http://data.beeldengeluid.nl/id/dataset/0029>"
 
 # base location of the distribution 
-# export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com";
-export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"
+# export DATASET_DESCRIPTION_DISTRUTION_BASE="https://files.nde.nl/europeana";
+export DATASET_DESCRIPTION_DISTRUTION_BASE="https://files.nde.nl/europeana"
 
