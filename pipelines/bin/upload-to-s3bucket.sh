@@ -22,14 +22,17 @@ if [ ! -d .s3 ] || [ ! -f .s3/.s3cfg ]; then
 	echo "NOT uploading ${DATASET} files to S3 bucket ..."
 	exit
 
-	# Before you run the --configure step, you need an API token from the object storage,
-	# For DigitalOcean you need a token for the spaces.read and spaces.update scopes,
-	# via https://cloud.digitalocean.com/account/api/tokens
+	# Before you run the --configure step, you need the access key and secret key
+	# of NDE's SURF object store, see
+	# https://github.com/netwerk-digitaal-erfgoed/infrastructure#object-storage
 
 	# other values asked are
-	# bucket_location = EU
-	# host_base = ams3.digitaloceanspaces.com
-	# host_bucket = nde-europeana.ams3.digitaloceanspaces.com
+	# bucket_location = default
+	# host_base = objectstore.surf.nl
+	# host_bucket = objectstore.surf.nl
+
+	# The bucket has a policy that makes all files in it public,
+	# they are served via https://files.nde.nl/<bucket>/<file>
 
 	# The file .s3/.s3cfg is created, optionally you can
 	# change the value of public_url_use_https from False to True
@@ -39,6 +42,6 @@ echo "Uploading ${DATASET} distribution files to S3 bucket ${S3_BUCKET}..."
 
 # Note: already renamed to edmxml.zip
 echo "- ${DATASET}.zip"
-docker compose run --rm s3cmd --config=/root/.s3cfg -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/zip --acl-public put /s3/${DATASET}.zip s3://${S3_BUCKET}/${DATASET}.edmxml.zip
+docker compose run --rm s3cmd --config=/root/.s3cfg -f --no-preserve --no-mime-magic --mime-type=application/zip put /s3/${DATASET}.zip s3://${S3_BUCKET}/${DATASET}.edmxml.zip
 echo "- ${DATASET}.nt.gz"
-docker compose run --rm s3cmd --config=/root/.s3cfg -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=application/n-triples+gzip --acl-public put ${DATASET}.nt.gz s3://${S3_BUCKET}/${DATASET}.nt.gz
+docker compose run --rm s3cmd --config=/root/.s3cfg -f --no-preserve --no-mime-magic --mime-type=application/n-triples+gzip put ${DATASET}.nt.gz s3://${S3_BUCKET}/${DATASET}.nt.gz

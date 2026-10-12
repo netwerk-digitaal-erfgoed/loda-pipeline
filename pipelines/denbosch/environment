@@ -60,8 +60,8 @@ export DATASET_DESCRIPTION_CREATE_DATE="2026-07-21"
 export DATASET_DESCRIPTION_SOURCE_DATASET="<https://denbosch.hosting.deventit.net/AtlantisPubliek/data/dataset/Dataset%2BBeeldbank%2BErfgoed%2B%2527s-Hertogenbosch>"
 
 # base location of the distribution 
-# export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com";
-export DATASET_DESCRIPTION_DISTRUTION_BASE="https://nde-europeana.ams3.digitaloceanspaces.com"
+# export DATASET_DESCRIPTION_DISTRUTION_BASE="https://files.nde.nl/europeana";
+export DATASET_DESCRIPTION_DISTRUTION_BASE="https://files.nde.nl/europeana"
 
 # name of the S3 bucket used for storing the generated distributions files
-export S3_BUCKET="nde-europeana"
+export S3_BUCKET="europeana"

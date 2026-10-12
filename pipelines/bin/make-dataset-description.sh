@@ -106,17 +106,17 @@ if [ ! -f datasetdescription.ttl ]; then
 	exit	
 else 
 	echo "Uploading ${DATASET} distribution files to S3 bucket ${S3_BUCKET}..."
-	docker compose run --rm s3cmd -f --cf-invalidate --no-preserve --no-mime-magic --mime-type=text/turtle --acl-public put datasetdescription.ttl s3://${S3_BUCKET}/${DATASET}.datasetdescription.ttl
+	docker compose run --rm s3cmd -f --no-preserve --no-mime-magic --mime-type=text/turtle put datasetdescription.ttl s3://${S3_BUCKET}/${DATASET}.datasetdescription.ttl
 fi
 
-echo "Registering dataset description https://${S3_BUCKET}.ams3.digitaloceanspaces.com/${DATASET}.datasetdescription.ttl"
+echo "Registering dataset description ${DATASET_DESCRIPTION_DISTRUTION_BASE}/${DATASET}.datasetdescription.ttl"
 
 curl -v -X 'POST' \
   'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' \
   -H 'accept: application/ld+json' \
   -H 'Content-Type: application/ld+json' \
-  -d '{ "@id": "https://'$S3_BUCKET'.ams3.digitaloceanspaces.com/'$DATASET'.datasetdescription.ttl" }'
+  -d '{ "@id": "'$DATASET_DESCRIPTION_DISTRUTION_BASE'/'$DATASET'.datasetdescription.ttl" }'
 
 #curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",#<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":""}'
 
-#curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":"https://nde-europeana.ams3.digitaloceanspaces.com/nafotos.datasetdescription.ttl"}'
+#curl 'https://datasetregister.netwerkdigitaalerfgoed.nl/api/datasets' -H 'link: <http://www.w3.org/ns/ldp#RDFSource>; rel="type",<http://www.w3.org/ns/ldp#Resource>; rel="type"' -H 'content-type: application/ld+json' --data-binary '{"@id":"https://files.nde.nl/europeana/nafotos.datasetdescription.ttl"}'
