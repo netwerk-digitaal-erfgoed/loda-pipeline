@@ -30,7 +30,7 @@ For example:
 scripts/run amateurfilm
 ```
 
-`<pipeline>` is the name of a directory under `pipelines/`. This runs the pipeline with Docker Compose, with QLever in a sidecar container. Output is written as N-Triples to `./output/`.
+`<pipeline>` is the name of a directory under `pipelines/`. This runs the pipeline using Docker Compose, with QLever in a sidecar container. Output is written as N-Triples to `./output/`.
 
 Alternatively, run the pipeline directly with Node.js:
 
