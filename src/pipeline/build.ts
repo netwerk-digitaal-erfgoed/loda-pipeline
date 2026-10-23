@@ -16,6 +16,8 @@ export async function build(pipelineConfig: PipelineConfig) {
   const distributionResolver = await createQleverImportResolver(
     applicationConfig.IMPORT_DIR,
     applicationConfig.QLEVER_MEMORY_GB,
+    applicationConfig.QLEVER_ENV,
+    applicationConfig.QLEVER_IMAGE,
   );
 
   const validator = createEdmShaclValidator(

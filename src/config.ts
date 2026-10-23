@@ -22,6 +22,8 @@ export interface ApplicationConfig {
   OUTPUT_DIR: string;
   VALIDATION_EDM_SHAPES_PATH: string;
   VALIDATION_OUTPUT_DIR: string;
+  QLEVER_ENV: 'docker' | 'native' | 'remote';
+  QLEVER_IMAGE: string;
   QLEVER_MEMORY_GB: number;
   STAGE_BATCH_SIZE: number;
   STAGE_MAX_CONCURRENCY: number;
@@ -43,6 +45,12 @@ const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
       default: 'pipelines/generic/edm_ext_shacl_shapes.ttl',
     },
     VALIDATION_OUTPUT_DIR: {type: 'string', default: 'output/validation'},
+    QLEVER_ENV: {
+      type: 'string',
+      enum: ['docker', 'native', 'remote'],
+      default: 'docker',
+    },
+    QLEVER_IMAGE: {type: 'string', default: 'adfreiburg/qlever:commit-a14e0a0'},
     QLEVER_MEMORY_GB: {type: 'integer', minimum: 1, default: 8},
     STAGE_BATCH_SIZE: {type: 'integer', minimum: 10, default: 2000},
     STAGE_MAX_CONCURRENCY: {type: 'integer', minimum: 1, default: 30},

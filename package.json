@@ -13,12 +13,12 @@
     "fix": "eslint --fix . && prettier --write src/"
   },
   "dependencies": {
-    "@lde/dataset": "^0.7.9",
-    "@lde/dataset-registry-client": "^0.9.3",
-    "@lde/pipeline": "^0.36.6",
-    "@lde/pipeline-console-reporter": "^0.27.6",
-    "@lde/pipeline-shacl-validator": "^0.19.6",
-    "@lde/sparql-qlever": "^0.16.1",
+    "@lde/dataset": "^0.8.0",
+    "@lde/dataset-registry-client": "^0.10.0",
+    "@lde/pipeline": "^0.38.0",
+    "@lde/pipeline-console-reporter": "^0.29.0",
+    "@lde/pipeline-shacl-validator": "^0.21.0",
+    "@lde/sparql-qlever": "^0.18.1",
     "env-schema": "^8.0.0",
     "n3": "^2.7.12",
     "yaml": "^2.9.1",

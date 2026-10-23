@@ -6,15 +6,14 @@ Each dataset is identified by its URI. The pipeline looks up the dataset in the 
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v24 LTS or later)
-- [Docker](https://www.docker.com/) (for QLever)
+- [Docker](https://www.docker.com/) (Engine 28 or later, with Docker Compose)
+- [Node.js](https://nodejs.org/) (v26 or later), only to run the pipeline without docker
 
 ## Installation
 
 ```sh
 git clone https://github.com/netwerk-digitaal-erfgoed/loda-pipeline.git
 cd loda-pipeline
-npm install
 ```
 
 ## Usage
@@ -22,21 +21,32 @@ npm install
 ### Run a pipeline
 
 ```sh
-npx tsx src/index.ts <dataset-uri>
+scripts/run <pipeline>
 ```
 
 For example:
 
 ```sh
-npx tsx src/index.ts http://data.beeldengeluid.nl/id/dataset/0029
+scripts/run amateurfilm
 ```
 
-The pipeline directory is derived from the dataset URI (e.g. `pipelines/data.beeldengeluid.nl-id-dataset-0029/`). Output is written as N-Triples to `./output/`.
+`<pipeline>` is the name of a directory under `pipelines/`. This runs the pipeline with Docker Compose, with QLever in a sidecar container. Output is written as N-Triples to `./output/`.
+
+Alternatively, run the pipeline directly with Node.js:
+
+```sh
+npm install
+npm start -- amateurfilm
+```
+
+### QLever modes
+
+The pipeline runs QLever as a sidecar, using the `remote` mode of [`@lde/sparql-qlever`](https://ldelements.org/reference/sparql-qlever). When running the pipeline directly, set `QLEVER_ENV` to `docker` (default) to run QLever in Docker containers, or to `native` to run QLever binaries from `PATH`.
 
 ### Create a new pipeline
 
 ```sh
-npx tsx src/index.ts init <dataset-uri>
+npm start -- init <pipeline>
 ```
 
 This creates the pipeline directory under `pipelines/`. Then add SPARQL query files to it:
@@ -62,6 +72,8 @@ For datasets whose source data isn't registered in the NDE Dataset Register, add
 
 ```
 loda-pipeline/
+├── scripts/
+│   └── run                   Run a pipeline with Docker Compose
 ├── src/
 │   ├── index.ts              Entry point
 │   ├── build-pipeline.ts     Pipeline construction

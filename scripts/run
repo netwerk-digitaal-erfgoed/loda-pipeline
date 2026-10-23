@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -ne 1 ]; then
+  echo "Usage: scripts/run <pipeline>" >&2
+  exit 1
+fi
+
+cd "$(dirname "$0")/.."
+PIPELINE="$1" exec docker compose up --build --exit-code-from pipeline

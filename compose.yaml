@@ -1,0 +1,26 @@
+services:
+  pipeline:
+    build: .
+    command: ['${PIPELINE:?Set PIPELINE to a pipeline directory name}']
+    user: '1000:1000'
+    environment:
+      QLEVER_MEMORY_GB: ${QLEVER_MEMORY_GB:-8}
+    volumes:
+      - ./imports:/app/imports
+      - ./output:/app/output
+      - ./pipelines:/app/pipelines:ro
+
+  qlever:
+    image: ${QLEVER_IMAGE:-adfreiburg/qlever:commit-a14e0a0}
+    entrypoint: ['/agent/task-agent']
+    user: '1000:1000'
+    network_mode: service:pipeline
+    restart: unless-stopped
+    mem_limit: ${QLEVER_MEM_LIMIT:-16g}
+    depends_on:
+      - pipeline
+    volumes:
+      - type: image
+        source: ghcr.io/ldelements/task-runner-http:0.1.0
+        target: /agent
+      - ./imports:/app/imports

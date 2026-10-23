@@ -1,0 +1,8 @@
+node_modules/
+build/
+imports/
+output/
+europeana-tools/
+.env
+.git/
+.claude/

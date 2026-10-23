@@ -38,4 +38,4 @@ The CLI entry point (`src/index.ts`) converts dataset URIs to directory names vi
 - Pipeline directories live under `pipelines/` named by `filenamify-url(datasetUri)`
 - `dataset.ttl` files use `dcat:accessURL` and `dcat:mediaType` (IANA URI) so the importer recognises the format
 - Resource cleanup via `try/finally` on `distributionResolver.cleanup()`
-- Requires Docker for QLever; downloads go to `imports/`
+- QLever runs per `QLEVER_ENV`: `docker` (default, local), `native`, or `remote` (sidecar via `@lde/task-runner-http`, used by the `Dockerfile` image); downloads go to `imports/`
