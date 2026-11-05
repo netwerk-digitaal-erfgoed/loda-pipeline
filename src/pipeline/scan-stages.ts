@@ -17,9 +17,16 @@ export interface StageDefinition {
  * - executor*.rq             → executor for stage 1 (e.g. executor.rq, executor-aggregation.rq)
  * - executor-N*.rq           → executor for stage N (e.g. executor-2.rq, executor-2-aggregation.rq)
  */
-export async function scanStages(dir: string): Promise<StageDefinition[]> {
+export async function scanStages(
+  dir: string,
+  selectorOverride?: string,
+): Promise<StageDefinition[]> {
   const files = await readdir(dir);
   const rqFiles = files.filter(f => f.endsWith('.rq'));
+  // TODO: make the override replace the rqFile with the same basename
+  if (selectorOverride) {
+    rqFiles.push(selectorOverride);
+  }
 
   // Map each stage number to its selector file.
   const selectorForStage = new Map<number, string>();

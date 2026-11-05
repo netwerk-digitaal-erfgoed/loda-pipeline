@@ -1,0 +1,20 @@
+pipelines:
+  
+  amateurfilm:
+    dataset: 
+      uri: http://data.beeldengeluid.nl/id/dataset/0029
+    bindings:
+      dataProvider: "Netherlands Institute for Sound & Vision"
+      edmType: "VIDEO"
+    selector:
+      path: overrides/amateurfilm/selector.rq
+  
+  ran:
+    dataset: 
+      uri: https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten
+      file: overrides/ran/dataset.ttl
+    bindings:
+      dataProvider: "Regionaal Archief Nijmegen"
+      edmType: "IMAGE"
+    selector:
+      path: overrides/ran/selector.rq

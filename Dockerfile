@@ -17,6 +17,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 COPY --from=build /app/build /app/build
 COPY --from=build /app/pipelines /app/pipelines
+COPY --from=build /app/base /app/base
 RUN mkdir /app/output /app/imports && \
     chown node /app/output /app/imports
 USER node

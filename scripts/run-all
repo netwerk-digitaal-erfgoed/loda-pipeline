@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  echo "Usage: scripts/run-all [--native] [<pipeline>...]" >&2
+  exit 1
+}
+
+native=false
+pipelines=()
+
+for arg in "$@"; do
+  case "$arg" in
+    --native) native=true ;;
+    -*) usage ;;
+    *) pipelines+=("$arg") ;;
+  esac
+done
+
+trap 'exit 130' INT
+
+cd "$(dirname "$0")/.."
+
+if [ ${#pipelines[@]} -eq 0 ]; then
+  for config in pipelines/*/config.yaml; do
+    pipelines+=("$(basename "$(dirname "$config")")")
+  done
+fi
+
+for pipeline in "${pipelines[@]}"; do
+  if [ ! -f "pipelines/$pipeline/config.yaml" ]; then
+    echo "Pipeline not found: $pipeline" >&2
+    exit 1
+  fi
+done
+
+export LC_ALL=C
+
+results_dir=.run-all
+run_dir="$results_dir/runs/$(date -u +%Y%m%dT%H%M%SZ)"
+started="$run_dir/.started"
+summary="$run_dir/summary.tsv"
+failures=0
+
+run_pipeline() {
+  if [ "$native" = true ]; then
+    scripts/run --native "$1"
+  else
+    scripts/run "$1"
+  fi
+}
+
+new_files() {
+  find "$1" -maxdepth 1 -type f -name '*.nt' -newer "$started" -print0 | xargs -0 -r cat
+}
+
+validation_results() {
+  new_files output/validation | sort -u | awk '
+    {
+      subject = $1
+      predicate = $2
+      object = $0
+      sub(/^[^ ]+ [^ ]+ /, "", object)
+      sub(/ \.$/, "", object)
+    }
+    predicate ~ /shacl#result>$/ { results[object] = 1 }
+    predicate ~ /shacl#focusNode>$/ { focus[subject] = object }
+    predicate ~ /shacl#resultSeverity>$/ { severity[subject] = object }
+    predicate ~ /shacl#sourceConstraintComponent>$/ { component[subject] = object }
+    predicate ~ /shacl#resultPath>$/ && object !~ /\/\.well-known\/shacl#/ { path[subject] = object }
+    predicate ~ /shacl#resultMessage>$/ { message[subject] = message[subject] object }
+    END {
+      for (result in results) {
+        print focus[result] "\t" severity[result] "\t" component[result] "\t" path[result] "\t" message[result]
+      }
+    }
+  ' | sort -u
+}
+
+count_severity() {
+  awk -F'\t' -v severity="<http://www.w3.org/ns/shacl#$1>" '$2 == severity { n++ } END { print n + 0 }' "$2"
+}
+
+compare() {
+  local current="$1" baseline="$2" prefix="$3"
+  if [ ! -f "$baseline" ]; then
+    printf -- '-\t-'
+    return
+  fi
+  comm -13 <(gzip -cd "$baseline") "$current" > "$prefix.added"
+  comm -23 <(gzip -cd "$baseline") "$current" > "$prefix.removed"
+  printf '%d\t%d' "$(wc -l < "$prefix.added")" "$(wc -l < "$prefix.removed")"
+}
+
+mkdir -p "$run_dir" output/validation
+printf 'pipeline\tstatus\tlines\ttriples\ttriples_added\ttriples_removed\tviolations\twarnings\tresults_added\tresults_removed\n' > "$summary"
+
+for pipeline in "${pipelines[@]}"; do
+  pipeline_dir="$run_dir/$pipeline"
+  baseline_dir="$results_dir/baseline/$pipeline"
+  mkdir -p "$pipeline_dir"
+  touch "$started"
+
+  echo "==> Running $pipeline"
+  if ! run_pipeline "$pipeline"; then
+    failures=$((failures + 1))
+    printf '%s\tfailed\t-\t-\t-\t-\t-\t-\t-\t-\n' "$pipeline" >> "$summary"
+    continue
+  fi
+
+  lines="$(new_files output | wc -l)"
+  if [ "$lines" -eq 0 ]; then
+    failures=$((failures + 1))
+    printf '%s\tno-output\t0\t0\t-\t-\t-\t-\t-\t-\n' "$pipeline" >> "$summary"
+    continue
+  fi
+
+  triples_file="$pipeline_dir/triples.nt"
+  results_file="$pipeline_dir/validation.tsv"
+  new_files output | sort -u > "$triples_file"
+  validation_results > "$results_file"
+
+  triples_changes="$(compare "$triples_file" "$baseline_dir/triples.nt.gz" "$pipeline_dir/triples")"
+  results_changes="$(compare "$results_file" "$baseline_dir/validation.tsv.gz" "$pipeline_dir/validation")"
+
+  printf '%s\tpassed\t%d\t%d\t%s\t%d\t%d\t%s\n' \
+    "$pipeline" "$lines" "$(wc -l < "$triples_file")" "$triples_changes" \
+    "$(count_severity Violation "$results_file")" "$(count_severity Warning "$results_file")" \
+    "$results_changes" >> "$summary"
+
+  gzip "$triples_file" "$results_file"
+done
+
+rm -f "$started"
+find "$run_dir" -type f -empty -delete
+find "$run_dir" -mindepth 1 -type d -empty -delete
+
+column -t -s $'\t' "$summary"
+echo "==> Results in $run_dir"
+
+[ "$failures" -eq 0 ]

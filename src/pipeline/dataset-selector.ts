@@ -14,17 +14,19 @@ const dcat = (term: string) => `${DCAT_PREFIX}${term}`;
 
 export async function createDatasetSelector(
   datasetIri: URL,
-  pipelineDir: string,
   registryEndpoint: URL,
+  datasetFilePath?: string,
 ): Promise<DatasetSelector> {
   // Check for a dataset.ttl with supplemental distributions.
-  const ttlPath = path.join(pipelineDir, 'dataset.ttl');
-  const distributions = await readLocalDistributions(ttlPath);
+  if (datasetFilePath) {
+    const ttlPath = path.resolve(datasetFilePath);
+    const distributions = await readLocalDistributions(ttlPath);
 
-  if (distributions.length > 0) {
-    return new ManualDatasetSelection([
-      new Dataset({iri: datasetIri, distributions}),
-    ]);
+    if (distributions.length > 0) {
+      return new ManualDatasetSelection([
+        new Dataset({iri: datasetIri, distributions}),
+      ]);
+    }
   }
 
   // Registry-backed dataset: use RegistrySelector filtered to this IRI.

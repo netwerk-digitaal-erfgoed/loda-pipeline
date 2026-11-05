@@ -26,9 +26,8 @@ where {
 
     $this sdo:associatedMedia ?associatedMedia .
 
-    # TODO consider replacing SAMPLE with MIN to avoid variance in data generation
-    {  
-        SELECT $this (SAMPLE(?_contentUrl) as ?_sampleContentUrl)  {
+    {
+        SELECT $this (MIN(?_contentUrl) as ?_sampleContentUrl)  {
             $this sdo:associatedMedia/sdo:contentUrl ?_contentUrl .
         } GROUP BY $this
     }

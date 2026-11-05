@@ -9,6 +9,7 @@ services:
       - ./imports:/app/imports
       - ./output:/app/output
       - ./pipelines:/app/pipelines:ro
+      - ./base:/app/base:ro
 
   qlever:
     image: ${QLEVER_IMAGE:-adfreiburg/qlever:commit-a14e0a0}

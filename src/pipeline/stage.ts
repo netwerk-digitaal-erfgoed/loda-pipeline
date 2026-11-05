@@ -5,6 +5,7 @@ import {
   Stage,
   type Validator,
 } from '@lde/pipeline';
+import type {DatasetBindingsProvider} from '@lde/pipeline';
 import * as z from 'zod';
 import {type StageDefinition, scanStages} from './scan-stages.js';
 
@@ -18,6 +19,7 @@ type StageConfig = z.infer<typeof StageConfig>;
 async function createStage(
   stageDef: StageDefinition,
   validator: Validator,
+  bindingsProvider: DatasetBindingsProvider,
   config: StageConfig,
 ): Promise<Stage> {
   StageConfig.parse(config);
@@ -38,16 +40,21 @@ async function createStage(
     batchSize: config.batchSize,
     maxConcurrency: config.maxConcurrency,
     validation: {validator, onInvalid: 'write'},
+    bindingsProvider,
   });
 }
 
 export async function createStages(
   pipelineDir: string,
   validator: Validator,
+  bindingsProvider: DatasetBindingsProvider,
   config: StageConfig,
+  selectorOverride?: string,
 ): Promise<Stage[]> {
-  const stageDefs = await scanStages(pipelineDir);
+  const stageDefs = await scanStages(pipelineDir, selectorOverride);
   return Promise.all(
-    stageDefs.map(stageDef => createStage(stageDef, validator, config)),
+    stageDefs.map(stageDef =>
+      createStage(stageDef, validator, bindingsProvider, config),
+    ),
   );
 }

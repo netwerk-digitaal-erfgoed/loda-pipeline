@@ -1,23 +1,34 @@
-import {readFile, writeFile} from 'node:fs/promises';
+import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import envSchema, {type JSONSchemaType} from 'env-schema';
 import yaml from 'yaml';
 import * as z from 'zod';
 
-// Configuration for an individual pipeline
 const PipelineConfig = z.object({
-  name: z.string(),
-  directory: z.string(),
   dataset: z.object({
     uri: z.url(),
+    file: z.string().optional(),
   }),
+  bindings: z.record(z.string(), z.string()).optional(),
+  selector: z
+    .object({
+      path: z.string().optional(),
+    })
+    .optional(),
 });
 
-export type PipelineConfig = z.infer<typeof PipelineConfig>;
+type NamelessPipelineConfig = z.infer<typeof PipelineConfig>;
+
+export type PipelineConfig = NamelessPipelineConfig & {name: string};
+
+const PipelinesConfig = z.object({
+  pipelines: z.record(z.string(), PipelineConfig),
+});
 
 // Global application configurations, regardless of pipeline.
 export interface ApplicationConfig {
   REGISTRY_ENDPOINT: string;
+  BASE_CONFIG_DIR: string;
   IMPORT_DIR: string;
   OUTPUT_DIR: string;
   VALIDATION_EDM_SHAPES_PATH: string;
@@ -38,11 +49,12 @@ const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
       default:
         'https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry',
     },
+    BASE_CONFIG_DIR: {type: 'string', default: 'base'},
     IMPORT_DIR: {type: 'string', default: 'imports'},
     OUTPUT_DIR: {type: 'string', default: 'output'},
     VALIDATION_EDM_SHAPES_PATH: {
       type: 'string',
-      default: 'pipelines/generic/edm_ext_shacl_shapes.ttl',
+      default: 'base/edm_ext_shacl_shapes.ttl',
     },
     VALIDATION_OUTPUT_DIR: {type: 'string', default: 'output/validation'},
     QLEVER_ENV: {
@@ -62,33 +74,21 @@ export const applicationConfig = envSchema<ApplicationConfig>({
   dotenv: true,
 });
 
-const getConfigFilePath = (pipelineDir: string) =>
-  path.resolve(pipelineDir, 'config.yaml');
+const getConfigFilePath = () => path.resolve('pipelines.yaml');
 
-export async function getPipelineConfig(
-  pipelineDir: string,
-): Promise<PipelineConfig> {
-  const configPath = getConfigFilePath(pipelineDir);
-  return await readFile(configPath, 'utf-8')
+export async function getPipelineConfig(name: string): Promise<PipelineConfig> {
+  const configPath = getConfigFilePath();
+  const configAll = await readFile(configPath, 'utf-8')
     .then(yaml.parse)
-    .then(obj =>
-      PipelineConfig.parse({
-        name: path.basename(pipelineDir),
-        directory: path.resolve(pipelineDir),
-        ...obj,
-      }),
-    );
+    .then(PipelinesConfig.parse);
+  const config = Object.entries(configAll.pipelines)
+    .map(([name, config]) => ({
+      name,
+      ...config,
+    }))
+    .find(config => config.name === name);
+  if (!config) {
+    throw Error(`No pipeline config was found by the name ${name}`);
+  }
+  return config;
 }
-
-export async function initPipelineConfig(pipelineDir: string): Promise<void> {
-  const configFp = getConfigFilePath(pipelineDir);
-  const defaultConfig = createDefaultPipelineConfig();
-  return writeFile(configFp, yaml.stringify(defaultConfig));
-}
-
-const createDefaultPipelineConfig = (): PipelineConfig =>
-  PipelineConfig.parse({
-    dataset: {
-      uri: '',
-    },
-  });

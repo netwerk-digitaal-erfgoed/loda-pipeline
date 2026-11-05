@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -gt 1 ]; then
+  echo "Usage: scripts/pin-baseline [<run>]" >&2
+  exit 1
+fi
+
+cd "$(dirname "$0")/.."
+
+results_dir=.run-all
+runs_dir="$results_dir/runs"
+run="${1:-$(ls "$runs_dir" 2>/dev/null | tail -n 1 || true)}"
+
+if [ -z "$run" ] || [ ! -d "$runs_dir/$run" ]; then
+  echo "Run not found: ${run:-no runs in $runs_dir}" >&2
+  exit 1
+fi
+
+pinned=0
+
+for snapshot in "$runs_dir/$run"/*/triples.nt.gz; do
+  [ -f "$snapshot" ] || continue
+  source_dir="$(dirname "$snapshot")"
+  pipeline="$(basename "$source_dir")"
+  baseline_dir="$results_dir/baseline/$pipeline"
+  mkdir -p "$baseline_dir"
+  cp "$snapshot" "$source_dir/validation.tsv.gz" "$baseline_dir/"
+  echo "Pinned $pipeline from run $run"
+  pinned=$((pinned + 1))
+done
+
+if [ "$pinned" -eq 0 ]; then
+  echo "Run $run has no results to pin" >&2
+  exit 1
+fi
+
+awk -F'\t' 'NR > 1 && $2 != "passed" { print "Not pinned: " $1 " (" $2 ")" }' "$runs_dir/$run/summary.tsv"

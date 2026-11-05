@@ -1,0 +1,100 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+PREFIX ore:     <http://www.openarchives.org/ore/terms/>
+PREFIX doap:    <http://usefulinc.com/ns/doap#>
+PREFIX svcs:    <http://rdfs.org/sioc/services#>
+
+CONSTRUCT {
+
+    # The mandatory properties for ore:Aggregation are:
+    # - edm:dataProvider
+    # - edm:isShownAt OR edm:isShownBy
+    #   (at least one should be present, recommened to have both and they can be used alongside each other)
+    # - edm:provider
+    # - edm:rights
+    # - edm:aggregatedCHO,
+    # - edm:ugc (if applicable)
+    #
+    # The recommended properties are:
+    # - edm:object
+    # - edm:intermediateProvider
+
+    ?aggregation_URI a ore:Aggregation ;
+        edm:aggregatedCHO ?providedCHO_URI ; # The identifier of the source object e.g. the Mona Lisa itself, ref [1..1]
+        edm:dataProvider ?dataProvider ;     # The name or identifier of the data provider of the object, literal, ref [1..1]
+        edm:hasView ?contentUrl, ?thumbnailUrl ; # The URL of a web resource which is a digital representation of the CHO, ref [0..m]
+                                             # This may be the source object itself in the case of a born digital cultural heritage object.
+                                             # edm:hasView should only be used where there are several views of the CHO and one (or both)
+                                             # of the mandatory edm:isShownAt or edm:isShownBy properties have already been used, ref [0..1]
+        edm:isShownAt $this ;                # The URL of a web view of the object in full information context, ref [0..1]
+        edm:isShownBy ?webresource_URI ;     # The URL of a web view of the object. An edm:isShownBy must be provided, ref [0..1]
+        edm:object ?contentUrl ;             # The URL of a representation of the CHO which will be used for generating previews for use in the Europeana portal, ref [0..1]
+
+        # fixed value for this pipelines
+        edm:provider "DC4EU" ;               # The name or identifier of the provider of the object, literal, ref [1..1]
+        edm:intermediateProvider "NDE" ;     # The name or identifier of the intermediate organization that selects, collates, or curates data from a Data Provider that is then aggregated by a Provider from which Europeana harvests, literal, ref [0..n]
+
+        edm:rights ?license, ?fallbackLicense ; # This is a mandatory property and the value given here should be the rights statement that applies to the digital representation, ref [1..1]
+#       edm:ugcProperty                      # This is a mandatory property for objects that are user generated or user created that have been collected by crowdsourcing or project activity, literal [0..1]
+
+
+        .                                    # termination of the ore:Aggregation object (do not remove!)
+
+    # TODO: check with https://europeana.atlassian.net/wiki/x/eYB9gg for the correct implementation
+
+    # the following classes are used to model the access to the IIIF Presentation API
+    ?webresource_URI a edm:WebResource ;
+        dcterms:isReferencedBy ?IIIF_Presentation_API_URI ; # A related resource that references, cites, or otherwise points to the described resource.
+                                                            # In IIIF, dcterms:isReferencedBy can be used to connect an edm:WebResource to a IIIF manifest URI.
+        svcs:has_service ?service_URI   # The identifier of the svcs:Service required to consume the edm:WebResource.
+
+        .                              # termination of the edm:WebResource object (do not remove!)
+
+    ?service_URI a svcs:Service ;
+        dcterms:conformsTo "http://iiif.io/api/presentation" ; # An established standard to which the web resource or service conforms.
+                                        # If the Service describes a IIIF resource, dcterms:conformsTo must be used
+                                        # to describe the IIIF protocol the resource is conforming to.
+
+        doap:implements ?encodingFormatPresentationAPI ;  # A specification that a project implements. In IIIF doap:implements refers
+                                        # to the the protocol implemented in IIIF.
+
+        .                               # # termination of the svcs:Service object (do not remove!)
+
+}
+WHERE {
+    # in some case the sdo:CreativeWork is not the toplevel of the record
+    FILTER(!ISBLANK($this))
+
+    # mint a URI for the edm:ProvidedCHO and ore:Aggregation objects
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+
+    # mint a URI for the edm:Webresource and svcs:Service object used for describing the IIIF API(s)
+    BIND(URI(CONCAT(STR($this),"#webres")) as ?webresource_URI)
+    BIND(URI(CONCAT(STR($this),"#service")) as ?service_URI)
+
+    # only use the dataset license if none of the media objects has a license
+    BIND(IF(EXISTS { $this sdo:associatedMedia/sdo:license ?_anyLicense }, 1/0, ?datasetLicense) as ?fallbackLicense)
+
+    # the first branch makes sure the constant triples are emitted for every record
+    { $this a sdo:CreativeWork }
+    UNION {
+        $this sdo:associatedMedia/sdo:contentUrl ?_contentUrl .
+        BIND(IRI(STR(?_contentUrl)) as ?contentUrl)
+    }
+    UNION {
+        $this sdo:associatedMedia/sdo:thumbnailUrl ?_thumbnailUrl .
+        BIND(IRI(STR(?_thumbnailUrl)) as ?thumbnailUrl)
+    }
+    UNION {
+        $this sdo:associatedMedia/sdo:license ?_license .
+        BIND(IRI(STR(?_license)) as ?license)
+    }
+    UNION {
+        # see if an IIIF-Presentation API is defined
+        $this sdo:associatedMedia/sdo:isBasedOn ?IIIF_Presentation_API_URI .
+        ?IIIF_Presentation_API_URI sdo:encodingFormat ?encodingFormatPresentationAPI .
+        FILTER(?encodingFormatPresentationAPI="application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'")
+    }
+}

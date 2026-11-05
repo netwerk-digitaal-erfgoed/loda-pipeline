@@ -2,4 +2,7 @@ node_modules/
 build/
 imports/
 output/
+.measure/
+.run-all/
 .env
+.vscode
