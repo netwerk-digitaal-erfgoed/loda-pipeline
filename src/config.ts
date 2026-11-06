@@ -10,11 +10,7 @@ const PipelineConfig = z.object({
     file: z.string().optional(),
   }),
   bindings: z.record(z.string(), z.string()).optional(),
-  selector: z
-    .object({
-      path: z.string().optional(),
-    })
-    .optional(),
+  overrides: z.array(z.string()).optional(),
 });
 
 type NamelessPipelineConfig = z.infer<typeof PipelineConfig>;

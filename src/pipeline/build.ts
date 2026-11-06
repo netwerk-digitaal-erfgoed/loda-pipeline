@@ -39,7 +39,7 @@ export async function build(
       batchSize: applicationConfig.STAGE_BATCH_SIZE,
       maxConcurrency: applicationConfig.STAGE_MAX_CONCURRENCY,
     },
-    pipelineConfig.selector?.path,
+    pipelineConfig.overrides,
   );
 
   const logger = pino({

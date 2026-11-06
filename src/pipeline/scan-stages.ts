@@ -18,15 +18,26 @@ export interface StageDefinition {
  * - executor-N*.rq           → executor for stage N (e.g. executor-2.rq, executor-2-aggregation.rq)
  */
 export async function scanStages(
-  dir: string,
-  selectorOverride?: string,
+  baseDir: string,
+  overrideDirs?: string[],
 ): Promise<StageDefinition[]> {
-  const files = await readdir(dir);
-  const rqFiles = files.filter(f => f.endsWith('.rq'));
-  // TODO: make the override replace the rqFile with the same basename
-  if (selectorOverride) {
-    rqFiles.push(selectorOverride);
+  const baseFiles = await readdir(baseDir);
+  const baseRqFiles = baseFiles.filter(f => f.endsWith('.rq'));
+
+  const overrideRqFiles: string[] = [];
+  if (overrideDirs) {
+    for (const overrideDir of overrideDirs) {
+      const overrideFiles = await readdir(overrideDir);
+      overrideRqFiles.push(...overrideFiles.filter(f => f.endsWith('.rq')));
+    }
   }
+
+  const rqFiles = baseRqFiles.map(file => {
+    const override = overrideRqFiles.find(
+      override => path.basename(override) === path.basename(file),
+    );
+    return override ?? file;
+  });
 
   // Map each stage number to its selector file.
   const selectorForStage = new Map<number, string>();
@@ -58,18 +69,18 @@ export async function scanStages(
   for (const [num, execs] of executors) {
     const selectorFile = selectorForStage.get(num) ?? wildcardSelector;
     if (!selectorFile) {
-      throw new Error(`No selector found for stage ${num} in ${dir}`);
+      throw new Error(`No selector found for stage ${num} in ${baseDir}`);
     }
 
     const existing = stagesBySelector.get(selectorFile);
     if (existing) {
       existing.stageNumber = Math.min(existing.stageNumber, num);
-      existing.executorFiles.push(...execs.map(f => path.join(dir, f)));
+      existing.executorFiles.push(...execs.map(f => path.join(baseDir, f)));
     } else {
       stagesBySelector.set(selectorFile, {
         stageNumber: num,
-        selectorFile: path.join(dir, selectorFile),
-        executorFiles: execs.map(f => path.join(dir, f)),
+        selectorFile: path.join(baseDir, selectorFile),
+        executorFiles: execs.map(f => path.join(baseDir, f)),
       });
     }
   }

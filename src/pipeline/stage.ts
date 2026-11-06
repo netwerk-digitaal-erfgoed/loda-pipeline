@@ -49,9 +49,9 @@ export async function createStages(
   validator: Validator,
   bindingsProvider: DatasetBindingsProvider,
   config: StageConfig,
-  selectorOverride?: string,
+  overrideDir?: string[],
 ): Promise<Stage[]> {
-  const stageDefs = await scanStages(pipelineDir, selectorOverride);
+  const stageDefs = await scanStages(pipelineDir, overrideDir);
   return Promise.all(
     stageDefs.map(stageDef =>
       createStage(stageDef, validator, bindingsProvider, config),

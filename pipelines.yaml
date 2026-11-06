@@ -6,8 +6,8 @@ pipelines:
     bindings:
       dataProvider: "Netherlands Institute for Sound & Vision"
       edmType: "VIDEO"
-    selector:
-      path: overrides/amateurfilm/selector.rq
+    overrides: 
+      - overrides/amateurfilm
   
   ran:
     dataset: 
@@ -16,5 +16,5 @@ pipelines:
     bindings:
       dataProvider: "Regionaal Archief Nijmegen"
       edmType: "IMAGE"
-    selector:
-      path: overrides/ran/selector.rq
+    overrides: 
+      - overrides/ran
