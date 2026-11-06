@@ -1,5 +1,4 @@
 PREFIX sdo: <https://schema.org/>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dc:      <http://purl.org/dc/elements/1.1/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
@@ -88,13 +87,8 @@ WHERE {
     { $this a sdo:CreativeWork }
     UNION { $this sdo:name ?name }
     UNION {
-        # sdo:creator is described in a complex way for the jmvdcollectie
-        # voorkomende rollen zijn: fotograaf, graveur, maker, ontwerper, plateelbakkerij, schilder, schrijver, Tekenaar, Uitgever, vervaardiger
-        # TODO: find out how often this is described like this for LDMAX/Axiell (and other) datasets?
-        $this sdo:creator [
-            a sdo:Role ;                          # assume creator is modeled as Role
-            sdo:creator/foaf:name ?_creatorName ; # label of the creator
-            ] .
+        # a Person, an Organization or an untyped creator, all with a name
+        $this sdo:creator/sdo:name ?_creatorName .
         BIND(IF(LANG(?_creatorName)="",STRLANG(?_creatorName,"nl"),?_creatorName) as ?creatorName)
     }
     UNION {
@@ -125,16 +119,24 @@ WHERE {
         BIND(IF(LANG(?_description)="",STRLANG(?_description,"nl"),?_description) as ?description)
     }
     UNION {
-        # collect the 'genre'  info
-        $this sdo:genre ?genre
+        # collect the 'genre' info
+        $this sdo:genre ?genre .
+        FILTER(!ISBLANK(?genre))
     }
     UNION {
-        # read the identifier defined as Literal or URI
-        $this sdo:identifier ?identifierDirect .
-        FILTER(!ISBLANK(?identifierDirect))
+        # a blank node can't be referenced, so use its sameAs and its name
+        $this sdo:genre ?_genre .
+        FILTER(ISBLANK(?_genre))
+        ?_genre sdo:sameAs|sdo:name ?genre .
     }
     UNION {
-        # read the identifier if defined using a blank node
+        # read the identifier defined as a string
+        $this sdo:identifier ?_identifierDirect .
+        FILTER(ISLITERAL(?_identifierDirect))
+        BIND(STR(?_identifierDirect) as ?identifierDirect)
+    }
+    UNION {
+        # read the identifier defined as a PropertyValue
         $this sdo:identifier ?identifier_bn .
         ?identifier_bn sdo:propertyID ?propertyID ;
                     sdo:value ?identifierValue .
@@ -147,16 +149,31 @@ WHERE {
         BIND(IF(LANG(?_material)="",STRLANG(?_material,"nl"),?_material) as ?materialLabel)
     }
     UNION {
-        # construct a string that contains the size details
-        $this sdo:size ?sizeObject .
-        ?sizeObject sdo:value ?sizeValue ;
-            		sdo:name ?sizeName ;
-            		sdo:unitText ?sizeUnitText .
-        BIND(STRLANG(CONCAT(?sizeName," ",STR(?sizeValue)," ",?sizeUnitText),"nl") as ?sizeText)
+        # the size as a display statement
+        $this sdo:size ?sizeText .
+        FILTER(ISLITERAL(?sizeText))
     }
     UNION {
-        # collect the 'temporalCoverage' info
-        $this sdo:temporalCoverage ?temporalCoverage
+        # construct a string that contains the size details
+        # TODO: sdo:name is not in SCHEMA-AP-NDE: remove it when the LDMAX datasets are preprocessed
+        $this sdo:size ?sizeObject .
+        ?sizeObject sdo:value ?sizeValue ;
+            		sdo:name|sdo:valueReference|sdo:valueReference/sdo:name ?_sizeName ;
+            		sdo:unitText|sdo:unitCode/sdo:name ?_sizeUnit .
+        FILTER(ISLITERAL(?_sizeName))
+        BIND(STRLANG(CONCAT(STR(?_sizeName)," ",STR(?sizeValue)," ",STR(?_sizeUnit)),"nl") as ?sizeText)
+    }
+    UNION {
+        # collect the 'temporalCoverage' info: a date or a URI
+        $this sdo:temporalCoverage ?_temporalCoverage .
+        FILTER(!ISBLANK(?_temporalCoverage))
+        BIND(IF(ISLITERAL(?_temporalCoverage), STR(?_temporalCoverage), ?_temporalCoverage) as ?temporalCoverage)
+    }
+    UNION {
+        # a blank node can't be referenced, so use its sameAs and its name
+        $this sdo:temporalCoverage ?_temporalCoverage .
+        FILTER(ISBLANK(?_temporalCoverage))
+        ?_temporalCoverage sdo:sameAs|sdo:name ?temporalCoverage .
     }
     UNION {
         # collect the 'text' info
@@ -168,8 +185,19 @@ WHERE {
         BIND(IF(LANG(?_locationCreated)="",STRLANG(?_locationCreated,"nl"),?_locationCreated) as ?locationCreated)
     }
     UNION {
-        # collect the 'dateCreated' info
-        $this sdo:dateCreated ?dateCreated
+        # collect the 'dateCreated' info: SCHEMA-AP-NDE requires a datatype, the EDM shape doesn't allow one
+        $this sdo:dateCreated ?_dateCreated .
+        BIND(STR(?_dateCreated) as ?dateCreated)
     }
-    UNION { $this sdo:about ?about }
+    UNION {
+        # collect the 'about' info
+        $this sdo:about ?about .
+        FILTER(!ISBLANK(?about))
+    }
+    UNION {
+        # a blank node can't be referenced, so use its sameAs and its name
+        $this sdo:about ?_about .
+        FILTER(ISBLANK(?_about))
+        ?_about sdo:sameAs|sdo:name ?about .
+    }
 }

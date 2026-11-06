@@ -9,13 +9,17 @@ export async function createQleverImportResolver(
   qleverMemoryGb: number,
   qleverEnv: ApplicationConfig['QLEVER_ENV'],
   qleverImage: string,
+  accessToken?: string,
 ): Promise<ImportResolver> {
   // Set up QLever for importing data.
   await mkdir(importsDir, {recursive: true});
 
   const qleverOptions = {
     dataDir: resolve(importsDir),
-    serverOptions: {'memory-max-size': `${qleverMemoryGb}G`},
+    serverOptions: {
+      'memory-max-size': `${qleverMemoryGb}G`,
+      ...(accessToken && {'access-token': accessToken}),
+    },
   };
 
   const qlever = createQlever(

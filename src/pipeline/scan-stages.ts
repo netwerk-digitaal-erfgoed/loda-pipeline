@@ -16,49 +16,42 @@ export interface StageDefinition {
  * - selector-N-M-O.rq        → shared selector for stages N, M, O
  * - executor*.rq             → executor for stage 1 (e.g. executor.rq, executor-aggregation.rq)
  * - executor-N*.rq           → executor for stage N (e.g. executor-2.rq, executor-2-aggregation.rq)
+ *
+ * A file in an override directory replaces the file with the same name in the
+ * base directory, or adds to it if there is none.
  */
 export async function scanStages(
   baseDir: string,
-  overrideDirs?: string[],
+  overrideDirs: string[] = [],
 ): Promise<StageDefinition[]> {
-  const baseFiles = await readdir(baseDir);
-  const baseRqFiles = baseFiles.filter(f => f.endsWith('.rq'));
-
-  const overrideRqFiles: string[] = [];
-  if (overrideDirs) {
-    for (const overrideDir of overrideDirs) {
-      const overrideFiles = await readdir(overrideDir);
-      overrideRqFiles.push(...overrideFiles.filter(f => f.endsWith('.rq')));
+  const rqFiles = new Map<string, string>();
+  for (const dir of [baseDir, ...overrideDirs]) {
+    const files = await readdir(dir);
+    for (const file of files.filter(f => f.endsWith('.rq'))) {
+      rqFiles.set(file, path.join(dir, file));
     }
   }
-
-  const rqFiles = baseRqFiles.map(file => {
-    const override = overrideRqFiles.find(
-      override => path.basename(override) === path.basename(file),
-    );
-    return override ?? file;
-  });
 
   // Map each stage number to its selector file.
   const selectorForStage = new Map<number, string>();
   let wildcardSelector: string | undefined;
   const executors = new Map<number, string[]>();
 
-  for (const file of rqFiles) {
+  for (const [file, filePath] of rqFiles) {
     const base = file.replace('.rq', '');
 
     if (base === 'selector') {
-      wildcardSelector = file;
+      wildcardSelector = filePath;
     } else if (base.startsWith('selector-')) {
       const nums = base.slice('selector-'.length).split('-').map(Number);
       if (nums.some(Number.isNaN)) continue;
       for (const num of nums) {
-        selectorForStage.set(num, file);
+        selectorForStage.set(num, filePath);
       }
     } else if (base.startsWith('executor')) {
       const stageNumber = parseExecutorStage(base);
       const list = executors.get(stageNumber) ?? [];
-      list.push(file);
+      list.push(filePath);
       executors.set(stageNumber, list);
     }
   }
@@ -75,12 +68,12 @@ export async function scanStages(
     const existing = stagesBySelector.get(selectorFile);
     if (existing) {
       existing.stageNumber = Math.min(existing.stageNumber, num);
-      existing.executorFiles.push(...execs.map(f => path.join(baseDir, f)));
+      existing.executorFiles.push(...execs);
     } else {
       stagesBySelector.set(selectorFile, {
         stageNumber: num,
-        selectorFile: path.join(baseDir, selectorFile),
-        executorFiles: execs.map(f => path.join(baseDir, f)),
+        selectorFile,
+        executorFiles: [...execs],
       });
     }
   }
