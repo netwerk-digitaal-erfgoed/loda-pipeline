@@ -9,6 +9,8 @@ import {
 
 type ResolveCallbacks = Parameters<DistributionResolver['resolve']>[1];
 
+const UPDATE_TIMEOUT = '1800s';
+
 /**
  * Find the SPARQL Update files (.ru) in the override directories, in the order
  * to run them: by file name, and for equal names in directory order.
@@ -68,7 +70,9 @@ export class PreTransformResolver implements DistributionResolver {
 
   private async runUpdates(endpoint: URL): Promise<void> {
     for (const file of this.updateFiles) {
-      const response = await fetch(endpoint, {
+      const url = new URL(endpoint);
+      url.searchParams.set('timeout', UPDATE_TIMEOUT);
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/sparql-update',

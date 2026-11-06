@@ -6,9 +6,50 @@ pipelines:
     bindings:
       dataProvider: "Netherlands Institute for Sound & Vision"
       edmType: "VIDEO"
-    overrides: 
+      datasetLanguage: "nl"
+    overrides:
       - overrides/amateurfilm
-  
+
+  denbosch:
+    dataset:
+      uri: https://zoeken.erfgoedshertogenbosch.nl/AtlantisPubliek/data/dataset/Dataset+Beeldbank+Erfgoed+%27s-Hertogenbosch
+    bindings:
+      dataProvider: "Stadsarchief Den Bosch"
+      edmType: "IMAGE"
+      datasetLanguage: "nl"
+    overrides:
+      - overrides/denbosch
+
+  jmvdcollectie:
+    dataset:
+      uri: https://n2t.net/ark:/32838/dataset
+    bindings:
+      dataProvider: "Jan Menze van Diepen Collectie"
+      edmType: "IMAGE"
+      datasetLanguage: "nl"
+    overrides:
+      - overrides/jmvdcollectie
+
+  mhdww1:
+    dataset:
+      uri: https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD+-+Eerste+Wereldoorlog
+    bindings:
+      dataProvider: "MHD - Museum Huis Doorn"
+      edmType: "IMAGE"
+      datasetLanguage: "nl"
+    overrides:
+      - overrides/mhdww1
+
+  teylers:
+    dataset:
+      uri: https://n2t.net/ark:/72166/dataset
+    bindings:
+      dataProvider: "Teylers Museum"
+      edmType: "IMAGE"
+      datasetLanguage: "nl"
+    overrides:
+      - overrides/teylers
+
   ran:
     dataset: 
       uri: https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten
@@ -16,5 +57,6 @@ pipelines:
     bindings:
       dataProvider: "Regionaal Archief Nijmegen"
       edmType: "IMAGE"
+      datasetLanguage: "nl"
     overrides: 
       - overrides/ran

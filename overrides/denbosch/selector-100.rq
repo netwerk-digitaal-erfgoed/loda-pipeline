@@ -1,0 +1,8 @@
+PREFIX sdo: <https://schema.org/>
+
+SELECT DISTINCT $this WHERE {
+  $this a sdo:CreativeWork ;
+    sdo:associatedMedia ?media .
+  FILTER(!ISBLANK($this))
+}
+ORDER BY $this

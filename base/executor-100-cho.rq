@@ -92,6 +92,12 @@ WHERE {
         BIND(IF(LANG(?_creatorName)="",STRLANG(?_creatorName,"nl"),?_creatorName) as ?creatorName)
     }
     UNION {
+        # without a name, a creator with a URI can still be referenced
+        $this sdo:creator ?creatorName .
+        FILTER(ISIRI(?creatorName))
+        FILTER NOT EXISTS { ?creatorName sdo:name ?_anyName }
+    }
+    UNION {
         $this sdo:isPartOf ?_isPartOf .
         BIND(
             IF(REGEX(STR(?_isPartOf), "^https?://"),  # test if the string contains an URI
@@ -112,6 +118,12 @@ WHERE {
     UNION {
         # collect the 'contentLocation' info
         $this sdo:contentLocation/sdo:name ?contentLocation
+    }
+    UNION {
+        # without a name, a location with a URI can still be referenced
+        $this sdo:contentLocation ?contentLocation .
+        FILTER(ISIRI(?contentLocation))
+        FILTER NOT EXISTS { ?contentLocation sdo:name ?_anyName }
     }
     UNION {
         # find the description is available,
