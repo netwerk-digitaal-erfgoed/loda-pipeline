@@ -1,19 +1,16 @@
-import {randomUUID} from 'node:crypto';
-import {FileWriter, Pipeline} from '@lde/pipeline';
+import {FileWriter, type ImportResolver, Pipeline} from '@lde/pipeline';
 import {applicationConfig, type PipelineConfig} from '../config.js';
 import {createDatasetSelector} from './dataset-selector.js';
-import {createQleverImportResolver} from './distribution-resolver.js';
-import {findPreTransforms, PreTransformResolver} from './pre-transform.js';
+import {createQleverResolvers} from './distribution-resolver.js';
 import {createStages} from './stage.js';
-import {createEdmShaclValidator} from './validator.js';
 import {LoggerReporter} from '@lde/pipeline-logger-reporter';
 import pino from 'pino';
-import {createBindingsProvider} from './bindings-provider.js';
+// import {createBindingsProvider} from './bindings-provider.js';
 
 export async function build(
   pipelineConfig: PipelineConfig,
-): Promise<{pipeline: Pipeline; distributionResolver: PreTransformResolver}> {
-  const bindingsProvider = createBindingsProvider(pipelineConfig);
+): Promise<{pipeline: Pipeline; distributionResolver: ImportResolver}> {
+  // const bindingsProvider = createBindingsProvider(pipelineConfig);
 
   const datasetSelector = await createDatasetSelector(
     new URL(pipelineConfig.dataset.uri),
@@ -21,30 +18,18 @@ export async function build(
     pipelineConfig.dataset.file,
   );
 
-  const preTransforms = await findPreTransforms(pipelineConfig.overrides);
-  const accessToken = preTransforms.length > 0 ? randomUUID() : undefined;
-
-  const distributionResolver = new PreTransformResolver(
-    await createQleverImportResolver(
+  const {distributionResolver, stageOutputResolver} =
+    await createQleverResolvers(
       applicationConfig.IMPORT_DIR,
       applicationConfig.QLEVER_MEMORY_GB,
       applicationConfig.QLEVER_ENV,
       applicationConfig.QLEVER_IMAGE,
-      accessToken,
-    ),
-    preTransforms,
-    accessToken,
-  );
-
-  const validator = createEdmShaclValidator(
-    applicationConfig.VALIDATION_EDM_SHAPES_PATH,
-    applicationConfig.VALIDATION_OUTPUT_DIR,
-  );
+    );
 
   const stages = await createStages(
     applicationConfig.BASE_CONFIG_DIR,
-    validator,
-    bindingsProvider,
+    applicationConfig.VALIDATION_OUTPUT_DIR,
+    // bindingsProvider,
     {
       batchSize: applicationConfig.STAGE_BATCH_SIZE,
       maxConcurrency: applicationConfig.STAGE_MAX_CONCURRENCY,
@@ -65,6 +50,10 @@ export async function build(
     distributionResolver,
     stages,
     writers: new FileWriter({outputDir: applicationConfig.OUTPUT_DIR}),
+    chaining: {
+      stageOutputResolver,
+      outputDir: applicationConfig.STAGE_OUTPUT_DIR,
+    },
     reporter: new LoggerReporter(logger.child({component: 'pipeline'})),
   });
 

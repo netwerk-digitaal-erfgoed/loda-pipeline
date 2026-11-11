@@ -24,10 +24,10 @@ CONSTRUCT {
 #       dc:format                      # Use for the terms generally applied to indicate the format, literal [0..n]
         dc:identifier ?identifier,     # An identifier of the original CHO, literal [0..n]
                 ?identifierDirect ;
-        dc:language ?datasetLanguage ; # The language of text CHOs, literal [0..n]
-        dc:publisher ?dataProvider ;   # The name of the publisher of the CHO, literal or ref [0..n]
+#       dc:language ?datasetLanguage ; # The language of text CHOs, literal [0..n]
+#       dc:publisher ?dataProvider ;   # The name of the publisher of the CHO, literal or ref [0..n]
 #       dc:relation                    # The name or identifier of a related resource, literal or ref [0..n]
-        dc:rights ?dataProvider ;      # Use to give the name of the rights holder of the CHO, literal or ref [0..n]
+#       dc:rights ?dataProvider ;      # Use to give the name of the rights holder of the CHO, literal or ref [0..n]
 #       dc:source                      # A related resource from which the described resource is derived in whole
                                        # or in part i.e. the source of the original CHO, literal or ref [0..n]
         dc:subject ?genre, ?about ;    # The subject of the CHO, literal or ref [0..n]
@@ -68,15 +68,12 @@ CONSTRUCT {
 #       edm:isSuccessorOf              # The identifier of a resource to which the described CHO is a successor, ref [0..1]
         edm:pid ?pid ;                 # A long-lasting identifier for the resource. (optional property)
 #       edm:realizes                   # If the CHO described is of type edm:PhysicalThing it may realize an information object, ref [0..1]
-        edm:type ?edmType ;            # The value must be one of the types accepted by Europeana as it will support portal functionality: TEXT, VIDEO, SOUND, IMAGE, 3D, literal [1..1]
+#       edm:type ?edmType ;            # The value must be one of the types accepted by Europeana as it will support portal functionality: TEXT, VIDEO, SOUND, IMAGE, 3D, literal [1..1]
 #       owl:sameAs                     # Use to point to your own (linked data) representation of the object, ref [0..1]
 
         .                              # termination of the edm:ProvidedCHO object (do not remove!)
 }
 WHERE {
-    # in some case the sdo:CreativeWork is not the toplevel of the record
-    FILTER(!ISBLANK($this))
-
     # mint a URI for the edm:ProvidedCHO object
     BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
 

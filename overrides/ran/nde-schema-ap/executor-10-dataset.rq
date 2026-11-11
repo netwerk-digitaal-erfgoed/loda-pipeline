@@ -1,0 +1,73 @@
+PREFIX sdo: <https://schema.org/>
+
+CONSTRUCT {
+  $this sdo:description ?description .
+  $this sdo:creator ?creator .
+  ?creator sdo:name ?creatorName .
+  $this sdo:contentLocation ?place .
+  ?place a sdo:Place ;
+    sdo:name ?placeName .
+  $this sdo:associatedMedia ?imageMedia .
+  ?imageMedia a sdo:MediaObject , sdo:ImageObject ;
+    sdo:license ?imageLicense ;
+    sdo:contentUrl ?contentUrl ;
+    sdo:thumbnailUrl ?image .
+  $this sdo:associatedMedia ?licenseMedia .
+  ?licenseMedia a sdo:MediaObject ;
+    sdo:license ?license .
+  $this sdo:associatedMedia ?manifest .
+  ?manifest
+    sdo:license ?manifestLicense ;
+    sdo:encodingFormat ?manifestFormat .
+}
+WHERE {
+  # SCHEMA-AP-NDE has no comment: it says what description says.
+  {
+    $this sdo:comment ?_comment .
+    BIND(STRLANG(STR(?_comment), "nl") AS ?description)
+  }
+
+  # SCHEMA-AP-NDE has a creator with a name, this dataset sometimes has the name as text.
+  UNION {
+    $this sdo:creator ?_creatorText .
+    FILTER(ISLITERAL(?_creatorText))
+    BIND(STRLANG(STR(?_creatorText), "nl") AS ?creatorName)
+    BIND(IRI(CONCAT(STR($this), "#creator-", ENCODE_FOR_URI(STR(?_creatorText)))) AS ?creator)
+  }
+
+  # SCHEMA-AP-NDE has a Place with a name, this dataset sometimes has the name as text.
+  UNION {
+    $this sdo:contentLocation ?_placeText .
+    FILTER(ISLITERAL(?_placeText))
+    BIND(STRLANG(STR(?_placeText), "nl") AS ?placeName)
+    BIND(IRI(CONCAT(STR($this), "#place-", ENCODE_FOR_URI(STR(?_placeText)))) AS ?place)
+  }
+
+  # SCHEMA-AP-NDE has an image with a license, contentUrl and thumbnailUrl, this dataset has
+  # a link to a file and the license on the record. The file number gives the URL of the IIIF image.
+  UNION {
+    $this sdo:license ?imageLicense ;
+      sdo:image ?image .
+    FILTER(ISIRI(?image))
+    BIND(REPLACE(STR(?image), "^.*file=([0-9]+).*$", "$1") AS ?_file)
+    BIND(IRI(CONCAT(STR($this), "#media-", ?_file)) AS ?imageMedia)
+    BIND(IRI(CONCAT("https://studiezaal.nijmegen.nl/IIIF/image/3.0/", ?_file, "/full/max/0/default.jpg")) AS ?contentUrl)
+  }
+
+  # A record without an image keeps its license, on media without a contentUrl.
+  UNION {
+    $this sdo:license ?license .
+    FILTER NOT EXISTS { $this sdo:image ?_image }
+    BIND(IRI(CONCAT(STR($this), "#media")) AS ?licenseMedia)
+  }
+
+  # SCHEMA-AP-NDE has a IIIF manifest with its own URI, this dataset has a blank node with its URL as text.
+  UNION {
+    $this sdo:license ?manifestLicense ;
+      sdo:image ?_node .
+    ?_node sdo:contentUrl ?_manifestUrl .
+    BIND(IRI(REPLACE(STR(?_manifestUrl), "IIIF//", "IIIF/")) AS ?manifest)
+    # Bound rather than in the template: QLever escapes the quotes of a template literal twice.
+    BIND("application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"" AS ?manifestFormat)
+  }
+}

@@ -1,8 +1,8 @@
 PREFIX sdo: <https://schema.org/>
 
-SELECT $this WHERE {
+SELECT DISTINCT $this WHERE {
   $this a sdo:CreativeWork ;
-    sdo:license ?license .
+    sdo:associatedMedia/sdo:license ?license .
   FILTER(!ISBLANK($this))
   FILTER(?license != <http://rightsstatements.org/vocab/InC/1.0/>)
 }

@@ -21,7 +21,7 @@ CONSTRUCT {
 
     ?aggregation_URI a ore:Aggregation ;
         edm:aggregatedCHO ?providedCHO_URI ; # The identifier of the source object e.g. the Mona Lisa itself, ref [1..1]
-        edm:dataProvider ?dataProvider ;     # The name or identifier of the data provider of the object, literal, ref [1..1]
+#       edm:dataProvider ?dataProvider ;     # The name or identifier of the data provider of the object, literal, ref [1..1]
         edm:hasView ?additionalContentUrl, ?thumbnailUrl ; # The URL of a web resource which is a digital representation of the CHO, ref [0..m]
                                              # This may be the source object itself in the case of a born digital cultural heritage object.
                                              # edm:hasView should only be used where there are several views of the CHO and one (or both)
@@ -73,9 +73,6 @@ WHERE {
         GROUP BY $this
     }
 
-    # in some case the sdo:CreativeWork is not the toplevel of the record
-    FILTER(!ISBLANK($this))
-
     # mint a URI for the edm:ProvidedCHO and ore:Aggregation objects
     BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
     BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
@@ -88,7 +85,9 @@ WHERE {
         ?_primaryMedia sdo:contentUrl ?primaryContentUrl ;
                        sdo:license ?_primaryLicense .
     }
-    BIND(COALESCE(STR(?_primaryLicense), IF(BOUND(?_primaryUrl), 1/0, ?_firstLicense), STR(?datasetLicense)) as ?_rightsUrl)
+    # TODO: revert to use ?datasetLicense
+    # BIND(COALESCE(STR(?_primaryLicense), IF(BOUND(?_primaryUrl), 1/0, ?_firstLicense), STR(?datasetLicense)) as ?_rightsUrl)
+    BIND(COALESCE(STR(?_primaryLicense), IF(BOUND(?_primaryUrl), 1/0, ?_firstLicense)) as ?_rightsUrl)
     # the licence statements in the EDM shape only use http
     BIND(IRI(REPLACE(?_rightsUrl, "^https://(creativecommons\\.org|rightsstatements\\.org)/", "http://$1/")) as ?rights)
 

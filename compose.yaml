@@ -10,6 +10,8 @@ services:
       - ./output:/app/output
       - ./pipelines:/app/pipelines:ro
       - ./base:/app/base:ro
+      - ./overrides:/app/overrides:ro
+      - ./pipelines.yaml:/app/pipelines.yaml:ro
 
   qlever:
     image: ${QLEVER_IMAGE:-adfreiburg/qlever:commit-a14e0a0}

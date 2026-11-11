@@ -27,7 +27,7 @@ export interface ApplicationConfig {
   BASE_CONFIG_DIR: string;
   IMPORT_DIR: string;
   OUTPUT_DIR: string;
-  VALIDATION_EDM_SHAPES_PATH: string;
+  STAGE_OUTPUT_DIR: string;
   VALIDATION_OUTPUT_DIR: string;
   QLEVER_ENV: 'docker' | 'native' | 'remote';
   QLEVER_IMAGE: string;
@@ -48,10 +48,7 @@ const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
     BASE_CONFIG_DIR: {type: 'string', default: 'base'},
     IMPORT_DIR: {type: 'string', default: 'imports'},
     OUTPUT_DIR: {type: 'string', default: 'output'},
-    VALIDATION_EDM_SHAPES_PATH: {
-      type: 'string',
-      default: 'base/edm_ext_shacl_shapes.ttl',
-    },
+    STAGE_OUTPUT_DIR: {type: 'string', default: 'output/stages'},
     VALIDATION_OUTPUT_DIR: {type: 'string', default: 'output/validation'},
     QLEVER_ENV: {
       type: 'string',

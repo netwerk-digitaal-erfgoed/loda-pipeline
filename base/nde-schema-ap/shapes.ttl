@@ -1,0 +1,1356 @@
+@prefix edtf: <http://id.loc.gov/datatypes/edtf/> .
+@prefix nde: <https://def.nde.nl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:CreativeWorkShape
+    a sh:NodeShape ;
+    sh:targetClass schema:CreativeWork ;
+    sh:nodeKind sh:IRI ;
+    sh:name "CreativeWork" ;
+    sh:description """
+        The type for [=heritage objects=] ([[DERA]]’s *cultuurhistorisch object*) in this application profile.
+
+        Some heritage objects fit CreativeWork well, such as paintings, books or musical compositions.
+        Others are a less natural fit, such as fossils, buses or bridges,
+        either because they are not ‘creative works’ in the everyday sense
+        or because they fit somewhere else in Schema.org’s type hierarchy.
+
+        Nevertheless, CreativeWork serves as the catch-all type for all heritage objects in this application profile,
+        to differentiate them from the other top-level classes (Person, Organization, Place).
+
+        For more fine-grained typing, [[#CreativeWork-additionalType]] *SHOULD* be used.
+    """ ;
+    sh:property
+        [
+            sh:path schema:name ;
+            sh:datatype rdf:langString ;
+            sh:uniqueLang true ;
+            sh:minCount 1 ;
+            sh:description """
+                The CreativeWork’s name or title, assigned either by its creator, collection managers or by others.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "A language-tagged name" ;
+                rdfs:comment "file://examples/CreativeWork-name.jsonld" ;
+            ]
+        ] ,
+# LODA: not output by base/nde-schema-ap, so not checked.
+#        [
+#            a sh:PropertyShape ;
+#            sh:path schema:sdDatePublished ;
+#            sh:message "Geef precies één datum waarop het record voor het laatst is gewijzigd, in ISO 8601-formaat: YYYY-MM-DD of YYYY-MM-DDThh:mm:ssZ"@nl, "Give exactly one date on which the record was last changed, in ISO 8601 format: YYYY-MM-DD or YYYY-MM-DDThh:mm:ssZ"@en ;
+#            sh:or (
+#                [
+#                    sh:datatype xsd:date ;
+#                    sh:pattern "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" ;
+#                ]
+#                [
+#                    sh:datatype xsd:dateTime ;
+#                    sh:pattern "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})?$" ;
+#                ]
+#            ) ;
+#            sh:minCount 1 ;
+#            sh:maxCount 1 ;
+#            sh:description """
+#                The date when the [=metadata record=] was last changed.
+#
+#                The value *MUST* be in ISO 8601 format: `YYYY-MM-DD` or `YYYY-MM-DDThh:mm:ssZ`.
+#            """ ;
+#        ] ,
+        [
+            sh:path schema:isPartOf ;
+            sh:nodeKind sh:IRI ;
+            sh:description """
+                The dataset(s) that the CreativeWork is part of.
+                *REQUIRED* if the CreativeWork is part of one or more datasets.
+
+                This contextualizes the CreativeWork for consumers, with the [[NDE-DATASETS|dataset’s description]] providing
+                information about properties that are shared between CreativeWorks in the same dataset,
+                such as publisher and license.
+
+                Note that a CreativeWork may be part of multiple datasets.
+
+                The dataset *MUST* be typed as a `Dataset`.
+
+                The `isPartOf` property *MAY* also be used to indicate hierarchical relations between CreativeWorks within the dataset.
+                In that case, the value’s type will be something other than `Dataset`.
+                This usage is out of scope for this document.
+                """ ;
+            rdfs:seeAlso [
+                rdfs:label "Indicating the dataset that the CreativeWork is part of:" ;
+                rdfs:comment "file://examples/CreativeWork-isPartOf.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:associatedMedia ;
+            sh:message "Gebruik een MediaObject met license, contentUrl en thumbnailUrl, of een IIIF Presentation-manifest met license en encodingFormat"@nl, "Use a MediaObject with license, contentUrl and thumbnailUrl, or an IIIF Presentation manifest with license and encodingFormat"@en ;
+            sh:or (
+                [ sh:node _:MediaObjectShape ]
+                [ sh:node _:IIIFPresentationManifestShape ; rdfs:label "IIIF Presentation manifest" ]
+            ) ;
+            sh:description """
+                One or more media objects that represent the CreativeWork.
+                *REQUIRED* if at least one media object is available.
+
+                If an <a href="https://iiif.io/api/presentation/">IIIF Presentation API</a> manifest is available
+                for the CreativeWork, it *MUST* be included as an additional `associatedMedia` entry with:
+                - `@id` set to the manifest URI
+                - `encodingFormat` set to `application/ld+json;profile="http://iiif.io/api/presentation/3/context.json"`, the media type that the IIIF Presentation API specifies; single quotes around the profile URI are deprecated and will be rejected from version 2.0
+                - `license` matching the `rights` property specified in the presentation manifest
+
+                The IIIF Presentation manifest *MUST* describe all media for the CreativeWork.
+
+                IIIF-aware consumers *SHOULD* access media via the IIIF Presentation manifest.
+
+                Non-IIIF consumers *SHOULD* access media via the per-image entries’ `contentUrl` and `thumbnailUrl`,
+                and can ignore the manifest entry (it has no `contentUrl`).
+
+                Note: Schema.org lists MediaObject as the only range of `associatedMedia`. This profile additionally permits a single IIIF Presentation manifest entry, which is not itself a MediaObject but is identified by its `encodingFormat` rather than by its class.
+
+                See MediaObject for this property’s allowed values.
+            """;
+            rdfs:seeAlso [
+                rdfs:label "An image representation of the Starry Night:" ;
+                rdfs:comment "file://examples/CreativeWork-associatedMedia.jsonld" ;
+            ] , [
+                rdfs:label "IIIF Presentation manifest as `associatedMedia`:" ;
+                rdfs:comment "file://examples/CreativeWork-IIIF-Presentation.jsonld" ;
+            ]
+        ] ,
+        [
+            sh:path schema:creator ;
+            sh:message "Gebruik een Person of Organization als maker, of een maker zonder type met een naam met taalcode"@nl, "Use a Person or Organization as creator, or an untyped creator with a language-tagged name"@en ;
+            sh:or (
+                [ sh:class schema:Person ]
+                [ sh:class schema:Organization ]
+                [ sh:node _:CreatorShape ]
+            ) ;
+            sh:description """
+                The person(s) or organization(s) that had a role in the production of the CreativeWork.
+                *REQUIRED* if the creator is known.
+
+                Even where more specific properties, applicable to CreativeWork’s subtypes, are available in Schema.org,
+                such as [artist](https://schema.org/artist), [composer](https://schema.org/composer) and [director](https://schema.org/director),
+                the creator property *MUST* be used for consistency.
+                Although Schema.org defines [author](https://schema.org/author) as equivalent to creator for CreativeWorks,
+                this profile picks creator so that consumers can rely on a single property.
+
+                Multiple creators (for example an author and a photographer) *MUST* each be expressed as separate, flat creator values.
+                The creator property *MUST NOT* wrap its values in a [Role](https://schema.org/Role) node,
+                since this would force consumers to handle two value shapes.
+                Publishers who wish to express qualified contributor roles *MAY* do so on a separate property such as [contributor](https://schema.org/contributor),
+                which is outside this profile and does not affect profile validity.
+
+                The creator *MUST* be a Person or Organization, in one of the following forms (most to least preferred):
+            """ ;
+            rdfs:seeAlso [
+                schema:description "If a public term (an authority record) is available for the creator, it *MUST* be [[#reference-terms|referenced]] via `sameAs`." ;
+                rdfs:label "A creator referenced by an authority record:" ;
+                rdfs:comment "file://examples/CreativeWork-creator.jsonld" ;
+            ] , [
+                schema:description "When no public term is available, give a plain Person or Organization with a `name`." ;
+                rdfs:label "A creator without a public term:" ;
+                rdfs:comment "file://examples/CreativeWork-creator-person.jsonld" ;
+            ] , [
+                schema:description "When it is unknown whether the creator is a person or organization, the type *MAY* be omitted; a `name` is still required." ;
+                rdfs:label "A creator of unknown type:" ;
+                rdfs:comment "file://examples/CreativeWork-creator-untyped.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:identifier ;
+            sh:message "Gebruik een tekst of een PropertyValue als identifier"@nl, "Use a string or a PropertyValue as identifier"@en ;
+            sh:or (
+              [ sh:datatype xsd:string ]
+              [ sh:class schema:PropertyValue ]
+          ) ;
+            sh:minCount 0 ;
+            sh:description """
+                A unique identifier for the CreativeWork,
+                usually an assigned alphanumeric string.
+
+                The identifier may be useful for referencing the CreativeWork in non-RDF contexts, such as exhibitions.
+                Note that this is different from the CreativeWork’s URI.
+                A CreativeWork *MAY* have more than one identifier; each value *MUST* be either a string or a [schema:PropertyValue](https://schema.org/PropertyValue).
+            """;
+            rdfs:seeAlso [
+                rdfs:label "A string as identifier:" ;
+                rdfs:comment "file://examples/CreativeWork-identifier-string.jsonld" ;
+            ] , [
+                rdfs:label "A structured PropertyValue as identifier:" ;
+                rdfs:comment "file://examples/CreativeWork-identifier-structured.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:additionalType ;
+            sh:message "Gebruik een DefinedTerm met een naam met taalcode als aanvullend type"@nl, "Use a DefinedTerm with a language-tagged name as additional type"@en ;
+            sh:node _:DefinedTermShape ;
+            sh:minCount 0 ;
+            sh:description """
+                Additional types for the CreativeWork
+                from vocabularies other than Schema.org, such as Getty AAT.
+
+                Schema.org classes belong in `@type` as a [[#subclasses|subclass]];
+                use `additionalType` for vocabulary terms that have no suitable Schema.org subclass,
+                or to add a more specific term alongside a Schema.org subclass.
+
+                The value *MUST* reference a term, modeled as a `DefinedTerm` (see [[#reference-terms]]).
+                Because `schema:additionalType` expects a `URL`, the `DefinedTerm` node *MUST* also be co-typed as `URL` (`"@type": ["DefinedTerm", "URL"]`).
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "The Starry Night is both a Schema.org Painting and an AAT painting:" ;
+                rdfs:comment "file://examples/CreativeWork-additionalType.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:description ;
+            sh:datatype rdf:langString ;
+            sh:minCount 0 ;
+            sh:description """
+                A full description of the CreativeWork.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "A description of the Starry Night:" ;
+                rdfs:comment "file://examples/CreativeWork-description.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:abstract ;
+            sh:datatype rdf:langString ;
+            sh:minCount 0 ;
+            sh:description """
+                A one-sentence summary of the CreativeWork.
+
+                The abstract *SHOULD* be free of jargon and abbreviations so it can be understood by others.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "A single-sentence abstract:" ;
+                rdfs:comment "file://examples/CreativeWork-abstract.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:text ;
+            sh:datatype rdf:langString ;
+            sh:minCount 0 ;
+            sh:description """
+                The complete textual content of the CreativeWork,
+                primarily used for search indexing and discovery.
+
+                This includes content such as:
+                - the full text of a written work (e.g. story)
+                - transcribed text from visual media (e.g., inscriptions in photographs).
+
+                Note that this property contains plain text only, without preserving structural elements
+                like paragraphs, headings or the relationship between text and embedded media.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "A story:" ;
+                rdfs:comment "file://examples/CreativeWork-text.jsonld" ;
+            ] ;
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:size ;
+            sh:message "Gebruik een tekst (maximaal één per taal) of een QuantitativeValue met value, valueReference en unitCode of unitText als afmeting"@nl, "Use a text (at most one per language) or a QuantitativeValue with value, valueReference and unitCode or unitText as size"@en ;
+            sh:or (
+                [ sh:datatype rdf:langString ]
+                [ sh:datatype xsd:string ]
+                [ sh:node _:QuantitativeValueShape ]
+            ) ;
+            sh:uniqueLang true ;
+            sh:minCount 0 ;
+            sh:description """
+                The physical size of the CreativeWork.
+
+                The CreativeWork *SHOULD* have a display statement:
+                a single human-readable rendering of its dimensions in the form the publisher prefers,
+                for example “24 inches high by 18 inches wide”@en and “61 cm hoog bij 46 cm breed”@nl.
+                Because this is a display string, it *SHOULD* be a language-tagged string (`rdf:langString`),
+                one per language.
+                A plain string (`xsd:string`) is only allowed for backwards compatibility.
+
+                The CreativeWork *MAY* additionally have one `QuantitativeValue` (see [[#QuantitativeValue]]) per measured dimension,
+                which makes the individual measurements machine-readable.
+                Because the two value shapes serve different purposes,
+                consumers looking for a display statement *MUST* ignore the node values,
+                and consumers looking for measurements *MUST* ignore the literal values.
+            """;
+            rdfs:seeAlso [
+                rdfs:label "The dimensions of Van Gogh’s Starry Night as a display statement:" ;
+                rdfs:comment "file://examples/CreativeWork-size.jsonld" ;
+            ] , [
+                rdfs:label "The same dimensions, additionally as machine-readable measurements:" ;
+                rdfs:comment "file://examples/CreativeWork-size-structured.jsonld" ;
+            ] , [
+                rdfs:label "A measurement whose dimension and unit have no known term:" ;
+                rdfs:comment "file://examples/CreativeWork-size-labels.jsonld" ;
+            ] ;
+        ] ,
+        # A Warning for now: a plain string conformed until now, so it must not turn data into a violation.
+        [
+            sh:path schema:size ;
+            sh:not [ sh:datatype xsd:string ] ;
+            sh:severity sh:Warning ;
+            nde:futureChange [
+                nde:version "2.0" ;
+                sh:severity sh:Violation ;
+                rdfs:label "`xsd:string` niet meer toegestaan"@nl, "`xsd:string` no longer allowed"@en ;
+            ] ;
+            sh:message "Geef de afmeting als tekst met taallabel of als QuantitativeValue, niet als tekst zonder taal"@nl, "Give the size as a language-tagged string or a QuantitativeValue, not as a string without a language"@en ;
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:contentLocation ;
+            sh:message "Gebruik een Place met een naam met taalcode als afgebeelde locatie"@nl, "Use a Place with a language-tagged name as content location"@en ;
+            sh:node _:PlaceShape ;
+            sh:minCount 0 ;
+            sh:description """
+                The location(s) depicted or described in the CreativeWork.
+
+                For example, the location in a photograph or painting.
+
+                The value *MUST* be a Place. See Place for this property’s allowed values.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "Van Gogh’s painting The Starry Night:" ;
+                rdfs:comment "file://examples/CreativeWork-contentLocation.jsonld" ;
+            ] ;
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:temporalCoverage ;
+            sh:message "Gebruik een ISO 8601-datum of -interval (zoals 2011 of 2011/2012), een EDTF-waarde met datatype edtf:EDTF (zoals 1953?) of een DefinedTerm met een naam met taalcode als periode"@nl, "Use an ISO 8601 date or interval (such as 2011 or 2011/2012), an EDTF value typed edtf:EDTF (such as 1953?) or a DefinedTerm with a language-tagged name as temporal coverage"@en ;
+            sh:or (
+                [ sh:node _:DefinedTermShape ]
+                [ sh:nodeKind sh:IRI ; sh:pattern "^https?://" ]
+                [ sh:pattern "^(-?([1-9]\\d{3,}|0\\d{3})(-\\d{2}(-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?)?)?)?|\\.\\.)(/(-?([1-9]\\d{3,}|0\\d{3})(-\\d{2}(-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?)?)?)?|\\d{2}(-\\d{2})?|\\.\\.))?$" ;
+                  sh:not [ sh:datatype edtf:EDTF ] ;
+                  rdfs:label "ISO 8601 date or interval" ]
+                [ sh:node _:EdtfShape ]
+            ) ;
+            sh:minCount 0 ;
+            sh:description """
+                The period that the content applies to,
+                i.e. the time period(s) that the CreativeWork describes or depicts.
+
+                The value *MUST* be either an ISO 8601 date or time interval
+                (such as ‘2011’, ‘2011/2012’, ‘1889-06/07’ for shortened notation,
+                ‘-0430/-0403’ for the Peloponnesian War (431 to 404 BCE), ‘-38000/-33000’ for deep-time ranges
+                whose years exceed four digits, or ‘1440/..’ for an open-ended range),
+                or a reference to a period.
+                A year *MUST* keep the ISO 8601 minimum of four digits (zero-padded)
+                and *MAY* exceed four digits for deep time.
+                A leading minus marks a BCE year, but note how ISO 8601 reads it:
+                years are numbered astronomically, with a year 0000 that equals 1 BCE,
+                so a negative year is one year older than its digits read as a label
+                (‘-0044’ denotes 45 BCE, and the range ‘-0430/-0403’ above denotes 431 to 404 BCE).
+                An ISO 8601 value *SHOULD* be a string without a language tag,
+                or a date typed `xsd:gYear`, `xsd:gYearMonth`, `xsd:date` or `schema:Date`.
+                A period that is uncertain, approximate or has unspecified digits *MUST* be an EDTF value typed `edtf:EDTF`,
+                as described for `dateCreated` (such as `"1953?"^^edtf:EDTF`);
+                a plain string such as `"1953?"` is not allowed.
+                If the period is a structured entity from a controlled vocabulary
+                (such as AAT), it *MUST* be referenced as a `DefinedTerm`
+                so that consumers receive structured typing.
+                A bare HTTP(S) URI is allowed only for backward compatibility
+                and *SHOULD NOT* be used in new data.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "An ISO 8601 interval:" ;
+                rdfs:comment "file://examples/CreativeWork-temporalCoverage.jsonld" ;
+            ] , [
+                rdfs:label "A period referenced as a DefinedTerm:" ;
+                rdfs:comment "file://examples/CreativeWork-temporalCoverage-term.jsonld" ;
+            ] ;
+        ] ,
+        # The ISO 8601 option above is a bare pattern, so it also accepts "2011"@nl and "2011"^^xsd:int.
+        # A Warning for now, because those conform today.
+        [
+            a sh:PropertyShape ;
+            sh:path schema:temporalCoverage ;
+            sh:or (
+                [ sh:nodeKind sh:BlankNodeOrIRI ]
+                [ sh:datatype xsd:string ]
+                [ sh:node _:DateShape ]
+            ) ;
+            sh:severity sh:Warning ;
+            nde:futureChange [
+                nde:version "2.0" ;
+                sh:severity sh:Violation ;
+                rdfs:label "tekst zonder taalcode of getypeerde datum"@nl, "string without a language tag, or a typed date"@en ;
+            ] ;
+            sh:message "Gebruik een tekst zonder taalcode of een getypeerde datum voor een ISO 8601-datum of -interval als periode"@nl, "Use a string without a language tag, or a typed date, for an ISO 8601 date or interval as temporal coverage"@en ;
+        ] ,
+        [
+            sh:path schema:temporalCoverage ;
+            sh:not _:EdtfSingleDateShape ;
+            sh:severity sh:Warning ;
+            sh:message "Geef een enkele datum als ISO 8601-datum zonder datatype edtf:EDTF"@nl, "Give a single date as an ISO 8601 date, not typed edtf:EDTF"@en ;
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:locationCreated ;
+            sh:message "Gebruik een Place met een naam met taalcode als plaats van vervaardiging"@nl, "Use a Place with a language-tagged name as location of creation"@en ;
+            sh:node _:PlaceShape ;
+            sh:minCount 0 ;
+            sh:description """
+                The location(s) where the CreativeWork was created
+                (which may be different from its contentLocation).
+
+                The value *MUST* be a Place. See Place for this property’s allowed values.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "Van Gogh’s painting The Starry Night:" ;
+                rdfs:comment "file://examples/CreativeWork-locationCreated.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:dateCreated ;
+            sh:message "Geef maximaal één vervaardigingsdatum in ISO 8601-formaat (YYYY, YYYY-MM of YYYY-MM-DD) of als EDTF-waarde met datatype edtf:EDTF"@nl, "Give at most one creation date in ISO 8601 format (YYYY, YYYY-MM or YYYY-MM-DD) or as an EDTF value typed edtf:EDTF"@en ;
+            sh:node _:DateShape ;
+            sh:minCount 0 ;
+            sh:maxCount 1 ;
+            sh:description """
+                The date the CreativeWork was created.
+
+                The date *MUST* be given at the highest precision known (`YYYY`, `YYYY-MM` or `YYYY-MM-DD`).
+
+                A creation date that is uncertain, approximate or known only to fall within a period
+                *SHOULD* be given as such rather than reduced to a less precise single date,
+                and then *MUST* be an EDTF value typed `edtf:EDTF`, such as `"1980/1985"^^edtf:EDTF` or `"1620~"^^edtf:EDTF`.
+                A plain string with an interval (`"1980/1985"`) is not allowed, because `schema:Date` cannot hold one.
+                The subject period of the content belongs to `schema:temporalCoverage` instead.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "Van Gogh painted The Starry Night in June 1889:" ;
+                rdfs:comment "file://examples/CreativeWork-dateCreated.jsonld" ;
+            ] ,
+            [
+                rdfs:label "A 17th-century play with year-only precision typed as xsd:gYear:" ;
+                rdfs:comment "file://examples/CreativeWork-dateCreated-gYear.jsonld" ;
+            ] ,
+            [
+                rdfs:label "A portrait painted around 1620, typed as EDTF:" ;
+                rdfs:comment "file://examples/CreativeWork-dateCreated-edtf.jsonld" ;
+            ]
+        ] ,
+        [
+            sh:path schema:dateCreated ;
+            sh:not _:EdtfSingleDateShape ;
+            sh:severity sh:Warning ;
+            sh:message "Geef een enkele datum als ISO 8601-datum zonder datatype edtf:EDTF"@nl, "Give a single date as an ISO 8601 date, not typed edtf:EDTF"@en ;
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:about ;
+            sh:message "Gebruik een DefinedTerm met een naam met taalcode, een CreativeWork, een Person of een Organization als onderwerp"@nl, "Use a DefinedTerm with a language-tagged name, a CreativeWork, a Person or an Organization as subject"@en ;
+            sh:or (
+                [ sh:node _:DefinedTermShape ]
+                [ sh:class schema:CreativeWork ]
+                [ sh:class schema:Person ]
+                [ sh:class schema:Organization ]
+            ) ;
+            sh:minCount 0 ;
+            sh:description """
+                The subject-matter of the CreativeWork.
+
+                For example, which subjects are depicted in a painting or photograph?
+                Or which subjects is a story about?
+                And/or which CreativeWork (e.g. collection object) is this CreativeWork (story) about?
+
+                The value *MUST* reference a term, another CreativeWork,
+                or the Person or Organization that is the subject.
+                A subject that is a person or organization is typed as such rather than as a `DefinedTerm`,
+                with its term, if one is available, referenced via `sameAs`.
+
+                If the subject is a location, it *MUST* be listed under contentLocation instead.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "The Starry Night depicts ‘starry sky’ and ‘Moon’." ;
+                rdfs:comment "file://examples/CreativeWork-about.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:material ;
+            sh:message "Gebruik een DefinedTerm met een naam met taalcode als materiaal"@nl, "Use a DefinedTerm with a language-tagged name as material"@en ;
+            sh:node _:DefinedTermShape ;
+            sh:minCount 0 ;
+            sh:description """
+                The material(s) that the CreativeWork is made from, e.g. leather, wool, cotton, paper.
+
+                The value *MUST* reference terms.
+                Because `schema:material` takes `URL`, not `DefinedTerm`, `URL` must be added to `@type`.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "The Starry Night is made from ‘oil paint’ and ‘canvas’:" ;
+                rdfs:comment "file://examples/CreativeWork-material.jsonld" ;
+            ]
+        ] ,
+        [
+            a sh:PropertyShape ;
+            sh:path schema:genre ;
+            sh:message "Gebruik een DefinedTerm met een naam met taalcode als genre"@nl, "Use a DefinedTerm with a language-tagged name as genre"@en ;
+            sh:node _:DefinedTermShape ;
+            sh:minCount 0 ;
+            sh:description """
+                The genre(s) of the CreativeWork,
+                for example art movements or periods.
+
+                The value *MUST* reference a term.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "The Starry Night belongs to the Post-Impressionist art movement:" ;
+                rdfs:comment "file://examples/CreativeWork-genre.jsonld" ;
+            ]
+        ] ,
+        [
+            sh:path schema:dateCreated ;
+            sh:not _:InvalidCalendarDateShape ;
+            sh:severity sh:Warning ;
+            nde:futureChange [
+                nde:version "2.0" ;
+                sh:severity sh:Violation ;
+                rdfs:label "maand 01–12 en dag 01–31"@nl, "month 01–12 and day 01–31"@en ;
+            ] ;
+            sh:message "Gebruik een maand van 01 tot en met 12 en een dag van 01 tot en met 31"@nl, "Use a month from 01 to 12 and a day from 01 to 31"@en ;
+        ] ,
+        [
+            sh:path schema:temporalCoverage ;
+            sh:not _:InvalidCalendarDateShape ;
+            sh:severity sh:Warning ;
+            nde:futureChange [
+                nde:version "2.0" ;
+                sh:severity sh:Violation ;
+                rdfs:label "maand 01–12 en dag 01–31"@nl, "month 01–12 and day 01–31"@en ;
+            ] ;
+            sh:message "Gebruik een maand van 01 tot en met 12 en een dag van 01 tot en met 31"@nl, "Use a month from 01 to 12 and a day from 01 to 31"@en ;
+        ]
+    .
+
+_:CreatorShape
+    a sh:NodeShape ;
+    sh:description """
+        If the type of a creator is not known, the type *MAY* be omitted.
+        A name is still *REQUIRED* to identify the creator.
+    """ ;
+    sh:not [
+        sh:path rdf:type ;
+        sh:minCount 1
+    ] ;
+    sh:property [
+        sh:path schema:name ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:minCount 1 ;
+        sh:description """
+            A *REQUIRED* property that indicates the creator’s name in its preferred display form.
+        """ ;
+    ] .
+
+_:DefinedTermShape
+    a sh:NodeShape ;
+    sh:name "DefinedTerm" ;
+    sh:class schema:DefinedTerm ;
+    sh:description """
+        A node that references a term is typed with the most specific Schema.org class for what the term denotes:
+        `Person`, `Organization`, `Place` or `Occupation` if the term denotes a person, organization, place or occupation,
+        and `DefinedTerm` only when no more specific class applies, for example for a genre or a material.
+        Each `DefinedTerm` *MUST* have a language-tagged human-readable `name` property,
+        so that consumers can display, index and search the term without dereferencing its URI.
+        If known, the term’s public URI from a controlled vocabulary *MUST* be provided via `sameAs`.
+
+        The referencing node is a *local* node, scoped to the publishing dataset:
+        it carries the dataset’s own `name` for the term (which *MAY* differ from the label used by the external source)
+        and makes no claims about the resource it points at.
+        “Local” refers to the provenance of these statements, not to an RDF node kind:
+        the node *MAY* be a blank node or a URI, such as the URI of a term in the publisher’s own vocabulary.
+        The `sameAs` URI is the *canonical* identifier and keeps its own typing in its source vocabulary
+        (e.g. `skos:Concept` in a thesaurus).
+
+        If the term is in more than one vocabulary, `sameAs` *MAY* have several values, one per vocabulary.
+        The node groups them under the dataset’s own `name`, so the property still has one value per term.
+
+        To recognise that two nodes reference the same term, consumers *MUST* compare their `sameAs` URIs
+        rather than the nodes’ own blank-node or URI identities,
+        which are local to each publishing dataset and therefore not shared across datasets.
+        Two nodes reference the same term if they share at least one `sameAs` URI.
+    """ ;
+    sh:property [
+        sh:path schema:name ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:minCount 1 ;
+        sh:description """
+            A *REQUIRED* property that indicates the term’s preferred label.
+        """ ;
+    ] ,
+    [
+        sh:path schema:sameAs ;
+        sh:nodeKind sh:IRI ;
+        sh:minCount 0 ;
+        sh:description """
+            This property is *REQUIRED* if a public URI for the term is known.
+            It references the term in a controlled vocabulary.
+        """ ;
+    ] .
+
+_:QuantitativeValueShape
+    a sh:NodeShape ;
+    sh:name "QuantitativeValue" ;
+    sh:class schema:QuantitativeValue ;
+    sh:description """
+        A single measurement: a number, the unit it is expressed in, and the dimension it measures.
+
+        Each measured dimension *MUST* be a separate `QuantitativeValue`;
+        a single node *MUST NOT* combine several dimensions.
+
+        The dimension *MUST NOT* be given only as the `name` of the `QuantitativeValue`:
+        Schema.org leaves underspecified what that `name` denotes,
+        so consumers cannot tell a dimension from, say, the measured part.
+
+        The measurement *MUST* have a `unitCode` or a `unitText`, or both.
+    """ ;
+    sh:or (
+        [ sh:path schema:unitCode ; sh:minCount 1 ]
+        [ sh:path schema:unitText ; sh:minCount 1 ]
+    ) ;
+    sh:property [
+        sh:path schema:value ;
+        sh:or (
+            [ sh:datatype xsd:decimal ]
+            [ sh:datatype xsd:double ]
+            [ sh:datatype xsd:integer ]
+        ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The measured number.
+
+            The number *MUST NOT* carry the unit, which belongs in `unitCode` or `unitText`.
+        """ ;
+    ] ,
+    [
+        sh:path schema:valueReference ;
+        sh:or (
+            [ sh:node _:DefinedTermShape ]
+            [ sh:datatype rdf:langString ]
+        ) ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The dimension that is measured, such as height, width, depth or diameter.
+
+            Without it, the measurement cannot be interpreted.
+
+            The value *SHOULD* reference a term, modeled as a `DefinedTerm` (see [[#reference-terms]]),
+            for example http://vocab.getty.edu/aat/300055644 for height.
+            If no term is known, the value *MUST* be a language-tagged string, such as “hoogte”@nl.
+        """ ;
+    ] ,
+    [
+        sh:path schema:unitCode ;
+        sh:node _:DefinedTermShape ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The unit of measurement,
+            for example http://vocab.getty.edu/aat/300379098 for centimetres.
+            *REQUIRED* if the unit’s term is known; otherwise, give the unit in `unitText`.
+
+            The value *MUST* reference a term, modeled as a `DefinedTerm` (see [[#reference-terms]]).
+            Because `schema:unitCode` expects `Text` or `URL`, the `DefinedTerm` node *MUST* also be co-typed as `URL` (`"@type": ["DefinedTerm", "URL"]`).
+        """ ;
+    ] ,
+    [
+        sh:path schema:unitText ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The unit of measurement as text, such as “mm”.
+            *REQUIRED* if the measurement has no `unitCode`.
+
+            Because a unit symbol does not depend on language, the value *MUST* be a plain string (`xsd:string`).
+        """ ;
+    ] .
+
+# Documents sameAs on Person, Organization and Place; the constraints live in _:SameAsUriShape.
+_:SameAsShape
+    a sh:PropertyShape ;
+    sh:path schema:sameAs ;
+    sh:minCount 0 ;
+    sh:description """
+        The [[#reference-terms|term(s)]] for this entity in public sources, such as RKDartists, GeoNames, the AAT or Wikidata.
+        *REQUIRED* if such a term is available; each value *MUST* be a term’s URI.
+    """ .
+
+# A Warning for now, because sameAs was not constrained on these classes before; a literal value must not
+# turn previously conforming data into a violation. Kept apart from the class shapes: a warning inside
+# PlaceShape or OccupationShape would make the node fail sh:node, and so turn the value into a violation.
+# Term URIs must be dereferenceable (see Reference terms), which a URI such as urn:… is not, so the value
+# must be an http(s) URI; _:WebUriShape checks both in one, so a literal gets one warning rather than two.
+# A relative string that a JSON-LD context turns into a URI resolves against the document’s http(s) base,
+# so it passes; this shape does not catch it.
+_:SameAsUriShape
+    a sh:NodeShape ;
+    sh:targetClass schema:Person, schema:Organization, schema:Place, schema:Occupation ;
+    sh:property [
+        sh:path schema:sameAs ;
+        sh:node _:WebUriShape ;
+        sh:severity sh:Warning ;
+        nde:futureChange [
+            nde:version "2.0" ;
+            sh:severity sh:Violation ;
+        ] ;
+        sh:message "Gebruik een http- of https-URI als waarde van sameAs"@nl, "Use an http or https URI as the value of sameAs"@en ;
+    ] .
+
+# On DefinedTerm, the shape requires a URI already (a Violation), so only the http(s) check is a Warning,
+# for the same reasons as _:SameAsUriShape.
+_:SameAsHttpShape
+    a sh:NodeShape ;
+    sh:targetClass schema:DefinedTerm ;
+    sh:property [
+        sh:path schema:sameAs ;
+        sh:pattern "^https?://" ;
+        sh:flags "i" ;
+        sh:severity sh:Warning ;
+        nde:futureChange [
+            nde:version "2.0" ;
+            sh:severity sh:Violation ;
+        ] ;
+        sh:message "Gebruik een http- of https-URI als waarde van sameAs"@nl, "Use an http or https URI as the value of sameAs"@en ;
+    ] .
+
+# A plain or schema:Date value with a date whose month or day is out of range, also as either end of an interval.
+# The date patterns accept any two digits as month and day, so "1606-13" and "1606-07-32" conform today;
+# the date properties warn about them, because tightening those patterns would turn conforming data into violations.
+# Other datatypes are left alone: XSD dates check their own ranges, and EDTF uses months 21 to 24 for seasons.
+_:InvalidCalendarDateShape
+    a sh:NodeShape ;
+    sh:or (
+        [ sh:datatype xsd:string ]
+        [ sh:datatype schema:Date ]
+    ) ;
+    sh:pattern "(^|/)-?[0-9]{4,}-((00|1[3-9]|[2-9][0-9])|[0-9]{2}-(00|3[2-9]|[4-9][0-9]))" .
+
+_:PersonShape
+    a sh:NodeShape ;
+    sh:name "Person" ;
+    sh:targetClass schema:Person ;
+    sh:description """
+        If a [=metadata record=] is a person, it *MUST* be typed as `Person`.
+        If a term is available for the person, it *MUST* be referenced via [[#Person-sameAs|`sameAs`]]; otherwise,
+        the person *MUST* be defined by the required properties listed below.
+
+        The objective for the Person model is not to fully describe all aspects of a person,
+        but to easily identify and distinguish between similar persons.
+    """ ;
+    sh:property
+        [
+            sh:path schema:name ;
+            sh:datatype rdf:langString ;
+            sh:uniqueLang true ;
+            sh:minCount 1 ;
+            sh:description """
+                The Person’s full name in its preferred display form.
+
+                The name *MUST NOT* contain information that belongs to other properties, such as birthDate or deathDate.
+            """ ;
+            rdfs:seeAlso [
+                rdfs:label "Person with a language-tagged name:" ;
+                rdfs:comment "file://examples/Person-name.jsonld" ;
+            ]
+        ] ,
+        _:SameAsShape .
+# LODA: not output by base/nde-schema-ap, so not checked.
+#        [
+#            sh:path schema:birthDate ;
+#            sh:message "Geef maximaal één geboortedatum in ISO 8601-formaat (YYYY, YYYY-MM of YYYY-MM-DD) of als EDTF-waarde met datatype edtf:EDTF"@nl, "Give at most one date of birth in ISO 8601 format (YYYY, YYYY-MM or YYYY-MM-DD) or as an EDTF value typed edtf:EDTF"@en ;
+#            sh:node _:DateShape ;
+#            sh:minCount 0 ;
+#            sh:maxCount 1 ;
+#            sh:description """
+#                The person’s date of birth.
+#            """ ;
+#            rdfs:seeAlso [
+#                rdfs:label "Rembrandt, born between 15 July 1606 and the end of 1607:" ;
+#                rdfs:comment "file://examples/Person-birthDate-edtf.jsonld" ;
+#            ]
+#        ] ,
+#        [
+#            sh:path schema:birthDate ;
+#            sh:not _:EdtfSingleDateShape ;
+#            sh:severity sh:Warning ;
+#            sh:message "Geef een enkele datum als ISO 8601-datum zonder datatype edtf:EDTF"@nl, "Give a single date as an ISO 8601 date, not typed edtf:EDTF"@en ;
+#        ] ,
+#        [
+#            sh:path schema:birthPlace ;
+#            sh:message "Geef maximaal één Place met een naam met taalcode als geboorteplaats"@nl, "Give at most one Place with a language-tagged name as place of birth"@en ;
+#            sh:node _:PlaceShape ;
+#            sh:minCount 0 ;
+#            sh:maxCount 1 ;
+#            sh:description """
+#                The person’s place of birth.
+#
+#                The value *MUST* be a Place. See Place for this property’s allowed values.
+#            """ ;
+#            rdfs:seeAlso [
+#                rdfs:label "Person with birthPlace:" ;
+#                rdfs:comment "file://examples/Person-birthPlace.jsonld" ;
+#            ]
+#        ] ,
+#        [
+#            sh:path schema:deathDate ;
+#            sh:message "Geef maximaal één overlijdensdatum in ISO 8601-formaat (YYYY, YYYY-MM of YYYY-MM-DD) of als EDTF-waarde met datatype edtf:EDTF"@nl, "Give at most one date of death in ISO 8601 format (YYYY, YYYY-MM or YYYY-MM-DD) or as an EDTF value typed edtf:EDTF"@en ;
+#            sh:node _:DateShape ;
+#            sh:minCount 0 ;
+#            sh:maxCount 1 ;
+#            sh:description """
+#                The person’s date of death.
+#            """ ;
+#        ] ,
+#        [
+#            sh:path schema:deathDate ;
+#            sh:not _:EdtfSingleDateShape ;
+#            sh:severity sh:Warning ;
+#            sh:message "Geef een enkele datum als ISO 8601-datum zonder datatype edtf:EDTF"@nl, "Give a single date as an ISO 8601 date, not typed edtf:EDTF"@en ;
+#        ] ,
+#        [
+#            sh:path schema:deathPlace ;
+#            sh:message "Geef maximaal één Place met een naam met taalcode als plaats van overlijden"@nl, "Give at most one Place with a language-tagged name as place of death"@en ;
+#            sh:node _:PlaceShape ;
+#            sh:minCount 0 ;
+#            sh:maxCount 1 ;
+#            sh:description """
+#                The person’s place of death.
+#
+#                The value *MUST* be a Place. See Place for this property’s allowed values.
+#            """ ;
+#            rdfs:seeAlso [
+#                rdfs:label "Person with deathPlace:" ;
+#                rdfs:comment "file://examples/Person-deathPlace.jsonld" ;
+#            ]
+#        ] ,
+#        [
+#            sh:path schema:hasOccupation ;
+#            sh:message "Gebruik een Occupation met een naam met taalcode als beroep"@nl, "Use an Occupation with a language-tagged name as occupation"@en ;
+#            sh:node _:OccupationShape ;
+#            sh:minCount 0 ;
+#            sh:description """
+#                The person’s occupation(s).
+#
+#                The value *MUST* be an `Occupation`.
+#                If a term is available for the occupation, it *MUST* be [[#reference-terms|referenced]] via `sameAs`.
+#            """ ;
+#            rdfs:seeAlso [
+#                rdfs:label "A carpenter (as a term):" ;
+#                rdfs:comment "file://examples/Person-hasOccupation-term.jsonld" ;
+#            ] ;
+#            rdfs:seeAlso [
+#                rdfs:label "A sekreetruimer (for which no term is known):" ;
+#                rdfs:comment "file://examples/Person-hasOccupation.jsonld" ;
+#            ]
+#        ] ,
+#        [
+#            sh:path schema:birthDate ;
+#            sh:not _:InvalidCalendarDateShape ;
+#            sh:severity sh:Warning ;
+#            nde:futureChange [
+#                nde:version "2.0" ;
+#                sh:severity sh:Violation ;
+#                rdfs:label "maand 01–12 en dag 01–31"@nl, "month 01–12 and day 01–31"@en ;
+#            ] ;
+#            sh:message "Gebruik een maand van 01 tot en met 12 en een dag van 01 tot en met 31"@nl, "Use a month from 01 to 12 and a day from 01 to 31"@en ;
+#        ] ,
+#        [
+#            sh:path schema:deathDate ;
+#            sh:not _:InvalidCalendarDateShape ;
+#            sh:severity sh:Warning ;
+#            nde:futureChange [
+#                nde:version "2.0" ;
+#                sh:severity sh:Violation ;
+#                rdfs:label "maand 01–12 en dag 01–31"@nl, "month 01–12 and day 01–31"@en ;
+#            ] ;
+#            sh:message "Gebruik een maand van 01 tot en met 12 en een dag van 01 tot en met 31"@nl, "Use a month from 01 to 12 and a day from 01 to 31"@en ;
+#        ] .
+
+_:OrganizationShape
+    a sh:NodeShape ;
+    sh:targetClass schema:Organization ;
+    sh:name "Organization" ;
+    sh:description """
+        An Organization *SHOULD* be identified by a persistent URI, self-minted or from an organization directory.
+        If a term is available for the organization, it *MUST* be referenced via [[#Organization-sameAs|`sameAs`]],
+        so that consumers can deduplicate it within and across datasets.
+        Where no URI is known, it *MAY* be defined inline by its properties, like a Person.
+    """ ;
+    sh:property [
+        sh:path schema:name ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:minCount 1 ;
+        sh:description """
+            The Organization’s full name in its preferred display form.
+        """ ;
+        rdfs:seeAlso [
+            rdfs:label "Organization name:" ;
+            rdfs:comment "file://examples/Organization-name.jsonld" ;
+        ]
+    ] ,
+    _:SameAsShape .
+# LODA: not output by base/nde-schema-ap, so not checked.
+#    [
+#        sh:path schema:location ;
+#        sh:message "Geef maximaal één Place met een naam met taalcode als locatie"@nl, "Give at most one Place with a language-tagged name as location"@en ;
+#        sh:minCount 0 ;
+#        sh:maxCount 1 ;
+#        sh:class schema:Place ;
+#        sh:node _:PlaceShape ;
+#        sh:description """
+#            The Organization’s location,
+#            useful for distinguishing the organization from others with similar names.
+#
+#            See Place for this property’s allowed values.
+#        """ ;
+#        rdfs:seeAlso [
+#            rdfs:label "Organization with a location:" ;
+#            rdfs:comment "file://examples/Organization-location.jsonld" ;
+#        ]
+#    ] .
+
+_:MediaObjectShape
+    a sh:NodeShape ;
+    sh:name "MediaObject" ;
+    sh:description """
+        In case of image, video, audio or 3d model objects, in addition to the MediaObject class,
+        the relevant subclass *MUST* be used:
+        - ImageObject
+        - VideoObject
+        - AudioObject
+        - 3DModel
+
+        For other types of media, the generic class MediaObject *MUST* be used by itself.
+    """ ;
+    sh:property
+        _:MediaLicenseUriShape ,
+        _:MediaContentUrlUriShape ,
+        _:MediaThumbnailUrlUriShape ,
+        _:MediaLicenseRequiredShape ,
+        _:MediaContentUrlRequiredShape ,
+        _:MediaThumbnailUrlRequiredShape .
+# LODA: not output by base/nde-schema-ap, so not checked.
+#        [
+#            sh:path schema:copyrightNotice ;
+#            sh:datatype rdf:langString ;
+#            sh:minCount 0 ;
+#            sh:description """
+#                The copyright aspects of the MediaObject,
+#                particularly useful if the license requires attribution.
+#            """ ;
+#            rdfs:seeAlso [
+#                rdfs:label "A MediaObject that may be used only with attribution." ;
+#                rdfs:comment "file://examples/MediaObject-copyrightNotice.jsonld" ;
+#            ]
+#        ] .
+
+# Reports a missing license, contentUrl or thumbnailUrl with its own message. _:MediaObjectShape is reached
+# only through sh:or and sh:qualifiedValueShape on associatedMedia, whose results are never reported, so
+# there a missing value surfaces only as the general associatedMedia message. Media that are not typed
+# still get only that message. The URI checks are reported by _:AssociatedMediaValueShape.
+_:MediaObjectRequiredValuesShape
+    a sh:NodeShape ;
+    sh:targetClass schema:MediaObject, schema:ImageObject, schema:VideoObject, schema:AudioObject, schema:3DModel ;
+    sh:property
+        _:MediaLicenseRequiredShape ,
+        _:MediaContentUrlRequiredShape ,
+        _:MediaThumbnailUrlRequiredShape .
+
+_:MediaLicenseRequiredShape
+    sh:path schema:license ;
+    sh:minCount 1 ;
+    sh:message "Voeg een licentie of rechtenverklaring toe aan het MediaObject"@nl, "Add a license or rights statement to the MediaObject"@en ;
+    sh:description """
+        The license or rights statement
+        that applies to the digital reproduction.
+
+        This concerns the use of the reproduction, not of the heritage object itself.
+        The value *MUST* be the canonical URI of the license or rights statement.
+        For example, use https://creativecommons.org/licenses/by/4.0/ instead
+        of http://creativecommons.org/licenses/by/4.0/deed.nl.
+
+        The value *SHOULD* be an open license that allows the media to be consumed,
+        for example one of the [Creative Commons](https://creativecommons.org/choose/) licenses.
+        Media that cannot be openly licensed, for example because it is in copyright,
+        *SHOULD* have one of the [rightsstatements.org](https://rightsstatements.org) URIs instead.
+        Even then, consumers may display the media by embedding its contentUrl and thumbnailUrl;
+        for any further use, consult the rights statement.
+    """ ;
+    rdfs:seeAlso [
+        rdfs:label "CC0 “No Rights Reserved” license on an ImageObject:" ;
+        rdfs:comment "file://examples/MediaObject-license.jsonld" ;
+    ] ,
+    [
+        rdfs:label "An in-copyright image that consumers may view but not reuse:" ;
+        rdfs:comment "file://examples/MediaObject-license-rights-statement.jsonld" ;
+    ] .
+
+# The minimum count is a warning because only openly licensed media need these URLs; the URI checks
+# (_:MediaContentUrlUriShape and the like) are not. Inside _:MediaObjectShape, reached through sh:or and
+# sh:qualifiedValueShape on associatedMedia, which fail on a result of any severity, even the missing URL
+# makes associatedMedia a violation.
+_:MediaContentUrlRequiredShape
+    sh:path schema:contentUrl ;
+    sh:minCount 1 ;
+    sh:severity sh:Warning ;
+    sh:message "Voeg een contentUrl toe als het MediaObject onder een open licentie is gepubliceerd"@nl, "Add a contentUrl if the MediaObject is published under an open license"@en ;
+    sh:description """
+        The URL of the media object.
+        *REQUIRED* if the MediaObject is published under an open license.
+
+        The URL *MUST* allow embedding, which is how consumers display media that is not openly licensed.
+
+        For ImageObjects, this *SHOULD* be a high-resolution image to be used in full-screen viewers etc.
+    """ ;
+    rdfs:seeAlso [
+        rdfs:label "Full-sized image representation of the Starry Night." ;
+        rdfs:comment "file://examples/MediaObject-contentUrl.jsonld" ;
+    ] .
+
+_:MediaThumbnailUrlRequiredShape
+    sh:path schema:thumbnailUrl ;
+    sh:minCount 1 ;
+    sh:severity sh:Warning ;
+    sh:message "Voeg een thumbnailUrl toe als het MediaObject onder een open licentie is gepubliceerd"@nl, "Add a thumbnailUrl if the MediaObject is published under an open license"@en ;
+    sh:description """
+        A smaller version of the MediaObject.
+        *REQUIRED* if the MediaObject is published under an open license.
+
+        The URL *MUST* allow embedding.
+
+        For ImageObjects, this *SHOULD* be a small image to be used in lists, search results etc.
+    """ ;
+    rdfs:seeAlso [
+        rdfs:label "Both full-sized image and thumbnail of the Starry Night." ;
+        rdfs:comment "file://examples/MediaObject-thumbnailUrl.jsonld" ;
+    ] .
+
+_:IIIFPresentationManifestShape
+    a sh:NodeShape ;
+    sh:nodeKind sh:IRI ;
+    sh:property
+        _:MediaLicenseUriShape ,
+        [
+            sh:path schema:license ;
+            sh:minCount 1 ;
+        ] ,
+    [
+        sh:path schema:encodingFormat ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:pattern "^application/ld\\+json;profile=(['\"])http://iiif\\.io/api/presentation/\\d+/context\\.json\\1$" ;
+    ] .
+
+# The value checks of both kinds of associatedMedia entry. A result inside sh:or is never reported, so
+# on their own these would only surface as the sh:or’s general message, which reads as a missing value.
+# Applied to every entry as well, a literal or non-http(s) URL is also reported with its own message.
+_:AssociatedMediaValueShape
+    a sh:NodeShape ;
+    sh:targetObjectsOf schema:associatedMedia ;
+    sh:property
+        _:MediaLicenseUriShape ,
+        _:MediaContentUrlUriShape ,
+        _:MediaThumbnailUrlUriShape .
+
+# sh:node rather than two constraints on each property shape, so that a value failing both, such as
+# the literal "CC0", gives one result rather than two. The label names it in the property tables.
+_:WebUriShape
+    a sh:NodeShape ;
+    rdfs:label "[[#links|web URI]]" ;
+    sh:nodeKind sh:IRI ;
+    sh:pattern "^https?://" .
+
+_:MediaLicenseUriShape
+    sh:path schema:license ;
+    sh:node _:WebUriShape ;
+    sh:message "Gebruik een web URI die begint met http:// of https://"@nl, "Use a web URI starting with http:// or https://"@en .
+
+_:MediaContentUrlUriShape
+    sh:path schema:contentUrl ;
+    sh:node _:WebUriShape ;
+    sh:message "Gebruik een web URI die begint met http:// of https://"@nl, "Use a web URI starting with http:// or https://"@en .
+
+_:MediaThumbnailUrlUriShape
+    sh:path schema:thumbnailUrl ;
+    sh:node _:WebUriShape ;
+    sh:message "Gebruik een web URI die begint met http:// of https://"@nl, "Use a web URI starting with http:// or https://"@en .
+
+# Kept apart from the manifest shape above: a warning inside that shape would make the node
+# fail sh:node, and so turn the associatedMedia entry into a violation.
+_:IIIFPresentationManifestProfileQuotesShape
+    a sh:NodeShape ;
+    sh:targetObjectsOf schema:associatedMedia ;
+    sh:property [
+        sh:path schema:encodingFormat ;
+        sh:not [ sh:pattern "^application/ld\\+json;profile='http://iiif\\.io/api/presentation/" ] ;
+        sh:severity sh:Warning ;
+        nde:futureChange [
+            nde:version "2.0" ;
+            sh:severity sh:Violation ;
+        ] ;
+        sh:message "Gebruik dubbele aanhalingstekens om de profiel-URI van een IIIF Presentation-manifest; enkele aanhalingstekens zijn verouderd."@nl, "Use double quotes around the profile URI of an IIIF Presentation manifest; single quotes are deprecated."@en ;
+    ] .
+
+_:CreativeWorkAssociatedMediaCardinalityShape
+    a sh:NodeShape ;
+    sh:targetClass schema:CreativeWork ;
+    sh:property [
+        sh:path schema:associatedMedia ;
+        sh:qualifiedValueShape _:MediaObjectShape ;
+        sh:qualifiedMinCount 1 ;
+        sh:severity sh:Warning ;
+        sh:message "Voeg minimaal één weergeefbaar MediaObject toe als er media beschikbaar is."@nl, "At least one renderable MediaObject is required when media is available."@en ;
+    ] ,
+    [
+        sh:path schema:associatedMedia ;
+        sh:qualifiedValueShape _:IIIFPresentationManifestShape ;
+        sh:qualifiedMaxCount 1 ;
+        sh:message "Gebruik maximaal één IIIF Presentation-manifest per CreativeWork."@nl, "At most one IIIF Presentation manifest may be exposed per CreativeWork."@en ;
+    ] .
+
+_:PlaceShape
+    a sh:NodeShape ;
+    sh:name "Place" ;
+    sh:targetClass schema:Place ;
+    sh:description """
+        If a term is available for the place, for example in GeoNames or Wikidata,
+        it *MUST* be referenced via [[#Place-sameAs|`sameAs`]]; otherwise, the place *MUST* be defined by the properties listed below.
+    """ ;
+    sh:property [
+        sh:path schema:name ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:minCount 1 ;
+        sh:description """
+            The name of the place.
+        """ ;
+    ] ,
+    _:SameAsShape .
+# LODA: not output by base/nde-schema-ap, so not checked.
+#    [
+#        sh:path schema:address ;
+#        sh:message "Gebruik een PostalAddress als adres"@nl, "Use a PostalAddress as address"@en ;
+#        sh:class schema:PostalAddress ;
+#        sh:node _:PostalAddressShape ;
+#        sh:minCount 0 ;
+#        sh:description """
+#            The Place’s physical address.
+#            *REQUIRED* if known.
+#
+#            See PostalAddress for this property’s allowed values.
+#        """ ;
+#        rdfs:seeAlso [
+#            rdfs:label "A place with an address:" ;
+#            rdfs:comment "file://examples/Place-address.jsonld" ;
+#        ]
+#    ] ,
+#    [
+#        sh:path schema:geo ;
+#        sh:message "Geef maximaal één GeoCoordinates met latitude en longitude, of een GeoShape"@nl, "Give at most one GeoCoordinates with latitude and longitude, or a GeoShape"@en ;
+#        sh:or (
+#            [
+#                sh:class schema:GeoCoordinates ;
+#                sh:node [
+#                    a sh:NodeShape ;
+#                    sh:name "GeoCoordinates" ;
+#                    sh:description """
+#                        Geographic coordinates for a Place.
+#                    """ ;
+#                    sh:property [
+#                        sh:path schema:latitude ;
+#                        sh:or ( [ sh:datatype xsd:double ] [ sh:datatype xsd:decimal ] ) ;
+#                        sh:minCount 1 ;
+#                        sh:maxCount 1 ;
+#                        sh:description """
+#                            The latitude of a location.
+#
+#                            For example 37.42242 (WGS 84).
+#
+#                            The value *MUST* be an `xsd:double` or an `xsd:decimal`.
+#                            Both are accepted because a plain decimal literal in Turtle (for example `52.379189`)
+#                            is typed `xsd:decimal`, while the same value in JSON-LD becomes `xsd:double`.
+#                        """ ;
+#                    ] ,
+#                    [
+#                        sh:path schema:longitude ;
+#                        sh:or ( [ sh:datatype xsd:double ] [ sh:datatype xsd:decimal ] ) ;
+#                        sh:minCount 1 ;
+#                        sh:maxCount 1 ;
+#                        sh:description """
+#                            The longitude of a location.
+#
+#                            For example -122.08585 (WGS 84).
+#
+#                            The value *MUST* be an `xsd:double` or an `xsd:decimal`.
+#                            Both are accepted because a plain decimal literal in Turtle (for example `4.899431`)
+#                            is typed `xsd:decimal`, while the same value in JSON-LD becomes `xsd:double`.
+#                        """ ;
+#                    ]
+#                ] ;
+#            ]
+#            [ sh:class schema:GeoShape ]
+#        ) ;
+#        sh:minCount 0 ;
+#        sh:maxCount 1 ;
+#        sh:description """
+#            The Place’s [[!WGS84]] geo coordinates.
+#            *REQUIRED* if known.
+#        """ ;
+#        rdfs:seeAlso [
+#            rdfs:label "A place with coordinates:" ;
+#            rdfs:comment "file://examples/Place-geo.jsonld" ;
+#        ]
+#    ] .
+
+_:OccupationShape
+    a sh:NodeShape ;
+    sh:class schema:Occupation ;
+    sh:description """
+        A Person’s occupation.
+    """ ;
+    sh:property [
+        sh:path schema:name ;
+        sh:datatype rdf:langString ;
+        sh:uniqueLang true ;
+        sh:minCount 1 ;
+        sh:description """
+            A *REQUIRED* property that indicates the occupation’s name.
+        """ ;
+    ] .
+
+_:PostalAddressShape
+    a sh:NodeShape ;
+    sh:name "PostalAddress" ;
+    sh:description """
+        A postal address for an Organization or Place.
+        All properties are *OPTIONAL*.
+    """ ;
+    sh:property [
+        sh:path schema:streetAddress ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The street address, e.g. ‘Street 123’.
+        """ ;
+    ] ,
+    [
+        sh:path schema:postalCode ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The postal code, e.g. ‘1234 AB’.
+        """ ;
+    ] ,
+    [
+        sh:path schema:addressLocality ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The locality (city).
+        """ ;
+    ] ,
+    [
+        sh:path schema:addressRegion ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The region (province or state).
+        """ ;
+    ] ,
+    [
+        sh:path schema:addressCountry ;
+        sh:datatype xsd:string ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:description """
+            The country.
+
+            For countries that have an [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha-2 country code (e.g. ‘NL’), that *MUST* be used.
+            For historical countries, their name *MAY* be used instead (e.g. ‘Prussia’).
+        """ ;
+    ] .
+
+_:DateShape
+    a sh:NodeShape ;
+    sh:description """
+        The value *MUST* be in ISO 8601 format: YYYY-MM-DD, YYYY-MM, or YYYY. Provide the date at the highest precision known. If the exact date is unknown, a partial ISO 8601 date *MAY* be used:
+
+        - `"1889-06-15"` if the full date is known;
+        - `"1889-06"` if only the year and month are known;
+        - `"1889"` if only the year is known.
+
+        A year before 1 CE takes a leading minus (`"-0044"`), and a year *MAY* exceed four digits for deep time (`"-38000"`); in both cases it *MUST* keep the ISO 8601 minimum of four digits (zero-padded). ISO 8601 numbers years astronomically, with a year 0000 that equals 1 BCE, so a negative year is one year older than its digits read as a label: `"-0044"` denotes 45 BCE, and 44 BCE is written `"-0043"`.
+
+        In JSON-LD, a plain string is enough, because it is automatically typed as `schema:Date`, which accepts all three forms.
+        When typing literals explicitly (Turtle, N-Triples, or any other RDF serialization), match the datatype to the precision: `xsd:date` for full dates only, `xsd:gYearMonth` for `YYYY-MM`, and `xsd:gYear` for `YYYY`.
+        A partial date *MUST NOT* be typed as `xsd:date` (e.g. `"1699"^^xsd:date`), since that is malformed XSD; use `xsd:gYear`, `xsd:gYearMonth`, or `schema:Date` instead.
+
+        A value that is more than a single date *MUST* be an [EDTF](https://www.loc.gov/standards/datetime/) value typed `edtf:EDTF` (`http://id.loc.gov/datatypes/edtf/EDTF`),
+        limited to EDTF Levels 0 and 1. Such a value is one of:
+
+        - an interval, such as `"1606-07-15/1607"` for a birth between 15 July 1606 and the end of 1607; either end *MAY* be open (`"../1607"`, `"1606/.."`) or unknown (`"/1607"`, `"1606/"`), but not both;
+        - an uncertain or approximate date, which ends in `?` (uncertain), `~` (approximate) or `%` (both), such as `"1643?"` or `"1620~"`; an interval *MAY* qualify either end, as in `"1620~/1625"`;
+        - a date with unspecified digits, where `X` replaces the last one or two digits of the year (`"158X"` for the 1580s, `"15XX"`) or the month or day (`"1606-XX"`, `"1606-07-XX"`);
+        - a season, coded `21` (spring), `22` (summer), `23` (autumn) or `24` (winter) in place of the month (`"1606-21"`).
+
+        Unspecified digits and seasons cannot be qualified or used in an interval, and a time of day is not allowed.
+        EDTF writes a year of more than four digits with a `Y` prefix (`"Y-38000"`).
+
+        A single date *SHOULD NOT* be typed `edtf:EDTF`, but given as above, so that consumers that do not read EDTF still understand it:
+        `"1606"` rather than `"1606"^^edtf:EDTF`, and `"-38000"` rather than `"Y-38000"^^edtf:EDTF`.
+        Conversely, an uncertain date *SHOULD NOT* be reduced to a less precise single date:
+        `"1980"` asserts 1980, while `"1980/1985"^^edtf:EDTF` states what is known.
+
+        Schema.org’s validator and Google read only a single date with a four-digit year, and ignore the datatype.
+        They reject or truncate EDTF values and BCE years, which are nevertheless correct in this profile.
+    """ ;
+    sh:or (
+        [ sh:datatype schema:Date ;     sh:pattern "^-?([1-9][0-9]{3,}|0[0-9]{3})(-[0-9]{2}(-[0-9]{2})?)?$" ]
+        [ sh:datatype xsd:date ;        sh:pattern "^-?([1-9][0-9]{3,}|0[0-9]{3})-[0-9]{2}-[0-9]{2}$" ]
+        [ sh:datatype xsd:gYearMonth ]
+        [ sh:datatype xsd:gYear ]
+        [ sh:node _:EdtfShape ]
+    ) ;
+.
+
+# EDTF Levels 0 and 1 without times of day, also excluding a bare "/", "../.." and the unknown year "XXXX".
+# Whatever the pattern admits, edtf.js accepts at level 1, apart from impossible dates (1606-02-30),
+# the year "-0000" and intervals that end before they start.
+_:EdtfShape
+    a sh:NodeShape ;
+    rdfs:label "EDTF date or interval" ;
+    sh:datatype edtf:EDTF ;
+    sh:pattern "^(-?[0-9]{4}-2[1-4]|-?[0-9]{4}-((0[1-9]|1[0-2])-XX|XX(-XX)?)|-?[0-9]{2}([0-9]X|XX)|Y-?[1-9][0-9]{4,}|-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?(/(-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?|\\.\\.)?)?|(\\.\\.)?/-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?)$" .
+
+# A single date that EDTF can express is also a plain ISO 8601 date, which more consumers understand.
+# Each date property repeats the warning that uses this shape, so that its result keeps sh:resultPath.
+_:EdtfSingleDateShape
+    a sh:NodeShape ;
+    sh:datatype edtf:EDTF ;
+    sh:pattern "^(-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?|Y-?[1-9][0-9]{4,})$" .

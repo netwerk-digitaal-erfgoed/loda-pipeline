@@ -3,7 +3,8 @@ import path from 'node:path';
 
 export interface StageDefinition {
   stageNumber: number;
-  selectorFile: string;
+  /** Without a selector, the executors run once on the whole dataset. */
+  selectorFile?: string;
   executorFiles: string[];
 }
 
@@ -16,6 +17,8 @@ export interface StageDefinition {
  * - selector-N-M-O.rq        → shared selector for stages N, M, O
  * - executor*.rq             → executor for stage 1 (e.g. executor.rq, executor-aggregation.rq)
  * - executor-N*.rq           → executor for stage N (e.g. executor-2.rq, executor-2-aggregation.rq)
+ *
+ * A stage without a selector runs its executors once on the whole dataset.
  *
  * A file in an override directory replaces the file with the same name in the
  * base directory, or adds to it if there is none.
@@ -62,7 +65,11 @@ export async function scanStages(
   for (const [num, execs] of executors) {
     const selectorFile = selectorForStage.get(num) ?? wildcardSelector;
     if (!selectorFile) {
-      throw new Error(`No selector found for stage ${num} in ${baseDir}`);
+      stagesBySelector.set(`stage-${num}`, {
+        stageNumber: num,
+        executorFiles: [...execs],
+      });
+      continue;
     }
 
     const existing = stagesBySelector.get(selectorFile);

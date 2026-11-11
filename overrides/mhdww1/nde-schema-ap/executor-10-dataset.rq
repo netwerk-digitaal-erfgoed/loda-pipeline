@@ -1,0 +1,100 @@
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX edtf: <http://id.loc.gov/datatypes/edtf/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sdo: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+  $this sdo:name ?name .
+  $this sdo:associatedMedia ?media .
+  ?media a sdo:MediaObject , sdo:ImageObject ;
+    sdo:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    sdo:contentUrl ?contentUrl ;
+    sdo:thumbnailUrl ?thumbnailUrl .
+  $this sdo:associatedMedia ?manifest .
+  ?manifest
+    sdo:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    sdo:encodingFormat ?manifestFormat .
+  $this ?termProperty ?term .
+  ?term a sdo:DefinedTerm ;
+    sdo:name ?termName .
+  $this sdo:creator ?creator .
+  ?creator sdo:name ?creatorName .
+  $this sdo:dateCreated ?date .
+}
+WHERE {
+  # SCHEMA-AP-NDE has a language-tagged name, this dataset has an rdfs:label.
+  {
+    $this rdfs:label ?_label .
+    BIND(STRLANG(STR(?_label), "nl") AS ?name)
+  }
+
+  # SCHEMA-AP-NDE has an image with a license, contentUrl and thumbnailUrl, this dataset
+  # has a link to a file. The file number gives the URLs of the IIIF image.
+  UNION {
+    $this sdo:image ?_image .
+    FILTER(ISLITERAL(?_image))
+    BIND(REPLACE(STR(?_image), "^.*file=([0-9]+).*$", "$1") AS ?_file)
+    BIND(CONCAT("https://atlantislite.deventit.nl/IIIF/image/3.0/", ?_file) AS ?_iiifBase)
+    BIND(IRI(CONCAT(STR($this), "#media-", ?_file)) AS ?media)
+    BIND(IRI(CONCAT(?_iiifBase, "/full/max/0/default.jpg")) AS ?contentUrl)
+    BIND(IRI(CONCAT(?_iiifBase, "/full/!250,250/0/default.jpg")) AS ?thumbnailUrl)
+  }
+
+  # SCHEMA-AP-NDE has a IIIF manifest with its own URI, this dataset has a blank node with its URL as text.
+  UNION {
+    $this sdo:image ?_node .
+    ?_node sdo:contentUrl ?_manifestUrl .
+    BIND(IRI(STR(?_manifestUrl)) AS ?manifest)
+    # Bound rather than in the template: QLever escapes the quotes of a template literal twice.
+    BIND("application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"" AS ?manifestFormat)
+  }
+
+  # SCHEMA-AP-NDE has a DefinedTerm with a name, this dataset has the type and material as a CRM type.
+  # SCHEMA-AP-NDE allows one name per language, a CRM type sometimes has more than one label: take the first.
+  UNION {
+    $this crm:P2_has_type ?_type .
+    ?_type a crm:E55_Type .
+    {
+      SELECT ?_type (MIN(STR(?_anyTypeLabel)) AS ?_typeLabel) WHERE {
+        ?_type rdfs:label ?_anyTypeLabel .
+      }
+      GROUP BY ?_type
+    }
+    BIND(sdo:additionalType AS ?termProperty)
+    BIND(IF(ISIRI(?_type), ?_type, IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_typeLabel))))) AS ?term)
+    BIND(STRLANG(STR(?_typeLabel), "nl") AS ?termName)
+  }
+  UNION {
+    $this crm:P45_consists_of/crm:P2_has_type ?_material .
+    {
+      SELECT ?_material (MIN(STR(?_anyMaterialLabel)) AS ?_materialLabel) WHERE {
+        ?_material rdfs:label ?_anyMaterialLabel .
+      }
+      GROUP BY ?_material
+    }
+    BIND(sdo:material AS ?termProperty)
+    BIND(IF(ISIRI(?_material), ?_material, IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_materialLabel))))) AS ?term)
+    BIND(STRLANG(STR(?_materialLabel), "nl") AS ?termName)
+  }
+
+  # SCHEMA-AP-NDE has a creator with a name, this dataset has the name as text.
+  UNION {
+    $this sdo:creator ?_creatorText .
+    FILTER(ISLITERAL(?_creatorText) && STR(?_creatorText) != "onbekend")
+    BIND(STRLANG(STR(?_creatorText), "nl") AS ?creatorName)
+    BIND(IRI(CONCAT(STR($this), "#creator-", ENCODE_FOR_URI(STR(?_creatorText)))) AS ?creator)
+  }
+
+  # SCHEMA-AP-NDE has a dateCreated, this dataset has the production time span.
+  UNION {
+    $this crm:P108i_was_produced_by/crm:P4_has_time-span ?_span .
+    ?_span crm:P82a_begin_of_the_begin ?_begin ;
+      crm:P82b_end_of_the_end ?_end .
+    BIND(SUBSTR(STR(?_begin), 1, 4) AS ?_beginYear)
+    BIND(SUBSTR(STR(?_end), 1, 4) AS ?_endYear)
+    BIND(IF(?_beginYear = ?_endYear,
+      STRDT(?_beginYear, xsd:gYear),
+      STRDT(CONCAT(?_beginYear, "/", ?_endYear), edtf:EDTF)) AS ?date)
+  }
+}

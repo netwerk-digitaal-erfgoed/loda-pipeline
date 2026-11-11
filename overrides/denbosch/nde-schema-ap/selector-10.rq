@@ -1,0 +1,8 @@
+PREFIX sdo: <https://schema.org/>
+
+# The records of this dataset are MediaObjects, the collections they are in are blank CreativeWorks.
+SELECT DISTINCT $this WHERE {
+  { $this a sdo:MediaObject } UNION { $this a sdo:CreativeWork }
+  FILTER(!ISBLANK($this))
+}
+ORDER BY $this

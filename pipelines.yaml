@@ -3,50 +3,50 @@ pipelines:
   amateurfilm:
     dataset: 
       uri: http://data.beeldengeluid.nl/id/dataset/0029
-    bindings:
-      dataProvider: "Netherlands Institute for Sound & Vision"
-      edmType: "VIDEO"
-      datasetLanguage: "nl"
+    # bindings:
+    #   dataProvider: "Netherlands Institute for Sound & Vision"
+    #   edmType: "VIDEO"
+    #   datasetLanguage: "nl"
     overrides:
       - overrides/amateurfilm
 
   denbosch:
     dataset:
       uri: https://zoeken.erfgoedshertogenbosch.nl/AtlantisPubliek/data/dataset/Dataset+Beeldbank+Erfgoed+%27s-Hertogenbosch
-    bindings:
-      dataProvider: "Stadsarchief Den Bosch"
-      edmType: "IMAGE"
-      datasetLanguage: "nl"
+    # bindings:
+    #   dataProvider: "Stadsarchief Den Bosch"
+    #   edmType: "IMAGE"
+    #   datasetLanguage: "nl"
     overrides:
       - overrides/denbosch
 
   jmvdcollectie:
     dataset:
       uri: https://n2t.net/ark:/32838/dataset
-    bindings:
-      dataProvider: "Jan Menze van Diepen Collectie"
-      edmType: "IMAGE"
-      datasetLanguage: "nl"
+    # bindings:
+    #   dataProvider: "Jan Menze van Diepen Collectie"
+    #   edmType: "IMAGE"
+    #   datasetLanguage: "nl"
     overrides:
       - overrides/jmvdcollectie
 
   mhdww1:
     dataset:
       uri: https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD+-+Eerste+Wereldoorlog
-    bindings:
-      dataProvider: "MHD - Museum Huis Doorn"
-      edmType: "IMAGE"
-      datasetLanguage: "nl"
+    # bindings:
+    #   dataProvider: "MHD - Museum Huis Doorn"
+    #   edmType: "IMAGE"
+    #   datasetLanguage: "nl"
     overrides:
       - overrides/mhdww1
 
   teylers:
     dataset:
       uri: https://n2t.net/ark:/72166/dataset
-    bindings:
-      dataProvider: "Teylers Museum"
-      edmType: "IMAGE"
-      datasetLanguage: "nl"
+    # bindings:
+    #   dataProvider: "Teylers Museum"
+    #   edmType: "IMAGE"
+    #   datasetLanguage: "nl"
     overrides:
       - overrides/teylers
 
@@ -54,9 +54,9 @@ pipelines:
     dataset: 
       uri: https://studiezaal.nijmegen.nl/AtlantisPubliek/data/dataset/LOD+Beelddocumenten
       file: overrides/ran/dataset.ttl
-    bindings:
-      dataProvider: "Regionaal Archief Nijmegen"
-      edmType: "IMAGE"
-      datasetLanguage: "nl"
+    # bindings:
+    #   dataProvider: "Regionaal Archief Nijmegen"
+    #   edmType: "IMAGE"
+    #   datasetLanguage: "nl"
     overrides: 
       - overrides/ran
