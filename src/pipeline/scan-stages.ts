@@ -1,5 +1,65 @@
-import {readdir} from 'node:fs/promises';
+import {access, readdir} from 'node:fs/promises';
 import path from 'node:path';
+
+/**
+ * The stage groups of a pipeline, in the order they run: the source to
+ * SCHEMA-AP-NDE, then SCHEMA-AP-NDE to EDM. Each is a directory in the base and
+ * override directories.
+ */
+const STAGE_GROUPS = ['nde-schema-ap', 'edm'];
+
+export interface StageGroup {
+  name: string;
+  /** The SHACL shapes that the output of the group's last stage must conform to. */
+  shapesFile: string;
+  stages: StageDefinition[];
+}
+
+/** Where the validation reports of a stage group's output are written. */
+export function reportDir(validationOutputDir: string, group: string): string {
+  return path.join(validationOutputDir, group);
+}
+
+export function stageName(stageDef: StageDefinition): string {
+  return `Stage ${stageDef.stageNumber}`;
+}
+
+/** The stage groups of a pipeline, in the order they run, from the base and override directories. */
+export async function scanStageGroups(
+  baseDir: string,
+  overrideDirs: string[] = [],
+): Promise<StageGroup[]> {
+  return Promise.all(
+    STAGE_GROUPS.map(async name => ({
+      name,
+      shapesFile: path.join(baseDir, name, 'shapes.ttl'),
+      stages: await scanStageGroup(baseDir, name, overrideDirs),
+    })),
+  );
+}
+
+async function scanStageGroup(
+  baseDir: string,
+  group: string,
+  overrideDirs: string[] = [],
+): Promise<StageDefinition[]> {
+  return scanStages(
+    path.join(baseDir, group),
+    await existingDirs(overrideDirs.map(dir => path.join(dir, group))),
+  );
+}
+
+async function existingDirs(dirs: string[]): Promise<string[]> {
+  const exists = await Promise.all(
+    dirs.map(dir =>
+      access(dir).then(
+        () => true,
+        () => false,
+      ),
+    ),
+  );
+  return dirs.filter((_, index) => exists[index]);
+}
 
 export interface StageDefinition {
   stageNumber: number;

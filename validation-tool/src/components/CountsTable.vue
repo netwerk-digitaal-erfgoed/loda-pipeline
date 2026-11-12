@@ -17,7 +17,9 @@ const rows = computed(() => {
       checkpoint.counts ? Object.keys(props.select(checkpoint.counts)) : [],
     ),
   );
+
   const needle = filter.value.toLowerCase();
+  
   return [...iris]
     .filter(iri => compact(iri).toLowerCase().includes(needle))
     .map(iri => ({

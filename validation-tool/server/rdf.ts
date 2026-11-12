@@ -1,9 +1,10 @@
+import {createHash} from 'node:crypto';
 import {createReadStream} from 'node:fs';
 import {extname} from 'node:path';
 import {Readable} from 'node:stream';
 import {createGunzip} from 'node:zlib';
-import {DataFactory, type Quad, StreamParser} from 'n3';
-import type {Counts, ReportSummary, ResultGroup} from '../src/types.ts';
+import {DataFactory, type Quad, StreamParser, termToId} from 'n3';
+import type {Counts, ReportSummary, ResultGroup, ValidationResult} from '../src/types.ts';
 
 const RDF_TYPE = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
 const SH = 'http://www.w3.org/ns/shacl#';
@@ -36,7 +37,7 @@ export async function* readQuads(path: string): AsyncGenerator<Quad> {
 
   let input: Readable = createReadStream(path);
   if (gzipped) input = input.pipe(createGunzip());
-  const parser = input.pipe(new StreamParser({format}));
+  const parser = input.pipe(new StreamParser({format, blankNodePrefix: 'b'}));
 
   for await (const quad of parser as AsyncIterable<Quad>) {
     yield DataFactory.quad(quad.subject, quad.predicate, quad.object);
@@ -44,10 +45,23 @@ export async function* readQuads(path: string): AsyncGenerator<Quad> {
 }
 
 export class CountsCollector {
-  private readonly counts: Counts = {triples: 0, classes: {}, properties: {}};
+  private readonly counts = {
+    triples: 0,
+    duplicates: 0,
+    classes: {} as Record<string, number>,
+    properties: {} as Record<string, number>,
+  };
+  // Triple hashes, spread over sets because a Set holds at most 2^24 entries.
+  private readonly seen = Array.from({length: 64}, () => new Set<string>());
 
   add(quad: Quad): void {
     this.counts.triples++;
+    const hash = createHash('sha1')
+      .update(`${termToId(quad.subject)} ${termToId(quad.predicate)} ${termToId(quad.object)}`)
+      .digest('base64');
+    const seen = this.seen[hash.charCodeAt(0) % this.seen.length];
+    if (seen.has(hash)) this.counts.duplicates++;
+    else seen.add(hash);
     const property = quad.predicate.value;
     this.counts.properties[property] = (this.counts.properties[property] ?? 0) + 1;
     if (property === RDF_TYPE) {
@@ -67,11 +81,13 @@ export async function countFile(path: string): Promise<Counts> {
   return counts.result;
 }
 
-/**
- * Summarise a SHACL validation report: its results grouped by severity, path,
- * constraint and message, with a few focus nodes for each group.
- */
-export async function summarizeReport(path: string): Promise<ReportSummary> {
+export interface Report {
+  conforms: boolean;
+  results: ValidationResult[];
+}
+
+/** Read the results of a SHACL validation report. */
+export async function readReport(path: string): Promise<Report> {
   const bySubject = new Map<string, Quad[]>();
   for await (const quad of readQuads(path)) {
     const quads = bySubject.get(quad.subject.value) ?? [];
@@ -80,10 +96,7 @@ export async function summarizeReport(path: string): Promise<ReportSummary> {
   }
 
   let conforms = true;
-  const focusNodes = new Set<string>();
-  const bySeverity: Record<string, number> = {};
-  const groups = new Map<string, ResultGroup & {focusNodeSet: Set<string>}>();
-  let results = 0;
+  const results: ValidationResult[] = [];
 
   for (const quads of bySubject.values()) {
     const value = (property: string) =>
@@ -98,21 +111,43 @@ export async function summarizeReport(path: string): Promise<ReportSummary> {
     }
     if (!types.includes(`${SH}ValidationResult`)) continue;
 
-    results++;
-    const severity = local(value('resultSeverity')?.value ?? `${SH}Violation`);
     const resultPath = value('resultPath');
     const constraint = value('sourceConstraintComponent')?.value;
-    const message = englishMessage(quads);
-    const focusNode = value('focusNode')?.value ?? '';
+    results.push({
+      severity: local(value('resultSeverity')?.value ?? `${SH}Violation`),
+      // A complex path is a blank node, which the pipeline skolemizes to a /.well-known/ IRI.
+      path:
+        resultPath?.termType === 'NamedNode' && !resultPath.value.includes('/.well-known/')
+          ? resultPath.value
+          : undefined,
+      constraint: constraint && local(constraint),
+      message: englishMessage(quads),
+      focusNode: value('focusNode')?.value ?? '',
+      value: value('value')?.value,
+    });
+  }
+
+  return {conforms, results};
+}
+
+/**
+ * Summarise a SHACL validation report: its results grouped by severity, path,
+ * constraint and message, with a few focus nodes for each group.
+ */
+export function summarizeReport({conforms, results}: Report): ReportSummary {
+  const focusNodes = new Set<string>();
+  const bySeverity: Record<string, number> = {};
+  const groups = new Map<string, ResultGroup & {focusNodeSet: Set<string>}>();
+
+  for (const {severity, path, constraint, message, focusNode, value} of results) {
     focusNodes.add(focusNode);
     bySeverity[severity] = (bySeverity[severity] ?? 0) + 1;
 
-    const path = resultPath?.termType === 'NamedNode' ? resultPath.value : undefined;
     const key = [severity, path, constraint, message].join('\u0000');
     const group = groups.get(key) ?? {
       severity,
       path,
-      constraint: constraint && local(constraint),
+      constraint,
       message,
       results: 0,
       focusNodes: 0,
@@ -122,14 +157,14 @@ export async function summarizeReport(path: string): Promise<ReportSummary> {
     group.results++;
     group.focusNodeSet.add(focusNode);
     if (group.samples.length < SAMPLES_PER_GROUP) {
-      group.samples.push({focusNode, value: value('value')?.value});
+      group.samples.push({focusNode, value});
     }
     groups.set(key, group);
   }
 
   return {
     conforms,
-    results,
+    results: results.length,
     focusNodes: focusNodes.size,
     bySeverity,
     groups: [...groups.values()]

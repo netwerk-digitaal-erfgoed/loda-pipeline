@@ -1,38 +1,35 @@
 import {readFile, stat} from 'node:fs/promises';
 import type {ServerResponse} from 'node:http';
-import {join, relative, resolve} from 'node:path';
-import filenamifyUrl from 'filenamify-url';
+import {join} from 'node:path';
 import type {Plugin} from 'vite';
-import {parse} from 'yaml';
 import type {
   Checkpoint,
   Counts,
   Pipeline,
   PipelineDetails,
   RecordDescription,
+  RecordDetails,
+  RecordVersion,
   RecordSample,
 } from '../src/types.ts';
-import {countFile, summarizeReport} from './rdf.ts';
-import {describeRecord, recordsOfClass, toTurtle} from './records.ts';
+import {type PipelineLayout, readLayouts} from './layout.ts';
+import {PipelineRunner} from './pipeline.ts';
+import {countFile, readReport, summarizeReport} from './rdf.ts';
+import {describeRecord, ownNode, recordsOfClass, toTree, toTurtle} from './records.ts';
 import {findSourceDump} from './source.ts';
 
 export interface ValidationApiOptions {
   /** The pipeline repository, with pipelines.yaml and base/. */
   repoDir: string;
-  /** The pipeline's IMPORT_DIR, where it downloads the source dumps. */
-  importDir: string;
-  /** The pipeline's REGISTRY_ENDPOINT. */
-  registryEndpoint: string;
-  /** The pipeline's OUTPUT_DIR. */
-  outputDir: string;
-  /** The pipeline's STAGE_OUTPUT_DIR. */
-  stageOutputDir: string;
-  /** The pipeline's VALIDATION_OUTPUT_DIR. */
-  validationOutputDir: string;
 }
 
-/** The stage whose output is the pipeline's SCHEMA-AP-NDE data: the last stage in base/nde-schema-ap. */
-const SCHEMA_AP_STAGE = 'Stage 10';
+/** The files the pipelines' layout depends on. */
+const LAYOUT_FILES = ['pipelines.yaml', '.env', 'base', 'overrides'];
+
+const STAGE_GROUP_LABELS: Record<string, string> = {
+  'nde-schema-ap': 'SCHEMA-AP-NDE',
+  edm: 'EDM',
+};
 
 const CREATIVE_WORK = 'https://schema.org/CreativeWork';
 const PROVIDED_CHO = 'http://www.europeana.eu/schemas/edm/ProvidedCHO';
@@ -57,9 +54,8 @@ interface CheckpointFiles {
   hint: string;
 }
 
-interface PipelineConfig extends Pipeline {
-  /** The pipeline's dataset file, with the dataset's distributions instead of the registry's. */
-  datasetFile?: string;
+function sourceReportFile(pipeline: PipelineLayout): string {
+  return join(pipeline.validationOutputDir, 'source', pipeline.file);
 }
 
 /** Serves the pipelines and their validation reports, counts and records under /api. */
@@ -90,26 +86,25 @@ export function validationApi(options: ValidationApiOptions): Plugin {
     }
   }
 
-  async function pipelines(): Promise<PipelineConfig[]> {
-    const config = parse(await readFile(join(options.repoDir, 'pipelines.yaml'), 'utf8')) as {
-      pipelines: Record<string, {dataset: {uri: string; file?: string}}>;
-    };
-    return Object.entries(config.pipelines).map(([name, pipeline]) => ({
-      name,
-      datasetUri: pipeline.dataset.uri,
-      datasetFile: pipeline.dataset.file && join(options.repoDir, pipeline.dataset.file),
-    }));
+  // Reading the layouts scans the stage directories, so read them again only when the files they depend on change.
+  let layouts: Promise<PipelineLayout[]> | undefined;
+  function pipelines(): Promise<PipelineLayout[]> {
+    if (!layouts) {
+      layouts = readLayouts(options.repoDir);
+      layouts.catch(() => (layouts = undefined));
+    }
+    return layouts;
   }
 
   // The access URLs of a dataset rarely change, so look its dump up once.
   const sourceDumps = new Map<string, Promise<string | undefined>>();
-  function sourceDump(pipeline: PipelineConfig): Promise<string | undefined> {
+  function sourceDump(pipeline: PipelineLayout): Promise<string | undefined> {
     let dump = sourceDumps.get(pipeline.name);
     if (!dump) {
       dump = findSourceDump(
-        options.importDir,
+        pipeline.importDir,
         pipeline.datasetUri,
-        options.registryEndpoint,
+        pipeline.registryEndpoint,
         pipeline.datasetFile,
       );
       dump.catch(() => sourceDumps.delete(pipeline.name));
@@ -118,11 +113,11 @@ export function validationApi(options: ValidationApiOptions): Plugin {
     return dump;
   }
 
-  async function checkpointFiles(pipeline: PipelineConfig): Promise<CheckpointFiles[]> {
-    const file = `${filenamifyUrl(pipeline.datasetUri, {replacement: '-'})}.nt`;
-    const sourceReport = join(options.validationOutputDir, 'source', file);
-    const fromTool = (path: string) => relative(join(options.repoDir, 'validation-tool'), path);
-    const run = `npm start -- ${pipeline.name}`;
+  /** The source, validated against the shapes of the pipeline's first stage group, then each group's output. */
+  async function checkpointFiles(pipeline: PipelineLayout): Promise<CheckpointFiles[]> {
+    const [first] = pipeline.stageGroups;
+    const sourceReport = sourceReportFile(pipeline);
+    const run = 'Run the pipeline first.';
     const dump =
       (await sourceDump(pipeline)) ??
       (await optional(`${sourceReport}.summary.json`, readSummary))?.dataFile;
@@ -131,48 +126,38 @@ export function validationApi(options: ValidationApiOptions): Plugin {
       {
         id: 'source',
         label: 'Source',
-        shapes: 'nde-schema-ap',
+        shapes: first.name,
         report: sourceReport,
         data: dump,
-        missing: `The source dump is not in ${options.importDir}. Run: ${run}`,
+        missing: `The source dump is not in ${pipeline.importDir}. ${run}`,
         countsFile: `${sourceReport}.summary.json`,
         counts: async path => {
-          const {triples, classes, properties} = await readSummary(path);
-          return {triples, classes, properties};
+          const {triples, duplicates, classes, properties} = await readSummary(path);
+          return {triples, duplicates, classes, properties};
         },
-        hint: `cd validation-tool && npm run validate -- '${dump ? fromTool(dump) : '<source dump>'}' '${fromTool(
-          join(options.repoDir, 'base', 'nde-schema-ap', 'shapes.ttl'),
-        )}' '${fromTool(sourceReport)}'`,
+        hint: dump ? `The source dump is not validated yet. ${run}` : `No source dump. ${run}`,
       },
-      {
-        id: 'nde-schema-ap',
-        label: 'After pre-transform',
-        shapes: 'nde-schema-ap',
-        report: join(options.validationOutputDir, 'nde-schema-ap', file),
-        data: join(options.stageOutputDir, SCHEMA_AP_STAGE, file),
-        missing: `No data. Run: ${run}`,
-        countsFile: join(options.stageOutputDir, SCHEMA_AP_STAGE, file),
-        counts: countFile,
-        hint: run,
-      },
-      {
-        id: 'edm',
-        label: 'Pipeline output',
-        shapes: 'edm',
-        report: join(options.validationOutputDir, 'edm', file),
-        data: join(options.outputDir, file),
-        missing: `No data. Run: ${run}`,
-        countsFile: join(options.outputDir, file),
-        counts: countFile,
-        hint: run,
-      },
+      ...pipeline.stageGroups.map(
+        (group): CheckpointFiles => ({
+          id: group.name as Checkpoint['id'],
+          label: STAGE_GROUP_LABELS[group.name] ?? group.name,
+          shapes: group.name,
+          report: group.report,
+          data: group.data,
+          missing: `No data. ${run}`,
+          countsFile: group.data,
+          counts: countFile,
+          hint: `No data. ${run}`,
+        }),
+      ),
     ];
   }
 
-  async function details(pipeline: PipelineConfig): Promise<PipelineDetails> {
+  async function details(pipeline: PipelineLayout): Promise<PipelineDetails> {
     const checkpoints: Checkpoint[] = [];
     for (const files of await checkpointFiles(pipeline)) {
-      const report = await optional(files.report, summarizeReport);
+      const parsed = await optional(files.report, readReport, 'report');
+      const report = parsed && summarizeReport(parsed);
       const counts = await optional(files.countsFile, files.counts);
       checkpoints.push({
         id: files.id,
@@ -187,8 +172,11 @@ export function validationApi(options: ValidationApiOptions): Plugin {
   }
 
   /** Example records, from the SCHEMA-AP-NDE data: some that reach EDM, some that do not. */
-  async function samples(pipeline: PipelineConfig): Promise<RecordSample[]> {
-    const [, schemaAp, edm] = (await checkpointFiles(pipeline)).map(files => files.data);
+  async function samples(pipeline: PipelineLayout): Promise<RecordSample[]> {
+    const files = await checkpointFiles(pipeline);
+    const [schemaAp, edm] = ['nde-schema-ap', 'edm'].map(
+      id => files.find(candidate => candidate.id === id)?.data,
+    );
     const records =
       (await optional(schemaAp, path => recordsOfClass(path, CREATIVE_WORK), 'records')) ?? [];
     const inEdm = new Set(
@@ -202,23 +190,91 @@ export function validationApi(options: ValidationApiOptions): Plugin {
     ].map(iri => ({iri, inEdm: inEdm.has(iri)}));
   }
 
-  async function describe(pipeline: PipelineConfig, record: string): Promise<RecordDescription> {
+  async function describeVersion(files: CheckpointFiles, record: string): Promise<RecordVersion> {
+    const quads = await optional(files.data, path => describeRecord(path, record), record);
+    return {
+      id: files.id,
+      label: files.label,
+      triples: quads?.length ?? 0,
+      ...(quads
+        ? {turtle: await toTurtle(quads), tree: toTree(quads, record)}
+        : {missing: files.missing}),
+    };
+  }
+
+  async function describe(pipeline: PipelineLayout, record: string): Promise<RecordDescription> {
     const versions = [];
     for (const files of await checkpointFiles(pipeline)) {
-      const quads = await optional(files.data, path => describeRecord(path, record), record);
-      versions.push({
-        id: files.id,
-        label: files.label,
-        triples: quads?.length ?? 0,
-        ...(quads ? {turtle: await toTurtle(quads, record)} : {missing: files.missing}),
-      });
+      versions.push(await describeVersion(files, record));
     }
     return {iri: record, versions};
   }
 
+  /** A record in one checkpoint's data, with the validation results about it and its own nodes. */
+  async function recordDetails(
+    pipeline: PipelineLayout,
+    record: string,
+    checkpoint: string,
+  ): Promise<RecordDetails | undefined> {
+    const files = (await checkpointFiles(pipeline)).find(files => files.id === checkpoint);
+    if (!files) return undefined;
+    const report = await optional(files.report, readReport, 'report');
+    return {
+      iri: record,
+      version: await describeVersion(files, record),
+      results: report?.results.filter(result => ownNode(result.focusNode, record)),
+    };
+  }
+
+  const runner = new PipelineRunner(
+    options.repoDir,
+    pipeline => {
+      layouts = undefined;
+      sourceDumps.delete(pipeline);
+    },
+    async name => {
+      const pipeline = (await pipelines()).find(candidate => candidate.name === name);
+      if (!pipeline) return undefined;
+      // The pipeline may just have downloaded the dump.
+      sourceDumps.delete(name);
+      const data = await sourceDump(pipeline);
+      if (!data) return undefined;
+      return {data, shapes: pipeline.stageGroups[0].shapes, report: sourceReportFile(pipeline)};
+    },
+  );
+
   return {
     name: 'loda-validation-api',
     configureServer(server) {
+      const layoutFiles = LAYOUT_FILES.map(file => join(options.repoDir, file));
+      server.watcher.add(layoutFiles);
+      server.watcher.on('all', (_event, path) => {
+        if (layoutFiles.some(file => path === file || path.startsWith(`${file}/`))) {
+          layouts = undefined;
+        }
+      });
+      server.httpServer?.once('close', () => runner.stop());
+
+      server.middlewares.use('/api/run', async (req, res) => {
+        try {
+          if (req.method === 'GET') return follow(runner, res);
+          if (req.method === 'DELETE') return json(res, {stopped: runner.stop()});
+          if (req.method !== 'POST') return json(res, {error: 'Method not allowed'}, 405);
+
+          const name = new URL(req.url ?? '/', 'http://localhost').searchParams.get('pipeline');
+          if (!(await pipelines()).some(candidate => candidate.name === name)) {
+            return json(res, {error: `No pipeline ${name}`}, 404);
+          }
+          if (runner.running) {
+            return json(res, {error: `${runner.status?.pipeline} is still running`}, 409);
+          }
+          runner.start(name!);
+          return json(res, runner.status, 202);
+        } catch (error) {
+          return json(res, {error: (error as Error).message}, 500);
+        }
+      });
+
       server.middlewares.use('/api/pipelines', async (req, res) => {
         try {
           const url = new URL(req.url ?? '/', 'http://localhost');
@@ -236,6 +292,14 @@ export function validationApi(options: ValidationApiOptions): Plugin {
           if (view === 'records') {
             const record = url.searchParams.get('iri');
             return json(res, record ? await describe(pipeline, record) : await samples(pipeline));
+          }
+          if (view === 'record') {
+            const record = url.searchParams.get('iri');
+            const checkpoint = url.searchParams.get('checkpoint');
+            if (!record || !checkpoint) return json(res, {error: 'Give an iri and a checkpoint'}, 400);
+            const details = await recordDetails(pipeline, record, checkpoint);
+            if (!details) return json(res, {error: `No checkpoint ${checkpoint}`}, 404);
+            return json(res, details);
           }
           return json(res, await details(pipeline));
         } catch (error) {
@@ -256,18 +320,15 @@ function json(res: ServerResponse, body: unknown, status = 200) {
   res.end(JSON.stringify(body));
 }
 
-export function repoPaths(repoDir: string): ValidationApiOptions {
-  return {
-    repoDir,
-    importDir: resolve(repoDir, process.env.IMPORT_DIR ?? 'imports'),
-    registryEndpoint:
-      process.env.REGISTRY_ENDPOINT ??
-      'https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry',
-    outputDir: resolve(repoDir, process.env.OUTPUT_DIR ?? 'output'),
-    stageOutputDir: resolve(repoDir, process.env.STAGE_OUTPUT_DIR ?? 'output/stages'),
-    validationOutputDir: resolve(
-      repoDir,
-      process.env.VALIDATION_OUTPUT_DIR ?? 'output/validation',
-    ),
-  };
+/** Streams the status of the latest run as server-sent events, starting with where it is now. */
+function follow(runner: PipelineRunner, res: ServerResponse) {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+  });
+  const send = (status: unknown) => res.write(`data: ${JSON.stringify(status ?? null)}\n\n`);
+  send(runner.status);
+  const unsubscribe = runner.subscribe(send);
+  res.on('close', unsubscribe);
 }

@@ -1,5 +1,3 @@
-import {access} from 'node:fs/promises';
-import path from 'node:path';
 import {
   readQueryFile,
   SparqlConstructReader,
@@ -9,18 +7,13 @@ import {
 } from '@lde/pipeline';
 // import type {DatasetBindingsProvider} from '@lde/pipeline';
 import * as z from 'zod';
-import {type StageDefinition, scanStages} from './scan-stages.js';
+import {
+  reportDir,
+  type StageDefinition,
+  scanStageGroups,
+  stageName,
+} from './scan-stages.js';
 import {createShaclValidator} from './validator.js';
-
-/**
- * The layers of a pipeline, in the order they run: the source to SCHEMA-AP-NDE,
- * then SCHEMA-AP-NDE to EDM. Each is a directory in the base and override
- * directories.
- */
-const LAYERS = ['nde-schema-ap', 'edm'];
-
-/** The SHACL shapes in a layer's base directory that the layer's output must conform to. */
-const SHAPES_FILE = 'shapes.ttl';
 
 export const StageConfig = z.object({
   batchSize: z.number().gte(10).default(2000),
@@ -55,7 +48,7 @@ async function createStage(
   ]);
 
   return new Stage({
-    name: `Stage ${stageDef.stageNumber}`,
+    name: stageName(stageDef),
     readers,
     itemSelector: selectorQuery
       ? new SparqlItemSelector({query: selectorQuery})
@@ -69,10 +62,10 @@ async function createStage(
 }
 
 /**
- * Create the stages of a pipeline as one chain through its {@link LAYERS}:
+ * Create the stages of a pipeline as one chain through its stage groups:
  * each stage reads the output of the one before it, and only the output of the
- * last stage is written. The output of each layer's last stage is validated
- * against the layer's shapes.
+ * last stage is written. The output of each group's last stage is validated
+ * against the group's shapes.
  */
 export async function createStages(
   baseDir: string,
@@ -82,21 +75,18 @@ export async function createStages(
   overrideDirs: string[] = [],
 ): Promise<Stage[]> {
   const chain: {stageDef: StageDefinition; validator?: Validator}[] = [];
-  for (const layer of LAYERS) {
-    const stageDefs = await scanStages(
-      path.join(baseDir, layer),
-      await existingDirs(overrideDirs.map(dir => path.join(dir, layer))),
-    );
+  const stageGroups = await scanStageGroups(baseDir, overrideDirs);
 
+  for (const group of stageGroups) {
     const validator = createShaclValidator(
-      path.join(baseDir, layer, SHAPES_FILE),
-      path.join(validationOutputDir, layer),
+      group.shapesFile,
+      reportDir(validationOutputDir, group.name),
     );
 
     chain.push(
-      ...stageDefs.map((stageDef, index) => ({
+      ...group.stages.map((stageDef, index) => ({
         stageDef,
-        validator: index === stageDefs.length - 1 ? validator : undefined,
+        validator: index === group.stages.length - 1 ? validator : undefined,
       })),
     );
   }
@@ -110,6 +100,7 @@ export async function createStages(
       }),
     ),
   );
+
   return [
     await createStage(first.stageDef, config, {
       validator: first.validator,
@@ -117,16 +108,4 @@ export async function createStages(
       stages: chained,
     }),
   ];
-}
-
-async function existingDirs(dirs: string[]): Promise<string[]> {
-  const exists = await Promise.all(
-    dirs.map(dir =>
-      access(dir).then(
-        () => true,
-        () => false,
-      ),
-    ),
-  );
-  return dirs.filter((_, index) => exists[index]);
 }

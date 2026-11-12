@@ -62,24 +62,38 @@ const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
   },
 };
 
-export const applicationConfig = envSchema<ApplicationConfig>({
-  schema: applicationConfigSchema,
-  dotenv: true,
-});
+/** The application config, from the environment and the `.env` file in `rootDir`. */
+export function readApplicationConfig(
+  rootDir = process.cwd(),
+): ApplicationConfig {
+  return envSchema<ApplicationConfig>({
+    schema: applicationConfigSchema,
+    dotenv: {path: path.join(rootDir, '.env')},
+  });
+}
 
-const getConfigFilePath = () => path.resolve('pipelines.yaml');
+export const applicationConfig = readApplicationConfig();
 
-export async function getPipelineConfig(name: string): Promise<PipelineConfig> {
-  const configPath = getConfigFilePath();
+const getConfigFilePath = (rootDir: string) =>
+  path.join(rootDir, 'pipelines.yaml');
+
+export async function getPipelineConfigs(
+  rootDir = process.cwd(),
+): Promise<PipelineConfig[]> {
+  const configPath = getConfigFilePath(rootDir);
   const configAll = await readFile(configPath, 'utf-8')
     .then(yaml.parse)
     .then(PipelinesConfig.parse);
-  const config = Object.entries(configAll.pipelines)
-    .map(([name, config]) => ({
-      name,
-      ...config,
-    }))
-    .find(config => config.name === name);
+  return Object.entries(configAll.pipelines).map(([name, config]) => ({
+    name,
+    ...config,
+  }));
+}
+
+export async function getPipelineConfig(name: string): Promise<PipelineConfig> {
+  const config = (await getPipelineConfigs()).find(
+    config => config.name === name,
+  );
   if (!config) {
     throw Error(`No pipeline config was found by the name ${name}`);
   }

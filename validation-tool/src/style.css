@@ -9,6 +9,68 @@ body {
   margin: 0;
 }
 
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #fff;
+  box-sizing: border-box;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s,
+    box-shadow 0.1s;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 500;
+  background: #f6f8fa;
+  white-space: nowrap;
+}
+
+button:hover:not(:disabled) {
+  background: #eaeef2;
+  border-color: #afb8c1;
+}
+
+button:disabled {
+  cursor: default;
+  color: #8c959f;
+}
+
+select {
+  padding-right: 0.5rem;
+  cursor: pointer;
+}
+
+input::placeholder {
+  color: #8c959f;
+}
+
+button:focus-visible,
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #0969da;
+  box-shadow: 0 0 0 3px rgb(9 105 218 / 0.25);
+}
+
+button.primary {
+  color: #fff;
+  background: #1f883d;
+  border-color: #1a7f37;
+}
+
+button.primary:hover:not(:disabled) {
+  background: #1a7f37;
+  border-color: #116329;
+}
+
 .top {
   display: flex;
   align-items: center;
@@ -31,6 +93,7 @@ body {
 main {
   padding: 1rem 1.25rem;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 
@@ -55,6 +118,18 @@ main {
   border-radius: 6px;
   padding: 0.75rem 1rem;
   overflow-x: auto;
+}
+
+.run-bar {
+  padding: 1rem 1.25rem 0;
+}
+
+.run-log {
+  max-height: 20rem;
+  overflow: auto;
+  font-size: 0.8rem;
+  background: #f6f8fa;
+  padding: 0.5rem;
 }
 
 .card header {
@@ -108,11 +183,13 @@ main {
   color: #cf222e;
 }
 
-.hint code {
-  display: block;
-  margin-top: 0.25rem;
-  white-space: pre-wrap;
-  word-break: break-all;
+.hint {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #f6f8fa;
+  color: #57606a;
 }
 
 table {
@@ -160,35 +237,265 @@ tr.group.Info td:first-child {
 }
 
 .tabs {
-  display: flex;
-  gap: 0.25rem;
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #f6f8fa;
+}
+
+.tabs button {
+  height: calc(2rem - 6px);
+  border-color: transparent;
+  border-radius: 4px;
+  background: none;
+  color: #57606a;
 }
 
 .tabs button.active {
+  color: #1f2328;
+  font-weight: 600;
+  background: #fff;
+  border-color: #d0d7de;
+  box-shadow: 0 1px 2px rgb(31 35 40 / 0.08);
+}
+
+.card .tabs button {
+  height: calc(1.75rem - 6px);
+  padding: 0 0.6rem;
+  font-size: 0.85em;
+}
+
+.card.record-picker {
+  overflow: visible;
+}
+
+.combobox {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.card header .combobox input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding-right: 2rem;
+}
+
+.combobox .toggle {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  height: calc(2rem - 2px);
+  padding: 0 0.6rem;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  background: none;
+  color: #57606a;
+}
+
+.combobox .options {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 20rem;
+  overflow: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgb(140 149 159 / 0.2);
+}
+
+.combobox .options li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.combobox .options li.active {
+  background: #f6f8fa;
+}
+
+.combobox .options li.selected {
   font-weight: 600;
 }
 
-.card header select {
-  max-width: 40%;
+.combobox .options .iri {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.card header .iri {
-  flex: 1;
+.combobox .options .tag {
+  margin-left: auto;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  color: #9a6700;
+  background: #fff8c5;
 }
 
-.turtle {
+.turtle pre {
   margin: 0;
   font-size: 12px;
   white-space: pre-wrap;
-  word-break: break-all;
+}
+
+.rdf-tree {
+  font-size: 12px;
+  margin-top: 0.5rem;
+}
+
+.rdf-tree section + section {
+  margin-top: 1rem;
+}
+
+.rdf-subject {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rdf-properties,
+.rdf-values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rdf-properties {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 1rem;
+  padding: 0.25rem 0 0.25rem 0.75rem;
+  border-left: 1px solid #d0d7de;
+}
+
+.rdf-properties > li {
+  display: contents;
+}
+
+.rdf-predicate {
+  color: #57606a;
+}
+
+.rdf-literal {
+  white-space: pre-wrap;
+}
+
+.rdf-values a,
+.rdf-values summary {
+  white-space: nowrap;
+}
+
+.rdf-annotation {
+  margin-left: 0.4rem;
+  color: #8c959f;
+}
+
+.rdf-type {
+  margin-left: 0.4rem;
+  padding: 0 0.3rem;
+  border-radius: 3px;
+  background: #ddf4ff;
+  color: #0550ae;
+}
+
+.rdf-values summary {
+  cursor: pointer;
 }
 
 .samples {
+  display: grid;
+  gap: 2px;
   margin: 0;
-  padding-left: 1.25rem;
+  padding: 0.25rem 0;
+  list-style: none;
+}
+
+.samples button.sample {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: 100%;
+  height: auto;
+  padding: 0.3rem 0.5rem;
+  text-align: left;
+  font-weight: normal;
+  white-space: normal;
+  border-color: transparent;
+  background: none;
+}
+
+.samples button.sample:hover {
+  background: #ddf4ff;
+  border-color: #b6e3ff;
+}
+
+.samples .focus-node {
+  color: #0969da;
+  word-break: break-all;
 }
 
 .samples .value {
-  margin-left: 0.5rem;
   color: #57606a;
+  word-break: break-all;
+}
+
+.samples .inspect {
+  margin-left: auto;
+  padding: 0 0.4rem;
+  border: 1px solid #d0d7de;
+  border-radius: 999px;
+  font-size: 0.8em;
+  color: #57606a;
+  white-space: nowrap;
+}
+
+.samples .inspect::before {
+  content: '⧉ ';
+}
+
+.samples button.sample:hover .inspect {
+  color: #0969da;
+  border-color: #0969da;
+}
+
+.card header .open,
+.card header .close {
+  margin-left: auto;
+}
+
+.record-dialog {
+  width: min(1100px, 90vw);
+  max-height: 85vh;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+}
+
+.record-dialog::backdrop {
+  background: rgb(0 0 0 / 0.4);
+}
+
+.record-dialog h3 {
+  font-size: 0.9rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.record-dialog .value {
+  color: #57606a;
+  word-break: break-all;
 }

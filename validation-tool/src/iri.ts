@@ -10,6 +10,7 @@ export const prefixes: Record<string, string> = {
   ore: 'http://www.openarchives.org/ore/terms/',
   svcs: 'http://rdfs.org/sioc/services#',
   crm: 'http://www.cidoc-crm.org/cidoc-crm/',
+  xsd: 'http://www.w3.org/2001/XMLSchema#',
 };
 
 /** Shorten an IRI with a well-known prefix, e.g. sdo:name. */

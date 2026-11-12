@@ -2,10 +2,13 @@
 import {ref} from 'vue';
 import {compact} from '../iri.ts';
 import type {Checkpoint, Counts, ResultGroup} from '../types.ts';
+import RecordDialog from './RecordDialog.vue';
 
-const props = defineProps<{checkpoint: Checkpoint; recordClass: string}>();
+const props = defineProps<{pipeline: string; checkpoint: Checkpoint; recordClass: string}>();
 
 const expanded = ref<ResultGroup>();
+/** The record whose dialog is open: the focus node without its fragment, like #cho. */
+const openRecord = ref<string>();
 
 function records(counts?: Counts): number | undefined {
   return counts?.classes[props.recordClass];
@@ -23,9 +26,7 @@ function toggle(group: ResultGroup) {
       <span class="shapes">against {{ checkpoint.shapes }}</span>
     </header>
 
-    <p v-if="checkpoint.hint" class="hint">
-      Missing data. Run: <code>{{ checkpoint.hint }}</code>
-    </p>
+    <p v-if="checkpoint.hint" class="hint">{{ checkpoint.hint }}</p>
 
     <template v-if="checkpoint.report">
       <dl class="stats">
@@ -54,6 +55,10 @@ function toggle(group: ResultGroup) {
         <div v-if="checkpoint.counts">
           <dt>Triples</dt>
           <dd>{{ checkpoint.counts.triples.toLocaleString() }}</dd>
+        </div>
+        <div v-if="checkpoint.counts?.duplicates !== undefined">
+          <dt>Duplicates</dt>
+          <dd>{{ checkpoint.counts.duplicates.toLocaleString() }}</dd>
         </div>
       </dl>
 
@@ -84,8 +89,15 @@ function toggle(group: ResultGroup) {
               <td colspan="4">
                 <ul class="samples">
                   <li v-for="sample in group.samples" :key="sample.focusNode + sample.value">
-                    <a :href="sample.focusNode" target="_blank">{{ sample.focusNode }}</a>
-                    <span v-if="sample.value" class="value">{{ sample.value }}</span>
+                    <button
+                      class="sample"
+                      title="Inspect the record"
+                      @click="openRecord = sample.focusNode.replace(/#.*$/, '')"
+                    >
+                      <span class="focus-node">{{ sample.focusNode }}</span>
+                      <span v-if="sample.value" class="value">{{ sample.value }}</span>
+                      <span class="inspect">Inspect</span>
+                    </button>
                   </li>
                 </ul>
               </td>
@@ -94,5 +106,13 @@ function toggle(group: ResultGroup) {
         </tbody>
       </table>
     </template>
+
+    <RecordDialog
+      v-if="openRecord"
+      :pipeline="pipeline"
+      :checkpoint="checkpoint"
+      :iri="openRecord"
+      @close="openRecord = undefined"
+    />
   </section>
 </template>
