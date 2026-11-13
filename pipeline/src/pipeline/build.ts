@@ -20,15 +20,15 @@ export async function build(
 
   const {distributionResolver, stageOutputResolver} =
     await createQleverResolvers(
-      applicationConfig.IMPORT_DIR,
+      applicationConfig.getPath(applicationConfig.IMPORT_DIR),
       applicationConfig.QLEVER_MEMORY_GB,
       applicationConfig.QLEVER_ENV,
       applicationConfig.QLEVER_IMAGE,
     );
 
   const stages = await createStages(
-    applicationConfig.BASE_CONFIG_DIR,
-    applicationConfig.VALIDATION_OUTPUT_DIR,
+    applicationConfig.getPath(applicationConfig.BASE_CONFIG_DIR),
+    applicationConfig.getPath(applicationConfig.VALIDATION_OUTPUT_DIR),
     // bindingsProvider,
     {
       batchSize: applicationConfig.STAGE_BATCH_SIZE,
@@ -49,10 +49,12 @@ export async function build(
     datasetSelector,
     distributionResolver,
     stages,
-    writers: new FileWriter({outputDir: applicationConfig.OUTPUT_DIR}),
+    writers: new FileWriter({
+      outputDir: applicationConfig.getPath(applicationConfig.OUTPUT_DIR),
+    }),
     chaining: {
       stageOutputResolver,
-      outputDir: applicationConfig.STAGE_OUTPUT_DIR,
+      outputDir: applicationConfig.getPath(applicationConfig.STAGE_OUTPUT_DIR),
     },
     reporter: new LoggerReporter(logger.child({component: 'pipeline'})),
   });

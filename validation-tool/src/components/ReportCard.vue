@@ -4,7 +4,11 @@ import {compact} from '../iri.ts';
 import type {Checkpoint, Counts, ResultGroup} from '../types.ts';
 import RecordDialog from './RecordDialog.vue';
 
-const props = defineProps<{pipeline: string; checkpoint: Checkpoint; recordClass: string}>();
+const props = defineProps<{
+  pipeline: string;
+  checkpoint: Checkpoint;
+  recordClass: string;
+}>();
 
 const expanded = ref<ResultGroup>();
 /** The record whose dialog is open: the focus node without its fragment, like #cho. */
@@ -40,7 +44,10 @@ function toggle(group: ResultGroup) {
           <dt>Results</dt>
           <dd>{{ checkpoint.report.results.toLocaleString() }}</dd>
         </div>
-        <div v-for="(count, severity) in checkpoint.report.bySeverity" :key="severity">
+        <div
+          v-for="(count, severity) in checkpoint.report.bySeverity"
+          :key="severity"
+        >
           <dt>{{ severity }}</dt>
           <dd>{{ count.toLocaleString() }}</dd>
         </div>
@@ -74,7 +81,14 @@ function toggle(group: ResultGroup) {
         <tbody>
           <template
             v-for="group in checkpoint.report.groups"
-            :key="[group.severity, group.path, group.constraint, group.message].join()"
+            :key="
+              [
+                group.severity,
+                group.path,
+                group.constraint,
+                group.message,
+              ].join()
+            "
           >
             <tr class="group" :class="group.severity" @click="toggle(group)">
               <td class="number">{{ group.results.toLocaleString() }}</td>
@@ -88,14 +102,19 @@ function toggle(group: ResultGroup) {
             <tr v-if="expanded === group">
               <td colspan="4">
                 <ul class="samples">
-                  <li v-for="sample in group.samples" :key="sample.focusNode + sample.value">
+                  <li
+                    v-for="sample in group.samples"
+                    :key="sample.focusNode + sample.value"
+                  >
                     <button
                       class="sample"
                       title="Inspect the record"
                       @click="openRecord = sample.focusNode.replace(/#.*$/, '')"
                     >
                       <span class="focus-node">{{ sample.focusNode }}</span>
-                      <span v-if="sample.value" class="value">{{ sample.value }}</span>
+                      <span v-if="sample.value" class="value">{{
+                        sample.value
+                      }}</span>
                       <span class="inspect">Inspect</span>
                     </button>
                   </li>

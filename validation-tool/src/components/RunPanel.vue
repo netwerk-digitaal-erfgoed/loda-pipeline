@@ -10,7 +10,9 @@ const error = ref<string>();
 const showLog = ref(false);
 let events: EventSource | undefined;
 
-const running = computed(() => status.value?.state === 'running' || status.value?.state === 'stopping');
+const running = computed(
+  () => status.value?.state === 'running' || status.value?.state === 'stopping',
+);
 
 onMounted(() => {
   events = new EventSource('/api/run');
@@ -26,10 +28,12 @@ onUnmounted(() => events?.close());
 async function request(method: string, url: string) {
   error.value = undefined;
   const response = await fetch(url, {method});
-  if (!response.ok) error.value = (await response.json()).error ?? response.statusText;
+  if (!response.ok)
+    error.value = (await response.json()).error ?? response.statusText;
 }
 
-const start = () => request('POST', `/api/run?pipeline=${encodeURIComponent(props.pipeline)}`);
+const start = () =>
+  request('POST', `/api/run?pipeline=${encodeURIComponent(props.pipeline)}`);
 const stop = () => request('DELETE', '/api/run');
 
 function duration(ms?: number): string {
@@ -41,20 +45,33 @@ function duration(ms?: number): string {
   <section class="card run">
     <header>
       <h2>Run</h2>
-      <button v-if="!running" class="primary" @click="start">Run {{ pipeline }}</button>
-      <button v-else :disabled="status?.state === 'stopping'" @click="stop">Stop {{ status?.pipeline }}</button>
+      <button v-if="!running" class="primary" @click="start">
+        Run {{ pipeline }}
+      </button>
+      <button v-else :disabled="status?.state === 'stopping'" @click="stop">
+        Stop {{ status?.pipeline }}
+      </button>
       <template v-if="status">
-        <span :class="{ok: status.state === 'succeeded', fail: ['failed', 'stopped'].includes(status.state)}">
+        <span
+          :class="{
+            ok: status.state === 'succeeded',
+            fail: ['failed', 'stopped'].includes(status.state),
+          }"
+        >
           {{ status.pipeline }}: {{ status.state }}
         </span>
         <span v-if="status.phase && running">· {{ status.phase }}</span>
-        <span>· started {{ new Date(status.startedAt).toLocaleTimeString() }}</span>
+        <span
+          >· started {{ new Date(status.startedAt).toLocaleTimeString() }}</span
+        >
       </template>
       <span v-if="error" class="fail">{{ error }}</span>
     </header>
 
     <template v-if="status">
-      <p v-for="message in status.errors" :key="message" class="fail">{{ message }}</p>
+      <p v-for="message in status.errors" :key="message" class="fail">
+        {{ message }}
+      </p>
 
       <table v-if="status.stages.length">
         <thead>
@@ -69,8 +86,14 @@ function duration(ms?: number): string {
         <tbody>
           <tr v-for="stage in status.stages" :key="stage.name">
             <td>{{ stage.name }}</td>
-            <td :class="{ok: stage.state === 'complete', fail: stage.state === 'failed'}">
-              {{ stage.state }}<template v-if="stage.message">: {{ stage.message }}</template>
+            <td
+              :class="{
+                ok: stage.state === 'complete',
+                fail: stage.state === 'failed',
+              }"
+            >
+              {{ stage.state
+              }}<template v-if="stage.message">: {{ stage.message }}</template>
             </td>
             <td class="number">{{ stage.itemsProcessed.toLocaleString() }}</td>
             <td class="number">{{ stage.quadsGenerated.toLocaleString() }}</td>
@@ -82,9 +105,15 @@ function duration(ms?: number): string {
       <p v-for="(validation, index) in status.validations" :key="index">
         Validated {{ validation.quadsValidated.toLocaleString() }} quads:
         <span :class="validation.conforms ? 'ok' : 'fail'">
-          {{ validation.conforms ? 'conforms' : `${validation.violations.toLocaleString()} violations` }}
+          {{
+            validation.conforms
+              ? 'conforms'
+              : `${validation.violations.toLocaleString()} violations`
+          }}
         </span>
-        <template v-if="validation.message"> · {{ validation.message }}</template>
+        <template v-if="validation.message">
+          · {{ validation.message }}</template
+        >
       </p>
 
       <button v-if="status.log.length" @click="showLog = !showLog">

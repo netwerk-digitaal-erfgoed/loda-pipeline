@@ -13,8 +13,11 @@ const active = ref(-1);
 /** All samples while the input holds one of them, otherwise the ones that match what is typed. */
 const options = computed(() => {
   const needle = record.value.trim().toLowerCase();
-  if (!needle || props.samples.some(sample => sample.iri === record.value)) return props.samples;
-  return props.samples.filter(sample => sample.iri.toLowerCase().includes(needle));
+  if (!needle || props.samples.some(sample => sample.iri === record.value))
+    return props.samples;
+  return props.samples.filter(sample =>
+    sample.iri.toLowerCase().includes(needle),
+  );
 });
 
 function show() {
@@ -55,13 +58,21 @@ function enter() {
       role="combobox"
       :aria-expanded="open"
       @focus="show"
-      @input="open = true; active = -1"
+      @input="
+        open = true;
+        active = -1;
+      "
       @keydown.down.prevent="move(1)"
       @keydown.up.prevent="move(-1)"
       @keydown.enter.prevent="enter"
       @keydown.esc="open = false"
     />
-    <button class="toggle" tabindex="-1" aria-label="Show records" @mousedown.prevent="toggle">
+    <button
+      class="toggle"
+      tabindex="-1"
+      aria-label="Show records"
+      @mousedown.prevent="toggle"
+    >
       ▾
     </button>
     <ul v-if="open && options.length" class="options" role="listbox">

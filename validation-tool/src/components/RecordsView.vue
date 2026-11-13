@@ -22,7 +22,8 @@ async function get<T>(url: string): Promise<T> {
   return body as T;
 }
 
-const base = () => `/api/pipelines/${encodeURIComponent(props.pipeline)}/records`;
+const base = () =>
+  `/api/pipelines/${encodeURIComponent(props.pipeline)}/records`;
 
 async function loadSamples() {
   description.value = undefined;
@@ -73,14 +74,22 @@ watch(() => props.pipeline, loadSamples, {immediate: true});
   </section>
 
   <div v-if="description" class="reports">
-    <section v-for="version in description.versions" :key="version.id" class="card">
+    <section
+      v-for="version in description.versions"
+      :key="version.id"
+      class="card"
+    >
       <header>
         <h2>{{ version.label }}</h2>
-        <span class="shapes">{{ version.triples.toLocaleString() }} triples</span>
+        <span class="shapes"
+          >{{ version.triples.toLocaleString() }} triples</span
+        >
         <button class="open" @click="openVersion = version">Open</button>
       </header>
       <p v-if="version.missing" class="hint">{{ version.missing }}</p>
-      <p v-else-if="version.triples === 0" class="hint">The record is not in this data.</p>
+      <p v-else-if="version.triples === 0" class="hint">
+        The record is not in this data.
+      </p>
       <RecordTriples v-else v-model:view="triplesView" :version="version" />
     </section>
   </div>

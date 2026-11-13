@@ -16,7 +16,8 @@ export const prefixes: Record<string, string> = {
 /** Shorten an IRI with a well-known prefix, e.g. sdo:name. */
 export function compact(iri: string): string {
   for (const [prefix, namespace] of Object.entries(prefixes)) {
-    if (iri.startsWith(namespace)) return `${prefix}:${iri.slice(namespace.length)}`;
+    if (iri.startsWith(namespace))
+      return `${prefix}:${iri.slice(namespace.length)}`;
   }
   return iri;
 }

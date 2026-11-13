@@ -1,8 +1,10 @@
-node_modules/
-build/
+**/node_modules/
+pipeline/build/
 imports/
 output/
+local/
 europeana-tools/
+validation-tool/
 .env
 .git/
 .claude/

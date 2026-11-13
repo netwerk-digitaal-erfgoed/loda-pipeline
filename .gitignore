@@ -1,7 +1,8 @@
 node_modules/
-build/
+pipeline/build/
 imports/
 output/
+local/
 .measure/
 .run-all/
 .env

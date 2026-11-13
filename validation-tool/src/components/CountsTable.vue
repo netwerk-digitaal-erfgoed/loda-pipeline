@@ -19,7 +19,7 @@ const rows = computed(() => {
   );
 
   const needle = filter.value.toLowerCase();
-  
+
   return [...iris]
     .filter(iri => compact(iri).toLowerCase().includes(needle))
     .map(iri => ({
@@ -46,7 +46,11 @@ const rows = computed(() => {
       <thead>
         <tr>
           <th>IRI</th>
-          <th v-for="checkpoint in checkpoints" :key="checkpoint.id" class="number">
+          <th
+            v-for="checkpoint in checkpoints"
+            :key="checkpoint.id"
+            class="number"
+          >
             {{ checkpoint.label }}
           </th>
         </tr>

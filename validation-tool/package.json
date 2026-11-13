@@ -6,7 +6,7 @@
     "node": ">=26"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "ROOT_DIR=.. vite",
     "validate": "node scripts/validate.ts",
     "typecheck": "vue-tsc --noEmit"
   },

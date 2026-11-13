@@ -1,6 +1,8 @@
 services:
   pipeline:
-    build: .
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
     command: ['${PIPELINE:?Set PIPELINE to a pipeline directory name}']
     user: '1000:1000'
     environment:

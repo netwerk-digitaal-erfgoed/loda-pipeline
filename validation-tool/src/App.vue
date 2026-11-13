@@ -18,7 +18,9 @@ const pipelines = ref<Pipeline[]>([]);
 const selected = ref(params.get('pipeline') ?? '');
 type View = 'validation' | 'summary' | 'records';
 const views: View[] = ['validation', 'summary', 'records'];
-const view = ref<View>(views.find(candidate => candidate === params.get('view')) ?? 'validation');
+const view = ref<View>(
+  views.find(candidate => candidate === params.get('view')) ?? 'validation',
+);
 const details = ref<PipelineDetails>();
 const loading = ref(false);
 const error = ref<string>();
@@ -47,7 +49,9 @@ async function load() {
   loading.value = true;
   error.value = undefined;
   try {
-    details.value = await get<PipelineDetails>(`/api/pipelines/${encodeURIComponent(selected.value)}`);
+    details.value = await get<PipelineDetails>(
+      `/api/pipelines/${encodeURIComponent(selected.value)}`,
+    );
   } catch (e) {
     error.value = (e as Error).message;
   } finally {
@@ -65,31 +69,51 @@ watch(view, updateUrl);
 </script>
 
 <template>
-
   <header class="top">
     <h1>LODA validation</h1>
 
     <select v-model="selected">
-      <option v-for="pipeline in pipelines" :key="pipeline.name" :value="pipeline.name">
+      <option
+        v-for="pipeline in pipelines"
+        :key="pipeline.name"
+        :value="pipeline.name"
+      >
         {{ pipeline.name }}
       </option>
     </select>
 
     <nav class="tabs">
-      <button :class="{active: view === 'validation'}" @click="view = 'validation'">Validation</button>
-      <button :class="{active: view === 'summary'}" @click="view = 'summary'">Summary</button>
-      <button :class="{active: view === 'records'}" @click="view = 'records'">Records</button>
+      <button
+        :class="{active: view === 'validation'}"
+        @click="view = 'validation'"
+      >
+        Validation
+      </button>
+      <button :class="{active: view === 'summary'}" @click="view = 'summary'">
+        Summary
+      </button>
+      <button :class="{active: view === 'records'}" @click="view = 'records'">
+        Records
+      </button>
     </nav>
 
     <button :disabled="loading" @click="load">Reload</button>
     <span v-if="loading">Loading…</span>
     <span v-if="error" class="fail">{{ error }}</span>
-    <a v-if="details" :href="details.datasetUri" target="_blank" class="dataset">{{ details.datasetUri }}</a>
-    
+    <a
+      v-if="details"
+      :href="details.datasetUri"
+      target="_blank"
+      class="dataset"
+      >{{ details.datasetUri }}</a
+    >
   </header>
 
   <div v-if="selected" class="run-bar">
-    <RunPanel :pipeline="selected" @finished="pipeline => pipeline === selected && load()" />
+    <RunPanel
+      :pipeline="selected"
+      @finished="pipeline => pipeline === selected && load()"
+    />
   </div>
 
   <main v-if="view === 'records' && selected">

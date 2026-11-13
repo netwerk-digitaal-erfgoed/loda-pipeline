@@ -25,6 +25,7 @@ const PipelinesConfig = z.object({
 export interface ApplicationConfig {
   REGISTRY_ENDPOINT: string;
   BASE_CONFIG_DIR: string;
+  ROOT_DIR: string;
   IMPORT_DIR: string;
   OUTPUT_DIR: string;
   STAGE_OUTPUT_DIR: string;
@@ -34,9 +35,13 @@ export interface ApplicationConfig {
   QLEVER_MEMORY_GB: number;
   STAGE_BATCH_SIZE: number;
   STAGE_MAX_CONCURRENCY: number;
+
+  getPath(relative: string): string;
 }
 
-const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
+const applicationConfigSchema: JSONSchemaType<
+  Omit<ApplicationConfig, 'getPath'>
+> = {
   type: 'object',
   required: [],
   properties: {
@@ -45,6 +50,7 @@ const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
       default:
         'https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry',
     },
+    ROOT_DIR: {type: 'string', default: '.'},
     BASE_CONFIG_DIR: {type: 'string', default: 'base'},
     IMPORT_DIR: {type: 'string', default: 'imports'},
     OUTPUT_DIR: {type: 'string', default: 'output'},
@@ -64,23 +70,24 @@ const applicationConfigSchema: JSONSchemaType<ApplicationConfig> = {
 
 /** The application config, from the environment and the `.env` file in `rootDir`. */
 export function readApplicationConfig(
-  rootDir = process.cwd(),
+  envDir = process.cwd(),
 ): ApplicationConfig {
-  return envSchema<ApplicationConfig>({
+  const config = envSchema<Omit<ApplicationConfig, 'getPath'>>({
     schema: applicationConfigSchema,
-    dotenv: {path: path.join(rootDir, '.env')},
+    dotenv: {path: path.join(envDir, '.env')},
   });
+  return {
+    ...config,
+    getPath: (relative: string) => path.join(config.ROOT_DIR, relative),
+  };
 }
 
 export const applicationConfig = readApplicationConfig();
 
-const getConfigFilePath = (rootDir: string) =>
-  path.join(rootDir, 'pipelines.yaml');
+const getConfigFilePath = () => applicationConfig.getPath('pipelines.yaml');
 
-export async function getPipelineConfigs(
-  rootDir = process.cwd(),
-): Promise<PipelineConfig[]> {
-  const configPath = getConfigFilePath(rootDir);
+export async function getPipelineConfigs(): Promise<PipelineConfig[]> {
+  const configPath = getConfigFilePath();
   const configAll = await readFile(configPath, 'utf-8')
     .then(yaml.parse)
     .then(PipelinesConfig.parse);

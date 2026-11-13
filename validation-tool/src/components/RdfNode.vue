@@ -20,43 +20,73 @@ function labelOnly(node: RdfNode): boolean {
 }
 
 function labels(node: RdfNode): string {
-  return node.properties[0].values.map(value => (value.kind === 'literal' ? value.value : '')).join(' / ');
+  return node.properties[0].values
+    .map(value => (value.kind === 'literal' ? value.value : ''))
+    .join(' / ');
 }
 </script>
 
 <template>
   <ul class="rdf-properties">
     <li v-for="property in node.properties" :key="property.predicate">
-      <span class="rdf-predicate" :title="property.predicate">{{ compact(property.predicate) }}</span>
+      <span class="rdf-predicate" :title="property.predicate">{{
+        compact(property.predicate)
+      }}</span>
       <ul class="rdf-values">
         <li v-for="(value, index) in property.values" :key="index">
-          
           <template v-if="value.kind === 'literal'">
             <span class="rdf-literal">{{ value.value }}</span>
-            <span v-if="value.language" class="rdf-annotation">@{{ value.language }}</span>
-            <span v-else-if="value.datatype" class="rdf-annotation">{{ compact(value.datatype) }}</span>
+            <span v-if="value.language" class="rdf-annotation"
+              >@{{ value.language }}</span
+            >
+            <span v-else-if="value.datatype" class="rdf-annotation">{{
+              compact(value.datatype)
+            }}</span>
           </template>
 
-          <a v-else-if="value.kind === 'iri'" :href="value.value" target="_blank" rel="noreferrer">
+          <a
+            v-else-if="value.kind === 'iri'"
+            :href="value.value"
+            target="_blank"
+            rel="noreferrer"
+          >
             {{ compact(value.value) }}
           </a>
 
           <template v-else-if="labelOnly(value.node)">
             <span class="rdf-literal">{{ labels(value.node) }}</span>
-            <span v-for="type in value.node.types" :key="type" class="rdf-type">{{ compact(type) }}</span>
+            <span
+              v-for="type in value.node.types"
+              :key="type"
+              class="rdf-type"
+              >{{ compact(type) }}</span
+            >
           </template>
-          
+
           <details v-else open>
             <summary>
-              <a v-if="!value.node.blank" :href="value.node.id" target="_blank" rel="noreferrer">
+              <a
+                v-if="!value.node.blank"
+                :href="value.node.id"
+                target="_blank"
+                rel="noreferrer"
+              >
                 {{ compact(value.node.id) }}
               </a>
-              <span v-for="type in value.node.types" :key="type" class="rdf-type">{{ compact(type) }}</span>
-              <span v-if="value.node.blank && value.node.types.length === 0" class="rdf-annotation">[ ]</span>
+              <span
+                v-for="type in value.node.types"
+                :key="type"
+                class="rdf-type"
+                >{{ compact(type) }}</span
+              >
+              <span
+                v-if="value.node.blank && value.node.types.length === 0"
+                class="rdf-annotation"
+                >[ ]</span
+              >
             </summary>
             <RdfNode :node="value.node" />
           </details>
-
         </li>
       </ul>
     </li>

@@ -6,7 +6,10 @@ defineProps<{checkpoints: Checkpoint[]}>();
 </script>
 
 <template>
-  <section v-if="checkpoints.every(checkpoint => !checkpoint.counts)" class="card">
+  <section
+    v-if="checkpoints.every(checkpoint => !checkpoint.counts)"
+    class="card"
+  >
     <header>
       <h2>Summary</h2>
     </header>
@@ -21,7 +24,11 @@ defineProps<{checkpoints: Checkpoint[]}>();
         <thead>
           <tr>
             <th></th>
-            <th v-for="checkpoint in checkpoints" :key="checkpoint.id" class="number">
+            <th
+              v-for="checkpoint in checkpoints"
+              :key="checkpoint.id"
+              class="number"
+            >
               {{ checkpoint.label }}
             </th>
           </tr>
@@ -29,13 +36,21 @@ defineProps<{checkpoints: Checkpoint[]}>();
         <tbody>
           <tr>
             <td>Triples</td>
-            <td v-for="checkpoint in checkpoints" :key="checkpoint.id" class="number">
+            <td
+              v-for="checkpoint in checkpoints"
+              :key="checkpoint.id"
+              class="number"
+            >
               {{ checkpoint.counts?.triples.toLocaleString() ?? '–' }}
             </td>
           </tr>
           <tr>
             <td>Duplicates</td>
-            <td v-for="checkpoint in checkpoints" :key="checkpoint.id" class="number">
+            <td
+              v-for="checkpoint in checkpoints"
+              :key="checkpoint.id"
+              class="number"
+            >
               {{ checkpoint.counts?.duplicates?.toLocaleString() ?? '–' }}
             </td>
           </tr>
@@ -43,8 +58,16 @@ defineProps<{checkpoints: Checkpoint[]}>();
       </table>
     </section>
     <div class="counts">
-      <CountsTable title="Classes" :checkpoints="checkpoints" :select="counts => counts.classes" />
-      <CountsTable title="Properties" :checkpoints="checkpoints" :select="counts => counts.properties" />
+      <CountsTable
+        title="Classes"
+        :checkpoints="checkpoints"
+        :select="counts => counts.classes"
+      />
+      <CountsTable
+        title="Properties"
+        :checkpoints="checkpoints"
+        :select="counts => counts.properties"
+      />
     </div>
   </template>
 </template>

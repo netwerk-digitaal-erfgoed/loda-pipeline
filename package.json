@@ -1,41 +1,28 @@
 {
-  "name": "@loda/pipeline",
+  "name": "@loda/root",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=26"
   },
+  "workspaces": [
+    "pipeline",
+    "validation-tool"
+  ],
   "scripts": {
-    "start": "tsx src/index.ts",
-    "measure": "tsx src/measure.ts",
-    "lint": "eslint . && prettier --check src/",
-    "clean": "rm -rf build/ imports/ output/",
-    "compile": "tsc",
-    "fix": "eslint --fix . && prettier --write src/"
-  },
-  "dependencies": {
-    "@lde/dataset": "^0.10.1",
-    "@lde/dataset-registry-client": "^0.12.1",
-    "@lde/pipeline": "file:../lde/packages/pipeline",
-    "@lde/pipeline-logger-reporter": "^0.4.0",
-    "@lde/pipeline-shacl-validator": "^0.30.0",
-    "@lde/sparql-qlever": "^0.21.1",
-    "env-schema": "^8.0.0",
-    "n3": "^2.7.12",
-    "pino": "^10.4.0",
-    "pino-pretty": "^13.2.0",
-    "yaml": "^2.9.1",
-    "zod": "^4.6.5"
+    "pipeline:start": "ROOT_DIR=$(pwd) npm run start -w pipeline",
+    "validation-tool:start": "npm run dev -w validation-tool",
+    "lint": "eslint . && prettier --check pipeline/src validation-tool/src",
+    "fix": "eslint --fix . && prettier --write pipeline/src validation-tool/src",
+    "clean": "rm -rf pipeline/build/ imports/ output/"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/n3": "^1.26.6",
     "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-n": "^18.4.1",
     "eslint-plugin-prettier": "^5.5.6",
     "prettier": "^3.9.9",
-    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.1"
   },

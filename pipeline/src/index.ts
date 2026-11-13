@@ -6,7 +6,7 @@ async function main() {
   const {positionals} = parseArgs({allowPositionals: true});
 
   if (positionals.length !== 1) {
-    console.error('Usage: npx tsx src/index.ts <name>');
+    console.error('Usage: npm start -- <name>');
   }
   const datasetName = positionals[0];
   const pipelineConfig: PipelineConfig = await getPipelineConfig(datasetName);

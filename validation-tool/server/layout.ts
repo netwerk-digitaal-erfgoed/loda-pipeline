@@ -6,12 +6,12 @@ import {
   getPipelineConfigs,
   type PipelineConfig,
   readApplicationConfig,
-} from '../../src/config.ts';
+} from '../../pipeline/src/config.ts';
 import {
   reportDir,
   scanStageGroups,
   stageName,
-} from '../../src/pipeline/scan-stages.ts';
+} from '../../pipeline/src/pipeline/scan-stages.ts';
 
 /** The output of a stage group's last stage and its validation report. */
 export interface StageGroupLayout {
@@ -41,7 +41,7 @@ export interface PipelineLayout {
 export async function readLayouts(repoDir: string): Promise<PipelineLayout[]> {
   const app = readApplicationConfig(repoDir);
   return Promise.all(
-    (await getPipelineConfigs(repoDir)).map(config =>
+    (await getPipelineConfigs()).map(config =>
       pipelineLayout(config, app, repoDir),
     ),
   );

@@ -21,11 +21,15 @@ const LOG_LEVELS: Record<number, string> = {
 
 /** Runs a pipeline at debug level, at which it logs every event a run follows. */
 function pipelineCli(repoDir: string, pipeline: string): ChildProcess {
-  return spawn(process.execPath, ['--import', 'tsx', 'src/index.ts', pipeline], {
-    cwd: repoDir,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    env: {...process.env, LOG_LEVEL: 'debug'},
-  });
+  return spawn(
+    process.execPath,
+    ['--import', 'tsx', 'pipeline/src/index.ts', pipeline],
+    {
+      cwd: repoDir,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: {...process.env, LOG_LEVEL: 'debug'},
+    },
+  );
 }
 
 /** The source dump of a pipeline, and the shapes to validate it against. */
@@ -129,6 +133,7 @@ export class PipelineRunner {
     if (!source || this.stopRequested) return undefined;
     status.phase = 'Validating the source dump';
     this.emit();
+    // Runs as child process to avoid crashing the tool on OOM
     const child = spawn(
       process.execPath,
       ['scripts/validate.ts', source.data, source.shapes, source.report],
