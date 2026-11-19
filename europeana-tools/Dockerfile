@@ -10,8 +10,8 @@ RUN mvn --quiet -e -f ./pom.xml clean assembly:assembly
 
 # Package stage
 
-# use the jena image providing java jre and jena tools
-FROM stain/jena AS jena-tools
+# glibc-based JRE, so the @lde/task-runner-http agent can run in this image as a sidecar
+FROM eclipse-temurin:11-jre
 
 WORKDIR /app/crawler
 ENV JVM_ARGS="-Xmx8G -Xms8G"

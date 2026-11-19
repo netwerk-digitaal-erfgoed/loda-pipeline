@@ -29,3 +29,20 @@ services:
         source: ghcr.io/ldelements/task-runner-http:0.1.0
         target: /agent
       - ./imports:/app/imports
+
+  rdf2edm:
+    build:
+      context: europeana-tools
+    image: ${RDF2EDM_IMAGE:-loda-rdf2edm}
+    entrypoint: ['/agent/task-agent', '--port', '7071']
+    user: '1000:1000'
+    network_mode: service:pipeline
+    restart: unless-stopped
+    mem_limit: ${RDF2EDM_MEM_LIMIT:-12g}
+    depends_on:
+      - pipeline
+    volumes:
+      - type: image
+        source: ghcr.io/ldelements/task-runner-http:0.1.0
+        target: /agent
+      - ./output:/app/output

@@ -3,6 +3,7 @@ import {applicationConfig, type PipelineConfig} from '../config.js';
 import {createDatasetSelector} from './dataset-selector.js';
 import {createQleverResolvers} from './distribution-resolver.js';
 import {createStages} from './stage.js';
+import {createRdf2EdmTaskRunner, Rdf2EdmWriter} from './rdf2edm-writer.js';
 import {LoggerReporter} from '@lde/pipeline-logger-reporter';
 import pino from 'pino';
 // import {createBindingsProvider} from './bindings-provider.js';
@@ -37,6 +38,8 @@ export async function build(
     pipelineConfig.overrides,
   );
 
+  const outputDir = applicationConfig.getPath(applicationConfig.OUTPUT_DIR);
+
   const logger = pino({
     level: process.env.LOG_LEVEL ?? 'debug',
     transport: process.stdout.isTTY
@@ -49,9 +52,11 @@ export async function build(
     datasetSelector,
     distributionResolver,
     stages,
-    writers: new FileWriter({
-      outputDir: applicationConfig.getPath(applicationConfig.OUTPUT_DIR),
-    }),
+    writers: new Rdf2EdmWriter(
+      new FileWriter({outputDir}),
+      createRdf2EdmTaskRunner(outputDir, applicationConfig),
+      logger.child({component: 'rdf2edm'}),
+    ),
     chaining: {
       stageOutputResolver,
       outputDir: applicationConfig.getPath(applicationConfig.STAGE_OUTPUT_DIR),

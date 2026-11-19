@@ -18,6 +18,7 @@ RUN apk add --no-cache tini
 
 ENV NODE_ENV=production
 ENV QLEVER_ENV=remote
+ENV RDF2EDM_ENV=remote
 
 WORKDIR /app/
 
@@ -28,8 +29,6 @@ RUN npm ci --omit=dev -w pipeline
 
 COPY --from=build /app/pipeline/build /app/pipeline/build
 COPY pipelines /app/pipelines
-COPY base /app/base
-COPY overrides /app/overrides
 COPY pipelines.yaml /app/pipelines.yaml
 
 RUN mkdir /app/output /app/imports && \

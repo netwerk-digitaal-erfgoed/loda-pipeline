@@ -22,6 +22,7 @@ import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFLanguages;
 
 
 public class Rdf2EdmCl {
@@ -59,7 +60,7 @@ public class Rdf2EdmCl {
 				File tmpTripleStoreDir=new File("tmp_rdf2edm_ts_"+(new Date().getTime()-new Random().nextInt()));
 				
 				TriplestoreJenaTbd2 ts=new TriplestoreJenaTbd2(tmpTripleStoreDir, ReadWrite.WRITE);
-				ts.importTriples(new File(inFile), Lang.RDFXML);
+				ts.importTriples(new File(inFile), RDFLanguages.filenameToLang(inFile, Lang.RDFXML));
 				ts.close();			
 				
 				ts=new TriplestoreJenaTbd2(tmpTripleStoreDir, ReadWrite.READ);
@@ -93,5 +94,7 @@ public class Rdf2EdmCl {
 	    	result="INVALID PARAMETERS\n"+sw.toString();
 	    }
 	    System.out.println(result);
+	    if (!result.isEmpty())
+	    	System.exit(1);
 	}
 }

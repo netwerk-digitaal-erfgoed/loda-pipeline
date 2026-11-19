@@ -33,6 +33,9 @@ export interface ApplicationConfig {
   QLEVER_ENV: 'docker' | 'native' | 'remote';
   QLEVER_IMAGE: string;
   QLEVER_MEMORY_GB: number;
+  RDF2EDM_ENV: 'docker' | 'remote';
+  RDF2EDM_IMAGE: string;
+  RDF2EDM_AGENT_PORT: number;
   STAGE_BATCH_SIZE: number;
   STAGE_MAX_CONCURRENCY: number;
 
@@ -63,6 +66,13 @@ const applicationConfigSchema: JSONSchemaType<
     },
     QLEVER_IMAGE: {type: 'string', default: 'adfreiburg/qlever:commit-a14e0a0'},
     QLEVER_MEMORY_GB: {type: 'integer', minimum: 1, default: 8},
+    RDF2EDM_ENV: {
+      type: 'string',
+      enum: ['docker', 'remote'],
+      default: 'docker',
+    },
+    RDF2EDM_IMAGE: {type: 'string', default: 'loda-rdf2edm'},
+    RDF2EDM_AGENT_PORT: {type: 'integer', default: 7071},
     STAGE_BATCH_SIZE: {type: 'integer', minimum: 10, default: 2000},
     STAGE_MAX_CONCURRENCY: {type: 'integer', minimum: 1, default: 30},
   },
