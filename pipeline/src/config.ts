@@ -51,7 +51,7 @@ const applicationConfigSchema: JSONSchemaType<
         'https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry',
     },
     ROOT_DIR: {type: 'string', default: '.'},
-    BASE_CONFIG_DIR: {type: 'string', default: 'base'},
+    BASE_CONFIG_DIR: {type: 'string', default: 'pipelines/generic'},
     IMPORT_DIR: {type: 'string', default: 'imports'},
     OUTPUT_DIR: {type: 'string', default: 'output'},
     STAGE_OUTPUT_DIR: {type: 'string', default: 'output/stages'},

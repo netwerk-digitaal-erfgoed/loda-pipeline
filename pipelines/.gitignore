@@ -10,5 +10,6 @@
 !*/datasetdescription.ttl
 !*/dataset.ttl
 !*/fuseki-config.ttl
+!shapes.ttl
 *.sparqlbook
 */.s3/
