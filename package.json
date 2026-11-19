@@ -16,6 +16,11 @@
     "fix": "eslint --fix . && prettier --write pipeline/src validation-tool/src",
     "clean": "rm -rf pipeline/build/ imports/ output/"
   },
+  "dependencies": {
+    "@lde/pipeline": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-pipeline.tgz",
+    "@lde/pipeline-void": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-pipeline-void.tgz",
+    "@lde/search-pipeline": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-search-pipeline.tgz"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.12.0",
@@ -31,5 +36,10 @@
     "esbuild@0.28.2": true,
     "protobufjs@7.6.6": true,
     "ssh2@1.17.0": true
+  },
+  "overrides": {
+    "@lde/pipeline": "$@lde/pipeline",
+    "@lde/pipeline-void": "$@lde/pipeline-void",
+    "@lde/search-pipeline": "$@lde/search-pipeline"
   }
 }

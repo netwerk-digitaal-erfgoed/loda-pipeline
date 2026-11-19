@@ -24,14 +24,13 @@ type StageConfig = z.infer<typeof StageConfig>;
 
 interface ChainOptions {
   validator?: Validator;
-  emitOutput?: boolean;
   stages?: Stage[];
 }
 
 async function createStage(
   stageDef: StageDefinition,
   config: StageConfig,
-  {validator, emitOutput, stages}: ChainOptions,
+  {validator, stages}: ChainOptions,
 ): Promise<Stage> {
   StageConfig.parse(config);
 
@@ -56,8 +55,8 @@ async function createStage(
     batchSize: config.batchSize,
     maxConcurrency: config.maxConcurrency,
     validation: validator && {validator, onInvalid: 'write'},
-    emitOutput,
     stages,
+    chainOutput: 'last',
   });
 }
 
@@ -93,10 +92,9 @@ export async function createStages(
 
   const [first, ...rest] = chain;
   const chained = await Promise.all(
-    rest.map(({stageDef, validator}, index) =>
+    rest.map(({stageDef, validator}) =>
       createStage(stageDef, config, {
         validator,
-        emitOutput: index === rest.length - 1,
       }),
     ),
   );
@@ -104,7 +102,6 @@ export async function createStages(
   return [
     await createStage(first.stageDef, config, {
       validator: first.validator,
-      emitOutput: chained.length === 0,
       stages: chained,
     }),
   ];

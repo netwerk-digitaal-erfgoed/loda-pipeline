@@ -9,7 +9,7 @@ RUN npm ci -w pipeline --include-workspace-root
 
 COPY pipeline pipeline
 
-RUN npm run compile
+RUN npm run compile -w pipeline
 
 FROM node:26-alpine
 LABEL org.opencontainers.image.source="https://github.com/netwerk-digitaal-erfgoed/loda-pipeline"
@@ -35,6 +35,6 @@ COPY pipelines.yaml /app/pipelines.yaml
 RUN mkdir /app/output /app/imports && \
     chown node /app/output /app/imports
 
-    USER node
+USER node
 
 ENTRYPOINT ["/sbin/tini", "--", "node", "pipeline/build/index.js"]

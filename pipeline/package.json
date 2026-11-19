@@ -10,12 +10,12 @@
     "compile": "tsc"
   },
   "dependencies": {
-    "@lde/dataset": "^0.10.1",
-    "@lde/dataset-registry-client": "^0.12.1",
-    "@lde/pipeline": "file:../../lde/packages/pipeline",
-    "@lde/pipeline-logger-reporter": "^0.4.0",
-    "@lde/pipeline-shacl-validator": "^0.30.0",
-    "@lde/sparql-qlever": "^0.21.1",
+    "@lde/dataset": "0.10.1",
+    "@lde/dataset-registry-client": "0.12.1",
+    "@lde/pipeline": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-pipeline.tgz",
+    "@lde/pipeline-logger-reporter": "0.4.0",
+    "@lde/pipeline-shacl-validator": "0.30.0",
+    "@lde/sparql-qlever": "0.21.1",
     "env-schema": "^8.0.0",
     "n3": "^2.7.12",
     "pino": "^10.4.0",

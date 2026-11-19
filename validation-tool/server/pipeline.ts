@@ -27,7 +27,7 @@ function pipelineCli(repoDir: string, pipeline: string): ChildProcess {
     {
       cwd: repoDir,
       stdio: ['ignore', 'pipe', 'pipe'],
-      env: {...process.env, LOG_LEVEL: 'debug'},
+      env: {...process.env, ROOT_DIR: repoDir, LOG_LEVEL: 'debug'},
     },
   );
 }
