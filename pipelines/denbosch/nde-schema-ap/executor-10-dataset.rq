@@ -1,0 +1,114 @@
+PREFIX sdo: <https://schema.org/>
+
+CONSTRUCT {
+  $this a ?creativeWork .
+  $this sdo:creator ?creator .
+  ?creator a ?creatorType ;
+    sdo:name ?creatorName .
+  $this sdo:contentLocation ?place .
+  ?place a sdo:Place ;
+    sdo:name ?placeName .
+  $this sdo:name ?name .
+  $this sdo:additionalType ?term .
+  ?term a sdo:DefinedTerm ;
+    sdo:name ?termName .
+  $this sdo:temporalCoverage ?interval .
+  $this sdo:about ?keyword .
+  $this sdo:associatedMedia ?media .
+  ?media a sdo:MediaObject , sdo:ImageObject ;
+    sdo:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    sdo:contentUrl ?contentUrl ;
+    sdo:thumbnailUrl ?thumbnailUrl .
+  $this sdo:associatedMedia ?manifest .
+  ?manifest
+    sdo:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    sdo:encodingFormat ?manifestFormat .
+}
+WHERE {
+  # The records of this dataset are MediaObjects.
+  {
+    $this a sdo:MediaObject .
+    BIND(sdo:CreativeWork AS ?creativeWork)
+  }
+
+  # SCHEMA-AP-NDE has a named creator, this dataset has an author with a plain name.
+  UNION {
+    $this sdo:author ?_author .
+    ?_author sdo:name ?_authorName .
+    OPTIONAL { ?_author a ?creatorType . FILTER(?creatorType IN (sdo:Person, sdo:Organization)) }
+    BIND(IF(ISIRI(?_author), ?_author, IRI(CONCAT(STR($this), "#creator-", ENCODE_FOR_URI(STR(?_authorName))))) AS ?creator)
+    BIND(STRLANG(STR(?_authorName), "nl") AS ?creatorName)
+  }
+
+  # SCHEMA-AP-NDE has a Place with a name, this dataset has a street and locality in an address.
+  UNION {
+    $this sdo:contentLocation ?_place .
+    ?_place sdo:address ?_address .
+    ?_address sdo:streetAddress ?_street .
+    OPTIONAL { ?_address sdo:addressLocality ?_locality . FILTER(ISLITERAL(?_locality)) }
+    BIND(STRLANG(CONCAT(STR(?_street), IF(BOUND(?_locality), CONCAT(", ", STR(?_locality)), "")), "nl") AS ?placeName)
+    BIND(IF(ISIRI(?_place), ?_place, IRI(CONCAT(STR($this), "#place-", ENCODE_FOR_URI(STR(?placeName))))) AS ?place)
+  }
+
+  # SCHEMA-AP-NDE requires a name, a few records of this dataset have none.
+  UNION {
+    $this a ?_type .
+    FILTER(?_type IN (sdo:MediaObject, sdo:CreativeWork))
+    FILTER NOT EXISTS { $this sdo:name ?_existing }
+    OPTIONAL { $this sdo:genre ?_genre }
+    OPTIONAL { $this sdo:contentLocation/sdo:address/sdo:streetAddress ?_titleStreet }
+    OPTIONAL { $this sdo:contentLocation/sdo:address/sdo:addressLocality ?_titleLocality . FILTER(ISLITERAL(?_titleLocality)) }
+    OPTIONAL { $this sdo:description ?_description }
+    BIND(COALESCE(STR(?_genre), "") AS ?_g)
+    BIND(COALESCE(STR(?_titleStreet), "") AS ?_s)
+    BIND(COALESCE(STR(?_titleLocality), "") AS ?_l)
+    BIND(IF(?_g != "",
+      CONCAT(?_g, IF(?_s != "", CONCAT(" - ", ?_s), ""), IF(?_l != "", CONCAT(", ", ?_l), "")),
+      IF(?_s != "",
+        CONCAT(?_s, IF(?_l != "", CONCAT(", ", ?_l), "")),
+        COALESCE(STR(?_description), "Beeldbank 's-Hertogenbosch"))) AS ?_title)
+    BIND(STRLANG(?_title, "nl") AS ?name)
+  }
+
+  # SCHEMA-AP-NDE has a DefinedTerm, this dataset has the genre as text.
+  UNION {
+    $this sdo:genre ?_genre .
+    FILTER(ISLITERAL(?_genre))
+    BIND(STRLANG(STR(?_genre), "nl") AS ?termName)
+    BIND(IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_genre)))) AS ?term)
+  }
+
+  # SCHEMA-AP-NDE writes an open start or end as "..", this dataset leaves it empty.
+  UNION {
+    $this sdo:temporalCoverage ?_coverage .
+    FILTER(STRSTARTS(STR(?_coverage), "/") || STRENDS(STR(?_coverage), "/"))
+    BIND(IF(STRSTARTS(STR(?_coverage), "/"), CONCAT("..", STR(?_coverage)), CONCAT(STR(?_coverage), "..")) AS ?interval)
+  }
+
+  # SCHEMA-AP-NDE has no keywords: they say what about says.
+  UNION {
+    $this sdo:keywords ?_keyword .
+    BIND(STRLANG(STR(?_keyword), "nl") AS ?keyword)
+  }
+
+  # SCHEMA-AP-NDE has an image with a license, contentUrl and thumbnailUrl, this dataset has
+  # a link to a file. The file number gives the URLs of the IIIF image. The source has no license.
+  UNION {
+    $this sdo:image ?_image .
+    FILTER(ISLITERAL(?_image))
+    BIND(REPLACE(STR(?_image), "^.*file=([0-9]+).*$", "$1") AS ?_file)
+    BIND(CONCAT("https://zoeken.erfgoedshertogenbosch.nl/IIIF/image/3.0/", ?_file) AS ?_iiifBase)
+    BIND(IRI(CONCAT(STR($this), "#media-", ?_file)) AS ?media)
+    BIND(IRI(CONCAT(?_iiifBase, "/full/max/0/default.jpg")) AS ?contentUrl)
+    BIND(IRI(STR(?_image)) AS ?thumbnailUrl)
+  }
+
+  # SCHEMA-AP-NDE has a IIIF manifest with its own URI, this dataset has a blank node with its URL as text.
+  UNION {
+    $this sdo:image ?_node .
+    ?_node sdo:contentUrl ?_manifestUrl .
+    BIND(IRI(REPLACE(STR(?_manifestUrl), "IIIF//", "IIIF/")) AS ?manifest)
+    # Bound rather than in the template: QLever escapes the quotes of a template literal twice.
+    BIND("application/ld+json;profile=\"http://iiif.io/api/presentation/3/context.json\"" AS ?manifestFormat)
+  }
+}

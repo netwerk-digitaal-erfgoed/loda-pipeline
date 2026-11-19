@@ -1,0 +1,20 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+PREFIX edm:     <http://www.europeana.eu/schemas/edm/>
+
+CONSTRUCT {
+    ?providedCHO_URI
+        dc:language "nl" ;
+        dc:publisher "Regionaal Archief Nijmegen" ;
+        dc:rights "Regionaal Archief Nijmegen" ;
+        edm:type "IMAGE" .
+
+    ?aggregation_URI
+        edm:dataProvider "Regionaal Archief Nijmegen" .
+}
+WHERE {
+    $this a sdo:CreativeWork .
+
+    BIND(URI(CONCAT(STR($this),"#cho")) as ?providedCHO_URI)
+    BIND(URI(CONCAT(STR($this),"#agg")) as ?aggregation_URI)
+}

@@ -74,11 +74,13 @@ For datasets whose source data isn't registered in the NDE Dataset Register, add
 loda-pipeline/
 ├── scripts/
 │   └── run                   Run a pipeline with Docker Compose
-├── src/
-│   ├── index.ts              Entry point
-│   ├── build-pipeline.ts     Pipeline construction
-│   ├── dataset-selector.ts   Dataset resolution (registry or local)
-│   └── scan-stages.ts        .rq file scanner
+├── pipeline/                 Pipeline workspace package (Dockerfile, src/)
+│   └── src/
+│       ├── index.ts              Entry point
+│       ├── build-pipeline.ts     Pipeline construction
+│       ├── dataset-selector.ts   Dataset resolution (registry or local)
+│       └── scan-stages.ts        .rq file scanner
+├── validation-tool/          Validation tool workspace package
 └── pipelines/
     └── <filenamified-uri>/
         ├── selector.rq       Item selector query

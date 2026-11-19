@@ -1,0 +1,14 @@
+PREFIX sdo: <https://schema.org/>
+
+# SCHEMA-AP-NDE has one size text per language: join the size texts without a language into one Dutch text.
+CONSTRUCT { $this sdo:size ?size }
+WHERE {
+  {
+    SELECT $this (GROUP_CONCAT(STR(?_size); SEPARATOR = ", ") AS ?_sizes) WHERE {
+      $this sdo:size ?_size .
+      FILTER(ISLITERAL(?_size) && LANG(?_size) = "")
+    }
+    GROUP BY $this
+  }
+  BIND(STRLANG(?_sizes, "nl") AS ?size)
+}

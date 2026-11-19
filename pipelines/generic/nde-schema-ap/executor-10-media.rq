@@ -1,0 +1,37 @@
+PREFIX sdo: <https://schema.org/>
+
+# The media of the record, in a form SCHEMA-AP-NDE allows: a MediaObject or a IIIF Presentation manifest.
+# A node keeps its IRI. A blank node gets an IRI from the record and its contentUrl, or else its encodingFormat:
+# blank nodes do not keep their identity across the batches of a stage.
+CONSTRUCT {
+  $this sdo:associatedMedia ?media .
+  ?media a ?mediaType ;
+    sdo:contentUrl ?contentUrl ;
+    sdo:thumbnailUrl ?thumbnailUrl ;
+    sdo:license ?license ;
+    sdo:encodingFormat ?encodingFormat .
+}
+WHERE {
+  $this sdo:associatedMedia ?_media .
+  FILTER(!ISLITERAL(?_media))
+  
+  OPTIONAL { ?_media sdo:contentUrl ?_contentUrl }
+  OPTIONAL { ?_media sdo:encodingFormat ?_encodingFormat }
+  
+  BIND(IF(ISIRI(?_media), ?_media,
+    IRI(CONCAT(STR($this), "#media-", ENCODE_FOR_URI(COALESCE(STR(?_contentUrl), STR(?_encodingFormat), "")))))
+    AS ?media)
+  
+  OPTIONAL {
+    ?_media a ?mediaType .
+    FILTER(?mediaType IN (sdo:MediaObject, sdo:ImageObject, sdo:VideoObject, sdo:AudioObject, sdo:3DModel))
+  }
+  
+  OPTIONAL { ?_media sdo:thumbnailUrl ?_thumbnailUrl }
+  OPTIONAL { ?_media sdo:license ?_license }
+  
+  BIND(IRI(STR(?_contentUrl)) AS ?contentUrl)
+  BIND(IRI(STR(?_thumbnailUrl)) AS ?thumbnailUrl)
+  BIND(IRI(STR(?_license)) AS ?license)
+  BIND(STR(?_encodingFormat) AS ?encodingFormat)
+}

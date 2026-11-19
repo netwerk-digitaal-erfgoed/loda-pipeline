@@ -1,0 +1,176 @@
+import {access, readdir} from 'node:fs/promises';
+import path from 'node:path';
+
+/**
+ * The stage groups of a pipeline, in the order they run: the source to
+ * SCHEMA-AP-NDE, then SCHEMA-AP-NDE to EDM. Each is a directory in the base and
+ * override directories.
+ */
+const STAGE_GROUPS = ['nde-schema-ap', 'edm'];
+
+export interface StageGroup {
+  name: string;
+  /** The SHACL shapes that the output of the group's last stage must conform to. */
+  shapesFile: string;
+  stages: StageDefinition[];
+}
+
+/** Where the validation reports of a stage group's output are written. */
+export function reportDir(validationOutputDir: string, group: string): string {
+  return path.join(validationOutputDir, group);
+}
+
+export function stageName(stageDef: StageDefinition): string {
+  return `Stage ${stageDef.stageNumber}`;
+}
+
+/** The stage groups of a pipeline, in the order they run, from the base and override directories. */
+export async function scanStageGroups(
+  baseDir: string,
+  overrideDirs: string[] = [],
+): Promise<StageGroup[]> {
+  return Promise.all(
+    STAGE_GROUPS.map(async name => ({
+      name,
+      shapesFile: path.join(baseDir, name, 'shapes.ttl'),
+      stages: await scanStageGroup(baseDir, name, overrideDirs),
+    })),
+  );
+}
+
+async function scanStageGroup(
+  baseDir: string,
+  group: string,
+  overrideDirs: string[] = [],
+): Promise<StageDefinition[]> {
+  return scanStages(
+    path.join(baseDir, group),
+    await existingDirs(overrideDirs.map(dir => path.join(dir, group))),
+  );
+}
+
+async function existingDirs(dirs: string[]): Promise<string[]> {
+  const exists = await Promise.all(
+    dirs.map(dir =>
+      access(dir).then(
+        () => true,
+        () => false,
+      ),
+    ),
+  );
+  return dirs.filter((_, index) => exists[index]);
+}
+
+export interface StageDefinition {
+  stageNumber: number;
+  /** Without a selector, the executors run once on the whole dataset. */
+  selectorFile?: string;
+  executorFiles: string[];
+}
+
+/**
+ * Scan a pipeline directory for .rq files and return stage definitions.
+ *
+ * Filename patterns:
+ * - selector.rq              → selector for all stages (single-stage pipeline)
+ * - selector-N.rq            → selector for stage N
+ * - selector-N-M-O.rq        → shared selector for stages N, M, O
+ * - executor*.rq             → executor for stage 1 (e.g. executor.rq, executor-aggregation.rq)
+ * - executor-N*.rq           → executor for stage N (e.g. executor-2.rq, executor-2-aggregation.rq)
+ *
+ * A stage without a selector runs its executors once on the whole dataset.
+ *
+ * A file in an override directory replaces the file with the same name in the
+ * base directory, or adds to it if there is none.
+ */
+export async function scanStages(
+  baseDir: string,
+  overrideDirs: string[] = [],
+): Promise<StageDefinition[]> {
+  const rqFiles = new Map<string, string>();
+  for (const dir of [baseDir, ...overrideDirs]) {
+    const files = await readdir(dir);
+    for (const file of files.filter(f => f.endsWith('.rq'))) {
+      rqFiles.set(file, path.join(dir, file));
+    }
+  }
+
+  // Map each stage number to its selector file.
+  const selectorForStage = new Map<number, string>();
+  let wildcardSelector: string | undefined;
+  const executors = new Map<number, string[]>();
+
+  for (const [file, filePath] of rqFiles) {
+    const base = file.replace('.rq', '');
+
+    if (base === 'selector') {
+      wildcardSelector = filePath;
+    } else if (base.startsWith('selector-')) {
+      const nums = base.slice('selector-'.length).split('-').map(Number);
+      if (nums.some(Number.isNaN)) continue;
+      for (const num of nums) {
+        selectorForStage.set(num, filePath);
+      }
+    } else if (base.startsWith('executor')) {
+      const stageNumber = parseExecutorStage(base);
+      const list = executors.get(stageNumber) ?? [];
+      list.push(filePath);
+      executors.set(stageNumber, list);
+    }
+  }
+
+  // Group executors that share the same selector file into a single stage.
+  const stagesBySelector = new Map<string, StageDefinition>();
+
+  for (const [num, execs] of executors) {
+    const selectorFile = selectorForStage.get(num) ?? wildcardSelector;
+    if (!selectorFile) {
+      stagesBySelector.set(`stage-${num}`, {
+        stageNumber: num,
+        executorFiles: [...execs],
+      });
+      continue;
+    }
+
+    const existing = stagesBySelector.get(selectorFile);
+    if (existing) {
+      existing.stageNumber = Math.min(existing.stageNumber, num);
+      existing.executorFiles.push(...execs);
+    } else {
+      stagesBySelector.set(selectorFile, {
+        stageNumber: num,
+        selectorFile,
+        executorFiles: [...execs],
+      });
+    }
+  }
+
+  const stages = [...stagesBySelector.values()];
+  for (const stage of stages) {
+    stage.executorFiles.sort();
+  }
+  stages.sort((a, b) => a.stageNumber - b.stageNumber);
+  return stages;
+}
+
+/**
+ * Extract the stage number from an executor filename (without extension).
+ *
+ * "executor"              → 1
+ * "executor-foo"          → 1  (no leading digit after "executor-")
+ * "executor-2"            → 2
+ * "executor-2-aggregation"→ 2  (leading digit is the stage number)
+ */
+function parseExecutorStage(base: string): number {
+  const suffix = base.slice('executor'.length);
+
+  if (suffix === '') {
+    return 1;
+  }
+
+  // suffix starts with "-"; check if the first segment is a number.
+  const firstSegment = suffix.slice(1).split('-')[0];
+  const num = parseInt(firstSegment, 10);
+
+  return Number.isNaN(num) ? 1 : num;
+}

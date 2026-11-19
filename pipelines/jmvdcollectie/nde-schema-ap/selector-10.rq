@@ -1,0 +1,9 @@
+PREFIX sdo: <https://schema.org/>
+
+# Related material is a note on a record, not a heritage object.
+SELECT DISTINCT $this WHERE {
+  $this a sdo:CreativeWork .
+  FILTER(!ISBLANK($this))
+  FILTER(!CONTAINS(STR($this), "#related-material-"))
+}
+ORDER BY $this

@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "build/",
     "target": "es2022",
     "lib": ["esnext"],
     "module": "nodenext",
@@ -16,7 +14,5 @@
     "noImplicitReturns": true,
     "noEmitOnError": true
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "files": []
 }

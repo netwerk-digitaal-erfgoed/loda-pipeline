@@ -1,0 +1,103 @@
+PREFIX edtf: <http://id.loc.gov/datatypes/edtf/>
+PREFIX sdo: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# The values of the record itself that the EDM stage reads, in a form SCHEMA-AP-NDE allows.
+# Text without a language is Dutch, as the EDM stage already assumes.
+CONSTRUCT {
+  $this a ?creativeWork ;
+    ?textProperty ?text ;
+    sdo:isPartOf ?isPartOf ;
+    sdo:identifier ?identifier ;
+    sdo:dateCreated ?dateCreated ;
+    sdo:temporalCoverage ?temporalCoverage ;
+    ?conceptProperty ?concept ;
+    sdo:size ?size .
+}
+WHERE {
+  {
+    $this a sdo:CreativeWork .
+    BIND(sdo:CreativeWork AS ?creativeWork)
+  }
+  UNION {
+    $this ?textProperty ?_text .
+    VALUES ?textProperty { sdo:name sdo:description sdo:abstract sdo:text }
+    FILTER(ISLITERAL(?_text))
+    BIND(IF(LANG(?_text) != "", ?_text, STRLANG(STR(?_text), "nl")) AS ?text)
+  }
+
+  # SCHEMA-AP-NDE has an IRI. The EDM stage also reads a name, so a name stays Dutch text.
+  UNION {
+    $this sdo:isPartOf ?_isPartOf .
+    FILTER(!ISBLANK(?_isPartOf))
+    BIND(
+      IF(ISIRI(?_isPartOf), ?_isPartOf,
+        IF(REGEX(STR(?_isPartOf), "^https?://"), IRI(STR(?_isPartOf)),
+          IF(LANG(?_isPartOf) != "", ?_isPartOf, STRLANG(STR(?_isPartOf), "nl"))))
+      AS ?isPartOf)
+  }
+
+  # SCHEMA-AP-NDE has a string, or a PropertyValue (see executor-10-values.rq).
+  # An IRI without a value is its own identifier.
+  UNION {
+    $this sdo:identifier ?_identifier .
+    FILTER(ISLITERAL(?_identifier))
+    BIND(STR(?_identifier) AS ?identifier)
+  }
+  UNION {
+    $this sdo:identifier ?_identifier .
+    FILTER(ISIRI(?_identifier))
+    FILTER NOT EXISTS { ?_identifier sdo:value ?_value }
+    BIND(STR(?_identifier) AS ?identifier)
+  }
+
+  # SCHEMA-AP-NDE has a typed date, or an EDTF value for anything more than a single date.
+  # A time of day is not allowed.
+  UNION {
+    $this sdo:dateCreated ?dateCreated .
+    FILTER(DATATYPE(?dateCreated) IN (xsd:date, xsd:gYear, xsd:gYearMonth, sdo:Date, edtf:EDTF))
+  }
+  UNION {
+    $this sdo:dateCreated ?_date .
+    FILTER(DATATYPE(?_date) = xsd:string)
+    BIND(
+      IF(REGEX(?_date, "^-?([1-9][0-9]{3,}|0[0-9]{3})(-[0-9]{2}(-[0-9]{2})?)?$"), STRDT(?_date, sdo:Date),
+        IF(REGEX(?_date, "^(-?[0-9]{4}-2[1-4]|-?[0-9]{4}-((0[1-9]|1[0-2])-XX|XX(-XX)?)|-?[0-9]{2}([0-9]X|XX)|Y-?[1-9][0-9]{4,}|-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?(/(-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?|\\.\\.)?)?|(\\.\\.)?/-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?)$"),
+          STRDT(?_date, edtf:EDTF),
+          1/0))
+      AS ?dateCreated)
+  }
+
+  # SCHEMA-AP-NDE has a term (see executor-10-entities.rq), a web IRI, an ISO 8601 date or interval, or an EDTF value.
+  UNION {
+    $this sdo:temporalCoverage ?temporalCoverage .
+    FILTER(
+      (ISIRI(?temporalCoverage) && REGEX(STR(?temporalCoverage), "^https?://"))
+      || (ISLITERAL(?temporalCoverage) && DATATYPE(?temporalCoverage) != edtf:EDTF
+          && REGEX(STR(?temporalCoverage), "^(-?([1-9]\\d{3,}|0\\d{3})(-\\d{2}(-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?)?)?)?|\\.\\.)(/(-?([1-9]\\d{3,}|0\\d{3})(-\\d{2}(-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?)?)?)?|\\d{2}(-\\d{2})?|\\.\\.))?$"))
+      || (DATATYPE(?temporalCoverage) = edtf:EDTF
+          && REGEX(STR(?temporalCoverage), "^(-?[0-9]{4}-2[1-4]|-?[0-9]{4}-((0[1-9]|1[0-2])-XX|XX(-XX)?)|-?[0-9]{2}([0-9]X|XX)|Y-?[1-9][0-9]{4,}|-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?(/(-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?|\\.\\.)?)?|(\\.\\.)?/-?[0-9]{4}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?)?[?~%]?)$"))
+    )
+  }
+
+  # The EDM stage reads a subject or genre with an IRI as is (see executor-10-entities.rq for blank ones).
+  # SCHEMA-AP-NDE has no text subject, but the EDM stage reads one, so it stays Dutch text.
+  UNION {
+    $this ?conceptProperty ?concept .
+    VALUES ?conceptProperty { sdo:about sdo:genre }
+    FILTER(ISIRI(?concept))
+  }
+  UNION {
+    $this sdo:about ?_about .
+    FILTER(ISLITERAL(?_about))
+    BIND(sdo:about AS ?conceptProperty)
+    BIND(IF(LANG(?_about) != "", ?_about, STRLANG(STR(?_about), "nl")) AS ?concept)
+  }
+
+  # SCHEMA-AP-NDE has one size text per language (see executor-10-size-text.rq for text without one),
+  # or a QuantitativeValue (see executor-10-values.rq).
+  UNION {
+    $this sdo:size ?size .
+    FILTER(LANG(?size) != "")
+  }
+}

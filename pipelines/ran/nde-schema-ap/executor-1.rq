@@ -1,0 +1,16 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+# SCHEMA-AP-NDE uses https://schema.org/, this dataset http://schema.org/.
+# This runs on the whole dataset in one query, without a selector: blank nodes keep their identity only within one query.
+CONSTRUCT { ?s ?p ?o }
+WHERE {
+  ?s ?_p ?_o .
+  
+  BIND(IF(STRSTARTS(STR(?_p), "http://schema.org/"),
+    IRI(CONCAT("https://schema.org/", STRAFTER(STR(?_p), "http://schema.org/"))),
+    ?_p) AS ?p)
+  
+  BIND(IF(?_p = rdf:type && STRSTARTS(STR(?_o), "http://schema.org/"),
+    IRI(CONCAT("https://schema.org/", STRAFTER(STR(?_o), "http://schema.org/"))),
+    ?_o) AS ?o)
+}

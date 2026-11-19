@@ -1,0 +1,33 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+CONSTRUCT {
+  ?media sdo:license ?license .
+  $this sdo:creator ?creator .
+  ?creator sdo:name ?creatorName .
+}
+WHERE {
+  # SCHEMA-AP-NDE has the license on the media, this dataset has it on the record.
+  # Replace CNE and missing licenses with InC. The media IRI is the one base/pre-transform/executor-10-media.rq mints.
+  {
+    $this sdo:associatedMedia ?_media .
+    OPTIONAL { ?_media sdo:contentUrl ?_contentUrl }
+    OPTIONAL { ?_media sdo:encodingFormat ?_encodingFormat }
+    BIND(IF(ISIRI(?_media), ?_media,
+      IRI(CONCAT(STR($this), "#media-", ENCODE_FOR_URI(COALESCE(STR(?_contentUrl), STR(?_encodingFormat), "")))))
+      AS ?media)
+    OPTIONAL { $this sdo:license ?_license }
+    BIND(COALESCE(
+      IF(?_license != <http://rightsstatements.org/vocab/CNE/1.0/>, ?_license, 1/0),
+      <http://rightsstatements.org/vocab/InC/1.0/>
+    ) AS ?license)
+  }
+
+  # SCHEMA-AP-NDE has a named creator, this dataset has a Role with a GTAA term.
+  UNION {
+    $this sdo:creator ?_role .
+    ?_role sdo:creator ?creator .
+    ?creator skos:prefLabel ?_label .
+    BIND(IF(LANG(?_label) != "", ?_label, STRLANG(STR(?_label), "nl")) AS ?creatorName)
+  }
+}

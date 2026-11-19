@@ -1,0 +1,98 @@
+PREFIX sdo: <https://schema.org/>
+
+# The creators, places and terms of the record that the EDM stage reads, in a form SCHEMA-AP-NDE allows.
+# A node keeps its IRI. A blank node gets its sameAs, or else an IRI from the record and its name:
+# blank nodes do not keep their identity across the batches of a stage.
+CONSTRUCT {
+  $this sdo:creator ?creator .
+
+  ?creator a ?creatorType ;
+    sdo:name ?creatorName ;
+    sdo:sameAs ?creatorSameAs .
+  
+  $this ?placeProperty ?place .
+  
+  ?place a sdo:Place ;
+    sdo:name ?placeName ;
+    sdo:sameAs ?placeSameAs .
+  
+  $this ?termProperty ?term .
+  
+  ?term a sdo:DefinedTerm ;
+    sdo:name ?termName ;
+    sdo:sameAs ?termSameAs .
+  
+  $this ?linkProperty ?link .
+}
+WHERE {
+  # SCHEMA-AP-NDE has a Person, an Organization or an untyped creator, all with a name.
+  {
+    $this sdo:creator ?_creator .
+    ?_creator sdo:name ?_creatorName .
+    FILTER(!ISLITERAL(?_creator))
+    
+    OPTIONAL { ?_creator sdo:sameAs ?_creatorSameAs . FILTER(ISIRI(?_creatorSameAs)) }
+    OPTIONAL { ?_creator a ?creatorType . FILTER(?creatorType IN (sdo:Person, sdo:Organization)) }
+    
+    BIND(IF(ISIRI(?_creator), ?_creator,
+      COALESCE(?_creatorSameAs, IRI(CONCAT(STR($this), "#creator-", ENCODE_FOR_URI(STR(?_creatorName))))))
+      AS ?creator)
+    
+    BIND(IF(LANG(?_creatorName) != "", ?_creatorName, STRLANG(STR(?_creatorName), "nl")) AS ?creatorName)
+    
+    BIND(IF(ISIRI(?_creator), ?_creatorSameAs, 1/0) AS ?creatorSameAs)
+  }
+
+  # SCHEMA-AP-NDE has a Place with a name.
+  UNION {
+    $this ?placeProperty ?_place .
+    VALUES ?placeProperty { sdo:contentLocation sdo:locationCreated }
+    
+    ?_place sdo:name ?_placeName .
+    FILTER(!ISLITERAL(?_place))
+    
+    OPTIONAL { 
+      ?_place sdo:sameAs ?_placeSameAs . 
+      FILTER(ISIRI(?_placeSameAs))
+    }
+    
+    BIND(IF(ISIRI(?_place), ?_place,
+      COALESCE(?_placeSameAs, IRI(CONCAT(STR($this), "#place-", ENCODE_FOR_URI(STR(?_placeName))))))
+      AS ?place)
+    
+    BIND(IF(LANG(?_placeName) != "", ?_placeName, STRLANG(STR(?_placeName), "nl")) AS ?placeName)
+    
+    BIND(IF(ISIRI(?_place), ?_placeSameAs, 1/0) AS ?placeSameAs)
+  }
+
+  # SCHEMA-AP-NDE has a DefinedTerm with a name. A subject or genre with an IRI is in executor-10-record.rq.
+  UNION {
+    $this ?termProperty ?_term .
+    VALUES ?termProperty { sdo:additionalType sdo:material sdo:genre sdo:about }
+    ?_term sdo:name ?_termName .
+    FILTER(ISBLANK(?_term) || ?termProperty IN (sdo:additionalType, sdo:material))
+    OPTIONAL { ?_term sdo:sameAs ?_termSameAs . FILTER(ISIRI(?_termSameAs)) }
+    BIND(IF(ISIRI(?_term), ?_term,
+      COALESCE(?_termSameAs, IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_termName))))))
+      AS ?term)
+    BIND(IF(LANG(?_termName) != "", ?_termName, STRLANG(STR(?_termName), "nl")) AS ?termName)
+    BIND(IF(ISIRI(?_term), ?_termSameAs, 1/0) AS ?termSameAs)
+  }
+
+  # A type or material as text is a DefinedTerm with that name.
+  UNION {
+    $this ?termProperty ?_termText .
+    VALUES ?termProperty { sdo:additionalType sdo:material }
+    FILTER(ISLITERAL(?_termText))
+    BIND(IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_termText)))) AS ?term)
+    BIND(IF(LANG(?_termText) != "", ?_termText, STRLANG(STR(?_termText), "nl")) AS ?termName)
+  }
+
+  # Without a name, a node with an IRI can still be referenced.
+  UNION {
+    $this ?linkProperty ?link .
+    VALUES ?linkProperty { sdo:creator sdo:contentLocation sdo:locationCreated sdo:additionalType sdo:material }
+    FILTER(ISIRI(?link))
+    FILTER NOT EXISTS { ?link sdo:name ?_anyName }
+  }
+}

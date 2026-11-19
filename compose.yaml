@@ -1,6 +1,8 @@
 services:
   pipeline:
-    build: .
+    build:
+      context: .
+      dockerfile: pipeline/Dockerfile
     command: ['${PIPELINE:?Set PIPELINE to a pipeline directory name}']
     user: '1000:1000'
     environment:
@@ -9,6 +11,9 @@ services:
       - ./imports:/app/imports
       - ./output:/app/output
       - ./pipelines:/app/pipelines:ro
+      - ./base:/app/base:ro
+      - ./overrides:/app/overrides:ro
+      - ./pipelines.yaml:/app/pipelines.yaml:ro
 
   qlever:
     image: ${QLEVER_IMAGE:-adfreiburg/qlever:commit-a14e0a0}

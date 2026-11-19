@@ -18,18 +18,18 @@ npm start -- <dataset-uri>
 npm start -- init <dataset-uri>
 
 # Type-check
-npx tsc --noEmit
+npx tsc -p pipeline --noEmit
 ```
 
 No linter or test framework is configured.
 
 ## Architecture
 
-The CLI entry point (`src/index.ts`) converts dataset URIs to directory names via `filenamify-url` and delegates to `buildPipeline` (`src/build-pipeline.ts`), which wires together:
+The CLI entry point (`pipeline/src/index.ts`) converts dataset URIs to directory names via `filenamify-url` and delegates to `buildPipeline` (`pipeline/src/build-pipeline.ts`), which wires together:
 
-1. **Dataset selection** (`src/dataset-selector.ts`): if the pipeline directory has a `dataset.ttl`, uses `ManualDatasetSelection`; otherwise queries the NDE Dataset Registry via `RegistrySelector`, filtering out EDM distributions.
+1. **Dataset selection** (`pipeline/src/dataset-selector.ts`): if the pipeline directory has a `dataset.ttl`, uses `ManualDatasetSelection`; otherwise queries the NDE Dataset Registry via `RegistrySelector`, filtering out EDM distributions.
 2. **Distribution resolution**: `ImportResolver` wraps `SparqlDistributionResolver` with `strategy: 'import'` to always import data dumps into a Docker-based QLever instance.
-3. **Stages** (`src/scan-stages.ts`): auto-discovered from `.rq` files in the pipeline directory. Naming convention: `selector.rq` / `selector-N.rq` for SELECT queries, `executor.rq` / `executor-N.rq` for CONSTRUCT queries. A selector like `selector-1-2-3.rq` is shared across executors 1, 2, and 3.
+3. **Stages** (`pipeline/src/scan-stages.ts`): auto-discovered from `.rq` files in the pipeline directory. Naming convention: `selector.rq` / `selector-N.rq` for SELECT queries, `executor.rq` / `executor-N.rq` for CONSTRUCT queries. A selector like `selector-1-2-3.rq` is shared across executors 1, 2, and 3.
 
 ## Conventions
 

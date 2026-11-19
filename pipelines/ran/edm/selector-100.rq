@@ -1,0 +1,9 @@
+PREFIX sdo: <https://schema.org/>
+
+SELECT DISTINCT $this WHERE {
+  $this a sdo:CreativeWork ;
+    sdo:associatedMedia/sdo:license ?license .
+  FILTER(!ISBLANK($this))
+  FILTER(?license != <http://rightsstatements.org/vocab/InC/1.0/>)
+}
+ORDER BY $this

@@ -1,0 +1,72 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+  $this sdo:additionalType ?artform .
+  ?artform a sdo:DefinedTerm ;
+    sdo:name ?artformName .
+  $this sdo:about ?keyword .
+  $this sdo:additionalType ?materialType .
+  $this sdo:contentLocation ?place .
+  ?size sdo:value ?number .
+}
+WHERE {
+  # SCHEMA-AP-NDE has no artform: it says what additionalType says.
+  {
+    $this sdo:artform ?_artform .
+    FILTER(!ISBLANK(?_artform))
+    OPTIONAL { ?_artform sdo:name ?_artformName }
+    BIND(IF(ISIRI(?_artform), ?_artform, IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_artform))))) AS ?artform)
+    BIND(COALESCE(?_artformName, IF(ISLITERAL(?_artform), ?_artform, 1/0)) AS ?_name)
+    BIND(IF(LANG(?_name) != "", ?_name, STRLANG(STR(?_name), "nl")) AS ?artformName)
+  }
+
+  # SCHEMA-AP-NDE has no keywords: they say what about says.
+  UNION {
+    $this sdo:keywords ?_keyword .
+    BIND(IF(LANG(?_keyword) != "", ?_keyword, STRLANG(STR(?_keyword), "nl")) AS ?keyword)
+  }
+
+  # The original mapping of this dataset uses the material as a type.
+  # The term IRI is the one base/pre-transform/executor-10-entities.rq mints.
+  UNION {
+    $this sdo:material ?_material .
+    FILTER(ISLITERAL(?_material))
+    BIND(IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_material)))) AS ?materialType)
+  }
+  UNION {
+    $this sdo:material ?_material .
+    ?_material sdo:name ?_materialName .
+    FILTER(!ISLITERAL(?_material))
+    OPTIONAL { ?_material sdo:sameAs ?_materialSameAs . FILTER(ISIRI(?_materialSameAs)) }
+    BIND(IF(ISIRI(?_material), ?_material,
+      COALESCE(?_materialSameAs, IRI(CONCAT(STR($this), "#term-", ENCODE_FOR_URI(STR(?_materialName))))))
+      AS ?materialType)
+  }
+
+  # The original mapping of this dataset uses the place of creation as dcterms:spatial.
+  # The place IRI is the one base/pre-transform/executor-10-entities.rq mints.
+  UNION {
+    $this sdo:locationCreated ?_place .
+    FILTER(!ISLITERAL(?_place))
+    OPTIONAL { ?_place sdo:name ?_placeName }
+    OPTIONAL { ?_place sdo:sameAs ?_placeSameAs . FILTER(ISIRI(?_placeSameAs)) }
+    BIND(IF(ISIRI(?_place), ?_place,
+      COALESCE(?_placeSameAs, IRI(CONCAT(STR($this), "#place-", ENCODE_FOR_URI(STR(?_placeName))))))
+      AS ?place)
+  }
+
+  # SCHEMA-AP-NDE has a numeric size value, this dataset sometimes has a decimal comma.
+  # The size IRI is the one base/pre-transform/executor-10-values.rq mints.
+  UNION {
+    $this sdo:size ?_size .
+    ?_size sdo:value ?_value .
+    FILTER(!ISLITERAL(?_size))
+    FILTER(DATATYPE(?_value) = xsd:string && REGEX(STR(?_value), "^[0-9]+,[0-9]+$"))
+    OPTIONAL { ?_size sdo:unitText ?_unitText }
+    BIND(IF(ISIRI(?_size), ?_size,
+      IRI(CONCAT(STR($this), "#size-", ENCODE_FOR_URI(CONCAT(STR(?_value), " ", COALESCE(STR(?_unitText), ""))))))
+      AS ?size)
+    BIND(STRDT(REPLACE(STR(?_value), ",", "."), xsd:decimal) AS ?number)
+  }
+}

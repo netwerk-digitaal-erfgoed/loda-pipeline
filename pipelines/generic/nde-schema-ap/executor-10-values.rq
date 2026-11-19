@@ -1,0 +1,56 @@
+PREFIX sdo: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# The structured sizes and identifiers of the record that the EDM stage reads, in a form SCHEMA-AP-NDE allows.
+# A node keeps its IRI. A blank node gets an IRI from the record and its value:
+# blank nodes do not keep their identity across the batches of a stage.
+CONSTRUCT {
+  $this sdo:size ?size .
+  ?size a sdo:QuantitativeValue ;
+    sdo:value ?value ;
+    sdo:unitText ?unitText ;
+    sdo:unitCode ?unitCode ;
+    sdo:valueReference ?valueReference .
+  ?unitCode sdo:name ?unitName .
+  $this sdo:identifier ?identifier .
+  ?identifier a sdo:PropertyValue ;
+    sdo:propertyID ?propertyID ;
+    sdo:value ?identifierValue .
+}
+WHERE {
+  # SCHEMA-AP-NDE has a QuantitativeValue with a numeric value and a unit.
+  {
+    $this sdo:size ?_size .
+    ?_size sdo:value ?_anyValue .
+    FILTER(!ISLITERAL(?_size))
+    OPTIONAL { ?_size sdo:unitText ?_unitText }
+    BIND(IF(ISIRI(?_size), ?_size,
+      IRI(CONCAT(STR($this), "#size-", ENCODE_FOR_URI(CONCAT(STR(?_anyValue), " ", COALESCE(STR(?_unitText), ""))))))
+      AS ?size)
+    OPTIONAL { ?_size sdo:value ?value . FILTER(DATATYPE(?value) IN (xsd:decimal, xsd:double, xsd:integer)) }
+    BIND(STR(?_unitText) AS ?unitText)
+    OPTIONAL {
+      ?_size sdo:unitCode ?unitCode .
+      FILTER(ISIRI(?unitCode))
+      OPTIONAL { ?unitCode sdo:name ?_unitName }
+      BIND(IF(LANG(?_unitName) != "", ?_unitName, STRLANG(STR(?_unitName), "nl")) AS ?unitName)
+    }
+    OPTIONAL {
+      ?_size sdo:valueReference ?_valueReference .
+      FILTER(!ISBLANK(?_valueReference))
+      BIND(IF(ISLITERAL(?_valueReference) && LANG(?_valueReference) = "",
+        STRLANG(STR(?_valueReference), "nl"), ?_valueReference) AS ?valueReference)
+    }
+  }
+
+  # SCHEMA-AP-NDE has a PropertyValue with a propertyID and a value.
+  UNION {
+    $this sdo:identifier ?_identifier .
+    ?_identifier sdo:value ?identifierValue .
+    FILTER(!ISLITERAL(?_identifier))
+    OPTIONAL { ?_identifier sdo:propertyID ?propertyID }
+    BIND(IF(ISIRI(?_identifier), ?_identifier,
+      IRI(CONCAT(STR($this), "#identifier-", ENCODE_FOR_URI(CONCAT(COALESCE(STR(?propertyID), ""), " ", STR(?identifierValue))))))
+      AS ?identifier)
+  }
+}

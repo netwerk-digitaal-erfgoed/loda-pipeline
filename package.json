@@ -1,28 +1,25 @@
 {
-  "name": "@loda/pipeline",
+  "name": "@loda/root",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=26"
   },
+  "workspaces": [
+    "pipeline",
+    "validation-tool"
+  ],
   "scripts": {
-    "start": "tsx src/index.ts",
-    "lint": "eslint . && prettier --check src/",
-    "clean": "rm -rf build/ imports/ output/",
-    "compile": "tsc",
-    "fix": "eslint --fix . && prettier --write src/"
+    "pipeline:start": "ROOT_DIR=$(pwd) npm run start -w pipeline",
+    "validation-tool:start": "npm run dev -w validation-tool",
+    "lint": "eslint . && prettier --check pipeline/src validation-tool/src",
+    "fix": "eslint --fix . && prettier --write pipeline/src validation-tool/src",
+    "clean": "rm -rf pipeline/build/ imports/ output/"
   },
   "dependencies": {
-    "@lde/dataset": "^0.8.0",
-    "@lde/dataset-registry-client": "^0.10.0",
-    "@lde/pipeline": "^0.38.0",
-    "@lde/pipeline-console-reporter": "^0.29.0",
-    "@lde/pipeline-shacl-validator": "^0.21.0",
-    "@lde/sparql-qlever": "^0.18.1",
-    "env-schema": "^8.0.0",
-    "n3": "^2.7.12",
-    "yaml": "^2.9.1",
-    "zod": "^4.6.5"
+    "@lde/pipeline": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-pipeline.tgz",
+    "@lde/pipeline-void": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-pipeline-void.tgz",
+    "@lde/search-pipeline": "https://github.com/daanjo3/lde/releases/download/fork-26070983/lde-search-pipeline.tgz"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -31,7 +28,6 @@
     "eslint-plugin-n": "^18.4.1",
     "eslint-plugin-prettier": "^5.5.6",
     "prettier": "^3.9.9",
-    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.1"
   },
@@ -40,5 +36,10 @@
     "esbuild@0.28.2": true,
     "protobufjs@7.6.6": true,
     "ssh2@1.17.0": true
+  },
+  "overrides": {
+    "@lde/pipeline": "$@lde/pipeline",
+    "@lde/pipeline-void": "$@lde/pipeline-void",
+    "@lde/search-pipeline": "$@lde/search-pipeline"
   }
 }

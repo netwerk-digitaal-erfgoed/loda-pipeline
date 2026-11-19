@@ -5,7 +5,17 @@ const pluginN = require('eslint-plugin-n');
 const pluginPrettier = require('eslint-plugin-prettier');
 
 module.exports = [
-  {ignores: ['build/', 'output/', 'imports/', 'europeana-tools/']},
+  // TODO: split ESLint config and enable for validation-tool
+  {
+    ignores: [
+      'pipeline/build/',
+      'output/',
+      'imports/',
+      'europeana-tools/',
+      'local/',
+      'validation-tool/',
+    ],
+  },
   eslint.configs.recommended,
   prettierConfig,
   {
@@ -37,7 +47,7 @@ module.exports = [
       parser: tseslint.parser,
       parserOptions: {
         sourceType: 'module',
-        project: './tsconfig.json',
+        project: './pipeline/tsconfig.json',
       },
     },
     rules: {

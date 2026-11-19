@@ -1,0 +1,1369 @@
+@prefix :          <http://www.europeana.eu/metis/edm/ext/> .
+@prefix cc:        <http://creativecommons.org/ns#> .
+@prefix dc:        <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms:   <http://purl.org/dc/terms/> .
+@prefix doap:      <http://usefulinc.com/ns/doap#> .
+@prefix edm:       <http://www.europeana.eu/schemas/edm/> .
+@prefix ef_usage:  <http://data.europeana.eu/vocabulary/usageArea/> .
+@prefix foaf:      <http://xmlns.com/foaf/0.1/> .
+@prefix iptc:      <https://cv.iptc.org/newscodes/digitalsourcetype/> .
+@prefix odrl:      <http://www.w3.org/ns/odrl/2/> .
+@prefix ore:       <http://www.openarchives.org/ore/terms/> .
+@prefix owl:       <http://www.w3.org/2002/07/owl#> .
+@prefix prov:      <http://www.w3.org/ns/prov#> .
+@prefix rdaGr2:    <http://rdvocab.info/ElementsGr2/> .
+@prefix rdf:       <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema:    <https://schema.org/> .
+@prefix sh:        <http://www.w3.org/ns/shacl#> .
+@prefix skos:      <http://www.w3.org/2004/02/skos/core#> .
+@prefix svcs:      <http://rdfs.org/sioc/services#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+
+#####################################
+### License statement definitions ###
+#####################################
+
+:licenseStatementCondition
+    sh:or (
+      [ sh:pattern "^http://creativecommons\\.org/licenses/(by|by-sa|by-nd|by-nc|by-nc-sa|by-nd-nc)/1\\.0/((fi|il|nl)/)?$" ]
+      [ sh:pattern "^http://creativecommons\\.org/licenses/(by|by-sa|by-nd|by-nc|by-nc-sa|by-nd-nc)/2\\.0/((au|at|be|br|ca|cl|hr|uk|fr|de|it|jp|nl|pl|kr|es|tw)/)?$" ]
+      [ sh:pattern "^http://creativecommons\\.org/licenses/(by|by-sa|by-nd|by-nc|by-nc-sa|by-nd-nc)/2\\.1/(au|es|jp)/$" ]
+      [ sh:pattern "^http://creativecommons\\.org/licenses/(by|by-sa|by-nd|by-nc|by-nc-sa|by-nd-nc)/2\\.5/((ar|au|br|bg|ca|cn|co|hr|dk|hu|in|il|it|mk|my|mt|mx|nl|pe|pl|pt|scotland|si|za|es|se|ch|tw)/)?$" ]
+      [ sh:pattern "^http://creativecommons\\.org/licenses/(by|by-sa|by-nd|by-nc|by-nc-sa|by-nd-nc)/3\\.0/((au|at|br|cl|cn|cr|hr|cz|ec|eg|ee|fr|de|gr|gt|hk|igo|ie|it|lu|nl|nz|no|ph|pl|pt|pr|ro|rs|sg|za|es|ch|tw|th|ug|us|ve|vn)/)?$" ]
+      [ sh:pattern "^http://creativecommons\\.org/licenses/(by|by-sa|by-nd|by-nc|by-nc-sa|by-nd-nc)/4\\.0/$" ]
+      [ sh:pattern "^http://rightsstatements\\.org/vocab/(NoC-NC|NoC-OKLR|InC|InC-EDU|InC-EU-OW|CNE)/1\\.0/$" ]
+      [ sh:pattern "^http://creativecommons\\.org/publicdomain/(zero|mark)/1\\.0/$" ]
+    ) .
+
+
+############################
+### Property definitions ###
+############################
+
+# These shapes define the properties including their value type and any literal value restrictions.
+# Note: by themselves these don't do anything. They need to be used in node shapes for resources.
+
+# The conditions for a string literal or IRI property definition.
+:stringLiteralOrIRICondition
+    sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] [ sh:nodeKind sh:IRI ] ) .
+
+# The conditions for a string literal property definition.
+:stringLiteralCondition
+    sh:or ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) .
+
+# The condition for an IRI property definition.
+:iriCondition
+    sh:nodeKind sh:IRI .
+
+# Set the message and conditions for a string literal or decimal property definition.
+# TODO These properties should be encouraged to be decimal - but does our pipeline support it?
+:stringOrDecimalLiteralCondition
+    sh:or ( [ sh:datatype xsd:string ] [ sh:datatype xsd:decimal ] ) .
+
+
+# Set the message and conditions for a string literal or positive integer property definition.
+# TODO These properties should be encouraged to be integer - but does our pipeline support it?
+:stringOrPositiveIntegerLiteralCondition
+    sh:or ( [ sh:datatype xsd:string ] [ sh:datatype xsd:positiveInteger ] ) .
+
+
+:ccDeprecatedOnProperty
+    sh:path     cc:deprecatedOn ;
+    sh:datatype xsd:date ;
+    sh:message  "This property must be a literal of type 'date'." .
+
+:dcContributorProperty
+    sh:path    dc:contributor ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcCoverageProperty
+    sh:path    dc:coverage ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcCreatorProperty
+    sh:path    dc:creator ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcDateProperty
+    sh:path    dc:date ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcDescriptionProperty
+    sh:path    dc:description ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcFormatProperty
+    sh:path    dc:format ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcIdentifierProperty
+    sh:path    dc:identifier ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:dcLanguageProperty
+    sh:path    dc:language ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:dcPublisherProperty
+    sh:path    dc:publisher ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcRelationProperty
+    sh:path    dc:relation ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcRightsProperty
+    sh:path    dc:rights ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcSourceProperty
+    sh:path    dc:source ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcSubjectProperty
+    sh:path    dc:subject ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dcTitleProperty
+    sh:path    dc:title ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:dcTypeProperty
+    sh:path    dc:type ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsAlternativeProperty
+    sh:path    dcterms:alternative ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:dctermsConformsToProperty
+    sh:path    dcterms:conformsTo ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsCreatedProperty
+    sh:path    dcterms:created ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsExtentProperty
+    sh:path    dcterms:extent ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsHasFormatProperty
+    sh:path    dcterms:hasFormat ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsHasPartProperty
+    sh:path    dcterms:hasPart ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsHasVersionProperty
+    sh:path    dcterms:hasVersion ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIsFormatOfProperty
+    sh:path    dcterms:isFormatOf ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIsPartOfProperty
+    sh:path    dcterms:isPartOf ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIsReferencedByProperty
+    sh:path    dcterms:isReferencedBy ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIsReplacedByProperty
+    sh:path    dcterms:isReplacedBy ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIsRequiredByProperty
+    sh:path    dcterms:isRequiredBy ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIssuedProperty
+    sh:path    dcterms:issued ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsIsVersionOfProperty
+    sh:path    dcterms:isVersionOf ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsMediumProperty
+    sh:path    dcterms:medium ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsProvenanceProperty
+    sh:path    dcterms:provenance ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsReferencesProperty
+    sh:path    dcterms:references ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsReplacesProperty
+    sh:path    dcterms:replaces ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsRequiresProperty
+    sh:path    dcterms:requires ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsSpatialProperty
+    sh:path    dcterms:spatial ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:dctermsTableOfContentsProperty
+    sh:path    dcterms:tableOfContents ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:dctermsTemporalProperty
+    sh:path    dcterms:temporal ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:doapImplementsProperty
+    sh:path    doap:implements ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmAggregatedCHOProperty
+    sh:path    edm:aggregatedCHO ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmCurrentLocationProperty
+    sh:path    edm:currentLocation ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:edmDataProviderProperty
+    sh:path    edm:dataProvider ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:edmBeginProperty
+    sh:path    edm:begin ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:edmEndProperty
+    sh:path    edm:end ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:edmGaussianCountProperty
+    sh:path    edm:gaussianCount ;
+    sh:node    :stringOrPositiveIntegerLiteralCondition ;
+    sh:message "This property must be a positive integer." .
+
+:edmHasMetProperty
+    sh:path    edm:hasMet ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmHasTypeProperty
+    sh:path    edm:hasType ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:edmHasViewProperty
+    sh:path    edm:hasView ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIncorporatesProperty
+    sh:path    edm:incorporates ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIntededUsageProperty
+    sh:path    edm:intendedUsage ;
+    sh:node    :iriCondition ;
+    sh:in      ( ef_usage:Knowledge ef_usage:Research ef_usage:Education ef_usage:Infotainment
+                 ef_usage:Tourism ef_usage:Gaming ef_usage:Exhibition ef_usage:Creativity
+                 ef_usage:Design ef_usage:Art ef_usage:Curation ef_usage:Maintenance
+                 ef_usage:Restoration ef_usage:Documentation ) ;
+    sh:message "edm:intendedUsage must have one of the permitted resource references." .
+
+:edmIntermediateProviderProperty
+    sh:path    edm:intermediateProvider ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:edmIsDerivativeOfProperty
+    sh:path    edm:isDerivativeOf ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIsNextInSequenceProperty
+    sh:path    edm:isNextInSequence ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIsRelatedToProperty
+    sh:path    edm:isRelatedTo ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:edmIsRepresentationOfProperty
+    sh:path    edm:isRepresentationOf ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIsShownAtProperty
+    sh:path    edm:isShownAt ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIsShownByProperty
+    sh:path    edm:isShownBy ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIsSimilarToProperty
+    sh:path    edm:isSimilarTo ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmIsSuccessorOfProperty
+    sh:path    edm:isSuccessorOf ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmObjectProperty
+    sh:path    edm:object ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmPidProperty
+    sh:path     edm:pid ;
+    sh:datatype xsd:string ;
+    sh:message  "This property must be a string literal without language qualifier." .
+
+:edmProviderProperty
+    sh:path    edm:provider ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:edmPointCountProperty
+    sh:path    edm:pointCount ;
+    sh:node    :stringOrPositiveIntegerLiteralCondition ;
+    sh:message "This property must be a positive integer." .
+
+:edmPolygonCountProperty
+    sh:path    edm:polygonCount ;
+    sh:node    :stringOrPositiveIntegerLiteralCondition ;
+    sh:message "This property must be a positive integer." .
+
+:edmRealizesProperty
+    sh:path    edm:realizes ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmRightsProperty
+    sh:path    edm:rights ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:edmTypeProperty
+    sh:path     edm:type ;
+    sh:datatype xsd:string ;
+    sh:in       ( "TEXT" "VIDEO" "SOUND" "IMAGE" "3D" ) ;
+    sh:message  "edm:type must have one of the permitted literal values." .
+
+:edmUgcProperty
+    sh:path     edm:ugc ;
+    sh:datatype xsd:string ;
+    sh:pattern  "^true$" ;
+    sh:message  "edm:ugc must be a string literal with value 'true'." .
+
+:edmVertexCountProperty
+    sh:path    edm:vertexCount ;
+    sh:node    :stringOrPositiveIntegerLiteralCondition ;
+    sh:message "This property must be a positive integer." .
+
+:foafNameProperty
+    sh:path    foaf:name ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:odrlInheritFromProperty
+    sh:path    odrl:inheritFrom ;
+    sh:node    :iriCondition ;
+    sh:node    :licenseStatementCondition ;
+    sh:message "odrl:inheritFrom must have one of the permitted resource references." .
+
+:owlSameAsProperty
+    sh:path    owl:sameAs ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:provWasGeneratedByProperty
+    sh:path    prov:wasGeneratedBy ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:rdaGr2BiographicalInformationProperty
+    sh:path    rdaGr2:biographicalInformation ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdaGr2DateOfBirthProperty
+    sh:path    rdaGr2:dateOfBirth ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdaGr2DateOfDeathProperty
+    sh:path    rdaGr2:dateOfDeath ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdaGr2DateOfEstablishmentProperty
+    sh:path    rdaGr2:dateOfEstablishment ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdaGr2DateOfTerminationProperty
+    sh:path    rdaGr2:dateOfTermination ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdaGr2GenderProperty
+    sh:path    rdaGr2:gender ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdaGr2PlaceOfBirthProperty
+    sh:path    rdaGr2:placeOfBirth ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:rdaGr2PlaceOfDeathProperty
+    sh:path    rdaGr2:placeOfDeath ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:rdaGr2ProfessionOrOccupationProperty
+    sh:path    rdaGr2:professionOrOccupation ;
+    sh:node    :stringLiteralOrIRICondition ;
+    sh:message "This property must be a string literal or a resource reference." .
+
+:rdfsLabelProperty
+    sh:path    rdfs:label ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:rdfsSeeAlsoProperty
+    sh:path    rdfs:seeAlso ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:schemaDigitalSourceTypeProperty
+    sh:path    schema:digitalSourceType ;
+    sh:node    :iriCondition ;
+    sh:in      ( iptc:digitalCapture iptc:dataDrivenMedia iptc:digitalCreation ) ;
+    sh:message "schema:digitalSourceType must have one of the permitted resource references." .
+
+:skosAltLabelProperty
+    sh:path    skos:altLabel ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:skosBroaderProperty
+    sh:path    skos:broader ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosBroadMatchProperty
+    sh:path    skos:broadMatch ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosCloseMatchProperty
+    sh:path    skos:closeMatch ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosExactMatchProperty
+    sh:path    skos:exactMatch ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosHiddenLabelProperty
+    sh:path    skos:hiddenLabel ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:skosInSchemeProperty
+    sh:path    skos:inScheme ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosNarrowerProperty
+    sh:path    skos:narrower ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosNarrowMatchProperty
+    sh:path    skos:narrowMatch ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosNotationProperty
+    sh:path     skos:notation ;
+    sh:nodeKind sh:Literal ;
+    sh:message  "skos:notation must be a literal of any type." .
+
+:skosNoteProperty
+    sh:path    skos:note ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:skosPrefLabelProperty
+    sh:path    skos:prefLabel ;
+    sh:node    :stringLiteralCondition ;
+    sh:message "This property must be a string literal." .
+
+:skosRelatedProperty
+    sh:path    skos:related ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:skosRelatedMatchProperty
+    sh:path    skos:relatedMatch ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:svcsHasServiceProperty
+    sh:path    svcs:has_service ;
+    sh:node    :iriCondition ;
+    sh:message "This property must be a resource reference." .
+
+:wgs84PosLatProperty
+    sh:path    wgs84_pos:lat ;
+    sh:node    :stringOrDecimalLiteralCondition ;
+    sh:message "This property must be a floating point (decimal)." .
+
+:wgs84PosLongProperty
+    sh:path    wgs84_pos:long ;
+    sh:node    :stringOrDecimalLiteralCondition ;
+    sh:message "This property must be a floating point (decimal)." .
+
+:wgs84PosAltProperty
+    sh:path    wgs84_pos:alt ;
+    sh:node    :stringOrDecimalLiteralCondition ;
+    sh:message "This property must be a floating point (decimal)." .
+
+
+############################
+### Resource definitions ###
+############################
+
+# These are the lists of supported and permitted properties for each resource type. They are
+# closed, meaning that no other properties are supported for the target class.
+
+:ProvidedCHOShape
+    a                    sh:NodeShape ;
+    sh:targetClass       edm:ProvidedCHO ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This edm:ProvidedCho object contains an unexpected property." ;
+    sh:property          :dcContributorProperty ;
+    sh:property          :dcCoverageProperty ;
+    sh:property          :dcCreatorProperty ;
+    sh:property          :dcDateProperty ;
+    sh:property          :dcDescriptionProperty ;
+    sh:property          :dcFormatProperty ;
+    sh:property          :dcIdentifierProperty ;
+    sh:property          :dcLanguageProperty ;
+    sh:property          :dcPublisherProperty ;
+    sh:property          :dcRelationProperty ;
+    sh:property          :dcRightsProperty ;
+    sh:property          :dcSourceProperty ;
+    sh:property          :dcSubjectProperty ;
+    sh:property          :dcTitleProperty ;
+    sh:property          :dcTypeProperty ;
+    sh:property          :dctermsAlternativeProperty ;
+    sh:property          :dctermsConformsToProperty ;
+    sh:property          :dctermsCreatedProperty ;
+    sh:property          :dctermsExtentProperty ;
+    sh:property          :dctermsHasFormatProperty ;
+    sh:property          :dctermsHasPartProperty ;
+    sh:property          :dctermsHasVersionProperty ;
+    sh:property          :dctermsIsFormatOfProperty ;
+    sh:property          :dctermsIsPartOfProperty ;
+    sh:property          :dctermsIsReferencedByProperty ;
+    sh:property          :dctermsIsReplacedByProperty ;
+    sh:property          :dctermsIsRequiredByProperty ;
+    sh:property          :dctermsIssuedProperty ;
+    sh:property          :dctermsIsVersionOfProperty ;
+    sh:property          :dctermsMediumProperty ;
+    sh:property          :dctermsProvenanceProperty ;
+    sh:property          :dctermsReferencesProperty ;
+    sh:property          :dctermsReplacesProperty ;
+    sh:property          :dctermsRequiresProperty ;
+    sh:property          :dctermsSpatialProperty ;
+    sh:property          :dctermsTableOfContentsProperty ;
+    sh:property          :dctermsTemporalProperty ;
+    sh:property          :edmCurrentLocationProperty ;
+    sh:property          :edmHasMetProperty ;
+    sh:property          :edmHasTypeProperty ;
+    sh:property          :edmIncorporatesProperty ;
+    sh:property          :edmIsDerivativeOfProperty ;
+    sh:property          :edmIsNextInSequenceProperty ;
+    sh:property          :edmIsRelatedToProperty ;
+    sh:property          :edmIsRepresentationOfProperty ;
+    sh:property          :edmIsSimilarToProperty ;
+    sh:property          :edmIsSuccessorOfProperty ;
+    sh:property          :edmPidProperty ;
+    sh:property          :edmRealizesProperty ;
+    sh:property          :edmTypeProperty ;
+    sh:property          :owlSameAsProperty .
+
+:AggregationShape
+    a                    sh:NodeShape ;
+    sh:targetClass       ore:Aggregation ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This ore:Aggregation object contains an unexpected property." ;
+    sh:property          :dcRightsProperty ;
+    sh:property          :edmAggregatedCHOProperty ;
+    sh:property          :edmDataProviderProperty ;
+    sh:property          :edmHasViewProperty ;
+    sh:property          :edmIntermediateProviderProperty ;
+    sh:property          :edmIsShownAtProperty ;
+    sh:property          :edmIsShownByProperty ;
+    sh:property          :edmObjectProperty ;
+    sh:property          :edmProviderProperty ;
+    sh:property          :edmRightsProperty ;
+    sh:property          :edmUgcProperty ;
+    sh:property          :provWasGeneratedByProperty .
+
+:WebResourceShape
+    a                    sh:NodeShape ;
+    sh:targetClass       edm:WebResource ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This edm:WebResource object contains an unexpected property." ;
+    sh:property          :dcCreatorProperty ;
+    sh:property          :dcDescriptionProperty ;
+    sh:property          :dcFormatProperty ;
+    sh:property          :dcLanguageProperty ;
+    sh:property          :dcRightsProperty ;
+    sh:property          :dcSourceProperty ;
+    sh:property          :dcTitleProperty ;
+    sh:property          :dcTypeProperty ;
+    sh:property          :dctermsConformsToProperty ;
+    sh:property          :dctermsCreatedProperty ;
+    sh:property          :dctermsExtentProperty ;
+    sh:property          :dctermsHasPartProperty ;
+    sh:property          :dctermsIsFormatOfProperty ;
+    sh:property          :dctermsIsPartOfProperty ;
+    sh:property          :dctermsIsReferencedByProperty ;
+    sh:property          :dctermsIssuedProperty ;
+    sh:property          :dctermsTemporalProperty ;
+    sh:property          :edmGaussianCountProperty ;
+    sh:property          :edmIntededUsageProperty ;
+    sh:property          :edmIsNextInSequenceProperty ;
+    sh:property          :edmIsRepresentationOfProperty ;
+    sh:property          :edmPidProperty ;
+    sh:property          :edmPointCountProperty ;
+    sh:property          :edmPolygonCountProperty ;
+    sh:property          :edmRightsProperty ;
+    sh:property          :edmTypeProperty ;
+    sh:property          :edmVertexCountProperty ;
+    sh:property          :owlSameAsProperty ;
+    sh:property          :rdfsSeeAlsoProperty ;
+    sh:property          :schemaDigitalSourceTypeProperty ;
+    sh:property          :svcsHasServiceProperty .
+
+:AgentShape
+    a                    sh:NodeShape ;
+    sh:targetClass       edm:Agent ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This edm:Agent object contains an unexpected property." ;
+    sh:property          :dcDateProperty ;
+    sh:property          :dcIdentifierProperty ;
+    sh:property          :dctermsHasPartProperty ;
+    sh:property          :dctermsIsPartOfProperty ;
+    sh:property          :edmBeginProperty ;
+    sh:property          :edmEndProperty ;
+    sh:property          :edmHasMetProperty ;
+    sh:property          :edmIsRelatedToProperty ;
+    sh:property          :foafNameProperty ;
+    sh:property          :owlSameAsProperty ;
+    sh:property          :rdaGr2BiographicalInformationProperty ;
+    sh:property          :rdaGr2DateOfBirthProperty ;
+    sh:property          :rdaGr2DateOfDeathProperty ;
+    sh:property          :rdaGr2DateOfEstablishmentProperty ;
+    sh:property          :rdaGr2DateOfTerminationProperty ;
+    sh:property          :rdaGr2GenderProperty ;
+    sh:property          :rdaGr2PlaceOfBirthProperty ;
+    sh:property          :rdaGr2PlaceOfDeathProperty ;
+    sh:property          :rdaGr2ProfessionOrOccupationProperty ;
+    sh:property          :skosAltLabelProperty ;
+    sh:property          :skosHiddenLabelProperty ;
+    sh:property          :skosNoteProperty ;
+    sh:property          :skosPrefLabelProperty .
+
+:ConceptShape
+    a                    sh:NodeShape ;
+    sh:targetClass       skos:Concept ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This skos:Concept object contains an unexpected property." ;
+    sh:property          :skosPrefLabelProperty ;
+    sh:property          :skosAltLabelProperty ;
+    sh:property          :skosHiddenLabelProperty ;
+    sh:property          :skosBroaderProperty ;
+    sh:property          :skosNarrowerProperty ;
+    sh:property          :skosRelatedProperty ;
+    sh:property          :skosBroadMatchProperty ;
+    sh:property          :skosNarrowMatchProperty ;
+    sh:property          :skosRelatedMatchProperty ;
+    sh:property          :skosExactMatchProperty ;
+    sh:property          :skosCloseMatchProperty ;
+    sh:property          :skosNoteProperty ;
+    sh:property          :skosNotationProperty ;
+    sh:property          :skosInSchemeProperty .
+
+:PlaceShape
+    a                    sh:NodeShape ;
+    sh:targetClass       edm:Place ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This edm:Place object contains an unexpected property." ;
+    sh:property          :wgs84PosLatProperty ;
+    sh:property          :wgs84PosLongProperty ;
+    sh:property          :wgs84PosAltProperty ;
+    sh:property          :skosPrefLabelProperty ;
+    sh:property          :skosAltLabelProperty ;
+    sh:property          :skosHiddenLabelProperty ;
+    sh:property          :skosNoteProperty ;
+    sh:property          :dctermsHasPartProperty ;
+    sh:property          :dctermsIsPartOfProperty ;
+    sh:property          :edmIsNextInSequenceProperty ;
+    sh:property          :owlSameAsProperty .
+
+:TimeSpanShape
+    a                    sh:NodeShape ;
+    sh:targetClass       edm:TimeSpan ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This edm:TimeSpan object contains an unexpected property." ;
+    sh:property          :skosPrefLabelProperty ;
+    sh:property          :skosAltLabelProperty ;
+    sh:property          :skosHiddenLabelProperty ;
+    sh:property          :skosNoteProperty ;
+    sh:property          :dctermsHasPartProperty ;
+    sh:property          :dctermsIsPartOfProperty ;
+    sh:property          :edmBeginProperty ;
+    sh:property          :edmEndProperty ;
+    sh:property          :edmIsNextInSequenceProperty ;
+    sh:property          :skosNotationProperty ;
+    sh:property          :owlSameAsProperty .
+
+:LicenseShape
+    a                    sh:NodeShape ;
+    sh:targetClass       cc:License ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This cc:License object contains an unexpected property." ;
+    sh:property          :odrlInheritFromProperty ;
+    sh:property          :ccDeprecatedOnProperty .
+
+:ServiceShape
+    a                    sh:NodeShape ;
+    sh:targetClass       svcs:Service ;
+    sh:closed            true ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:message           "This svcs:Service object contains an unexpected property." ;
+    sh:property          :dctermsConformsToProperty ;
+    sh:property          :doapImplementsProperty ;
+    sh:property          :rdfsLabelProperty .
+
+###############################
+### IRI target restrictions ###
+###############################
+
+# These shapes define the target type (range) of IRI references. These shapes verify that the
+# various properties reference the right type of classes. The typing conditions for contextual
+# class references are designed to avoid failing on literals, or on IRIs that are not resolvable
+# in the record.
+
+# The condition for an Agent reference definition.
+:agentReferenceCondition
+    sh:or ( [ sh:class edm:Agent ] [ sh:not [ sh:class :EdmClass ] ] ) .
+
+# The condition for a Concept reference definition.
+:conceptReferenceCondition
+    sh:or ( [ sh:class skos:Concept ] [ sh:not [ sh:class :EdmClass ] ] ) .
+
+# The condition for a non-EDM reference definition.
+:nonEdmReferenceCondition
+    sh:not [ sh:class :EdmClass ] .
+
+# The condition for an Organisation reference definition.
+:organisationReferenceCondition
+    sh:not [ sh:class :EdmClass ] .
+
+# The condition for a Place reference definition.
+:placeReferenceCondition
+    sh:or ( [ sh:class edm:Place ] [ sh:not [ sh:class :EdmClass ] ] ) .
+
+# The condition for a 'related resource' reference definition.
+:providedCHOReferenceCondition
+    sh:or ( [ sh:class edm:ProvidedCHO ] [ sh:not [ sh:class :EdmClass ] ] ) .
+
+# The condition for a TimeSpan reference definition.
+:timeSpanReferenceCondition
+    sh:or ( [ sh:class edm:TimeSpan ] [ sh:not [ sh:class :EdmClass ] ] ) .
+
+# The condition for a Web Resource reference definition.
+:webResourceReferenceCondition
+    sh:or ( [ sh:class edm:WebResource ] [ sh:not [ sh:class :EdmClass ] ] ) .
+
+# Properties for which the references are always the same type, regardless of the subject type.
+:EdmClassWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass :EdmClass ;
+    sh:property    [ sh:path     dc:contributor ;
+                     sh:node     :agentReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Agent." ] ;
+    sh:property    [ sh:path     dc:coverage ;
+                     sh:or       ( [ sh:class edm:Place ]
+                                   [ sh:class edm:TimeSpan ]
+                                   [ sh:not [ sh:class :EdmClass ] ] ) ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place or edm:TimeSpan." ] ;
+    sh:property    [ sh:path     dc:creator ;
+                     sh:node     :agentReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Agent." ] ;
+    sh:property    [ sh:path     dc:date ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     dc:publisher ;
+                     sh:node     :agentReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Agent." ] ;
+    sh:property    [ sh:path     dc:relation ;
+                     sh:node     :providedCHOReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:ProvidedCHO." ] ;
+    sh:property    [ sh:path     dc:subject ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     dc:type ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     dcterms:created ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     dcterms:issued ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     dcterms:spatial ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     dcterms:temporal ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     edm:aggregatedCHO ;
+                     sh:class    edm:ProvidedCHO ;
+                     sh:message "edm:aggregatedCHO must reference an edm:ProvidedCHO." ] ;
+    sh:property    [ sh:path     edm:currentLocation ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     edm:dataProvider ;
+                     sh:node     :organisationReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property relates to Organizations and should not reference an EDM-external class." ] ;
+    sh:property    [ sh:path     edm:hasType ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     edm:hasView ;
+                     sh:node     :webResourceReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:WebResource." ] ;
+    sh:property    [ sh:path     edm:intendedUsage ;
+                     sh:node     :nonEdmReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class." ] ;
+    sh:property    [ sh:path     edm:intermediateProvider ;
+                     sh:node     :organisationReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property relates to Organizations and should not reference an EDM-external class." ] ;
+    sh:property    [ sh:path     edm:isShownAt ;
+                     sh:node     :webResourceReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:WebResource." ] ;
+    sh:property    [ sh:path     edm:isShownBy ;
+                     sh:node     :webResourceReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:WebResource." ] ;
+    sh:property    [ sh:path     edm:object ;
+                     sh:node     :webResourceReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:WebResource." ] ;
+    sh:property    [ sh:path     edm:provider ;
+                     sh:node     :organisationReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property relates to Organizations and should not reference an EDM-external class." ] ;
+    sh:property [    sh:path edm:rights ;
+                     sh:or   ( [ sh:not   [ sh:node :licenseStatementCondition ] ;
+                                 sh:class cc:License ]
+                               [ sh:node  :licenseStatementCondition ;
+                                 sh:node  :nonEdmReferenceCondition ] ) ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property must either have one of the permitted values or reference a cc:License." ] ;
+    sh:property    [ sh:path     odrl:inheritFrom ;
+                     sh:node     :nonEdmReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class." ] ;
+    sh:property    [ sh:path     prov:wasGeneratedBy ;
+                     sh:node     :nonEdmReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class." ] ;
+    sh:property    [ sh:path     rdaGr2:placeOfBirth ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     rdaGr2:placeOfDeath ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     schema:digitalSourceType ;
+                     sh:node     :nonEdmReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class." ] ;
+    sh:property    [ sh:path     skos:broader ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:broadMatch ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:closeMatch ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:exactMatch ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:narrower ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:narrowMatch ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:related ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     skos:relatedMatch ;
+                     sh:node     :conceptReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than skos:Concept." ] ;
+    sh:property    [ sh:path     svcs:has_service ;
+                     sh:class    svcs:Service ;
+                     sh:severity sh:Warning ;
+                     sh:message  "svcs:has_service must reference an svcs:Service." ] .
+
+# Provided CHO properties for which the references are dependent on the subject type.
+:ProvidedCHOWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:ProvidedCHO ;
+    sh:property    [ sh:path     edm:isRepresentationOf ;
+                     sh:node     :providedCHOReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:ProvidedCHO." ] ;
+    sh:property    [ sh:path     owl:sameAs ;
+                     sh:node     :nonEdmReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class." ] .
+
+# Web Resource properties for which the references are dependent on the subject type.
+:WebResourceWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:WebResource ;
+    sh:property    [ sh:path     edm:isRepresentationOf ;
+                     sh:node     :webResourceReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:WebResource." ] ;
+    sh:property    [ sh:path     owl:sameAs ;
+                     sh:node     :webResourceReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:WebResource." ] ;
+    sh:property    [ sh:path    rdfs:seeAlso ;
+                     sh:class   edm:WebResource ;
+                     sh:message "This property must reference an edm:WebResource." ] .
+
+# Agent properties for which the references are dependent on the subject type.
+:AgentWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:Agent ;
+    sh:property    [ sh:path     dcterms:hasPart ;
+                     sh:node     :agentReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Agent." ] ;
+    sh:property    [ sh:path     dcterms:isPartOf ;
+                     sh:node     :agentReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Agent." ] ;
+    sh:property    [ sh:path     owl:sameAs ;
+                     sh:node     :agentReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Agent." ] .
+
+# Place properties for which the references are dependent on the subject type.
+:PlaceWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:Place ;
+    sh:property    [ sh:path     dcterms:hasPart ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     dcterms:isPartOf ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     edm:isNextInSequence ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] ;
+    sh:property    [ sh:path     owl:sameAs ;
+                     sh:node     :placeReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:Place." ] .
+
+# Service properties for which the references are dependent on the subject type.
+:ServiceWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass svcs:Service ;
+    sh:property    [ sh:path     dcterms:conformsTo ;
+                     sh:node     :nonEdmReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class." ] ;
+    sh:property    [ sh:path     dcterms:conformsTo ;
+                     sh:nodeKind sh:IRI ;
+                     sh:in       ( <http://iiif.io/api/image> <https://oembed.com/> );
+                     sh:severity sh:Warning ;
+                     sh:message  "This Service conforms to an unrecognised standard." ] .
+
+# Timespan properties for which the references are dependent on the subject type.
+:TimeSpanWithCorrectReferencesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:TimeSpan ;
+    sh:property    [ sh:path     dcterms:hasPart ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     dcterms:isPartOf ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     edm:isNextInSequence ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] ;
+    sh:property    [ sh:path     owl:sameAs ;
+                     sh:node     :timeSpanReferenceCondition ;
+                     sh:severity sh:Warning ;
+                     sh:message  "This property should not reference an EDM class other than edm:TimeSpan." ] .
+
+
+#########################################
+### Property cardinality declarations ###
+#########################################
+
+# This includes cardinalities for individual properties, but also for groups of properties (e.g.
+# at least one of the following three properties must be present).
+
+# Note: some properties are mandated to be non-empty in the definitions below. These properties are
+# involved in specific requirements for presence. If a property (or at least one of a group of
+# properties) is required to be present, then it should not be allowed to be empty. This is not
+# only out of data correctness, but also to prevent normalisation from invalidating the record.
+# During normalisation emtpy properties may be removed and the record could become invalid as a result.
+# Note: this only applies when the property is allowed to be a literal.
+
+
+# ProvidedCHO: There needs to be at least a description or title, and the description should be a
+# literal. Also, there needs to be at least a dc:subject, dc:type, dcterms:spatial or dcterms:temporal.
+:ProvidedCHOCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:ProvidedCHO ;
+    sh:property    [ sh:path       dc:title ;
+                     sh:uniqueLang true ;
+                     sh:severity   sh:Warning ;
+                     sh:message    "There should be only one dc:title value per language. " ] ;
+    sh:property    [ sh:path       dc:description ;
+                     sh:or         ( [ sh:datatype xsd:string ] [ sh:datatype rdf:langString ] ) ;
+                     sh:severity   sh:Warning ;
+                     sh:message    "dc:description should be a string literal, not a reference." ] ;
+    sh:property    [ sh:path       edm:currentLocation ;
+                     sh:maxCount   1 ;
+                     sh:message    "edm:currentLocation can only occur once." ] ;
+    sh:property    [ sh:path       edm:isRepresentationOf ;
+                     sh:maxCount   1 ;
+                     sh:message    "edm:isRepresentationOf can only occur once." ] ;
+    sh:property    [ sh:path       edm:type ;
+                     sh:minCount   1 ;
+                     sh:maxCount   1 ;
+                     sh:message    "edm:type must occur exactly once." ] ;
+    sh:property    [ sh:path                [ sh:alternativePath ( dc:title dc:description ) ] ;
+                     sh:qualifiedValueShape [ sh:pattern "\\S" ] ;
+                     sh:qualifiedMinCount   1 ;
+                     sh:message             "At least one the following properties must be present and non-whitespace: dc:title or dc:description." ] ;
+    sh:property    [ sh:path                [ sh:alternativePath ( dc:subject dc:type dcterms:spatial dcterms:temporal ) ] ;
+                     sh:qualifiedValueShape [ sh:pattern "\\S" ] ;
+                     sh:qualifiedMinCount   1 ;
+                     sh:message             "At least one the following properties should be present and non-empty: dc:subject, dc:type, dcterms:spatial or dcterms:temporal." ] .
+
+# ProvidedCHO: If this is a TEXT object, we require a language.
+:ProvidedCHOForTextWithLanguageShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:ProvidedCHO ;
+    sh:or          ( [ sh:path                dc:language ;
+                       sh:qualifiedValueShape [ sh:pattern "\\S" ] ;
+                       sh:qualifiedMinCount   1 ]
+                     [ sh:not [ sh:path    edm:type ;
+                                sh:pattern "^TEXT$" ] ] ) ;
+    sh:message     "At least one non-whitespace occurrence of the property dc:language is required if edm:type='TEXT'." .
+
+# Aggregation: There needs to be at least a edm:isShownAt or edm:isShownBy.
+:AggregationCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass ore:Aggregation ;
+    sh:property    [ sh:path     edm:aggregatedCHO ;
+                     sh:minCount 1 ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:aggregatedCHO must be present exactly once." ] ;
+    sh:property    [ sh:path     edm:dataProvider ;
+                     sh:minCount 1 ;
+                     sh:maxCount 1 ;
+                     sh:pattern  "\\S" ;
+                     sh:message  "edm:dataProvider must occur exactly once and must be non-empty."] ;
+    sh:property    [ sh:path     edm:isShownAt ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:isShownAt can only occur once." ] ;
+    sh:property    [ sh:path     edm:isShownBy ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:isShownBy can only occur once." ] ;
+    sh:property    [ sh:path     edm:object ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:object can only occur once." ] ;
+    sh:property    [ sh:path     edm:provider ;
+                     sh:minCount 1 ;
+                     sh:maxCount 1 ;
+                     sh:pattern  "\\S" ;
+                     sh:message  "edm:provider must occur exactly once and must be non-empty." ] ;
+    sh:property    [ sh:path     edm:rights ;
+                     sh:minCount 1 ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:rights must occur exactly once." ] ;
+    sh:property    [ sh:path     [ sh:alternativePath ( edm:isShownAt edm:isShownBy ) ] ;
+                     sh:minCount 1 ;
+                     sh:message  "At least one the following properties must be present: edm:isShownAt or edm:isShownBy." ] ;
+    sh:property    [ sh:path     prov:wasGeneratedBy ;
+                     sh:maxCount 1 ;
+                     sh:message  "prov:wasGeneratedBy can only occur once." ] .
+
+# Aggregation: Warn if an IMAGE has no edm:isShownBy or edm:object.
+:AggregationForImageWithRightMediaLinksShape
+    a              sh:NodeShape ;
+    sh:targetClass ore:Aggregation ;
+    sh:or          ( [ sh:path     [ sh:alternativePath ( edm:isShownBy edm:object ) ] ;
+                       sh:minCount 1 ]
+                     [ sh:not      [ sh:path    ( edm:aggregatedCHO edm:type ) ;
+                                     sh:pattern "^IMAGE$" ] ] ) ;
+    sh:severity    sh:Warning ;
+    sh:message     "At least one of edm:isShownBy or edm:object is required for publication if edm:type='IMAGE'." .
+
+:WebResourceCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:WebResource ;
+    sh:property    [ sh:path     edm:rights ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:rights may only occur once." ] ;
+    sh:property    [ sh:path       dc:title ;
+                     sh:uniqueLang true ;
+                     sh:severity   sh:Warning ;
+                     sh:message    "There should be only one dc:title value per language. " ] ;
+    sh:property    [ sh:path     edm:gaussianCount ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:gaussianCount can only occur once." ] ;
+    sh:property    [ sh:path     edm:pointCount ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:pointCount can only occur once." ] ;
+    sh:property    [ sh:path     edm:polygonCount ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:polygonCount can only occur once." ] ;
+    sh:property    [ sh:path     edm:vertexCount ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:vertexCount can only occur once." ] ;
+    sh:property    [ sh:path     rdfs:seeAlso ;
+                     sh:node     [ sh:property [ sh:path                dcterms:conformsTo ;
+                                                 sh:qualifiedValueShape [ sh:pattern "\\S" ] ;
+                                                 sh:qualifiedMinCount   1 ] ] ;
+                     sh:message  "The target of rdfs:seeAlso must have a non-empty value for dcterms:conformsTo." ] ;
+    sh:property    [ sh:path     schema:digitalSourceType ;
+                     sh:maxCount 1 ;
+                     sh:message  "schema:digitalSourceType may only occur once." ] .
+
+# Contextual classes
+:ContextualClassCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass :ContextualClass ;
+    sh:property    [ sh:path                skos:prefLabel ;
+                     sh:qualifiedValueShape [ sh:pattern "\\S" ] ;
+                     sh:qualifiedMinCount   1 ;
+                     sh:severity            sh:Warning ;
+                     sh:message             "There should be at least one non-empty skos:prefLabel." ] ;
+    sh:property    [ sh:path       skos:prefLabel ;
+                     sh:uniqueLang true ;
+                     sh:severity   sh:Warning ;
+                     sh:message    "There should be at most one skos:prefLabel value per language." ] .
+
+:AgentCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:Agent ;
+    sh:property    [ sh:path     edm:begin ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:begin can only occur once." ] ;
+    sh:property    [ sh:path     edm:end ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:end can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:dateOfBirth ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:dateOfBirth can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:dateOfDeath ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:dateOfDeath can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:dateOfEstablishment ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:dateOfEstablishment can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:dateOfTermination ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:dateOfTermination can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:gender ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:gender can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:placeOfBirth ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:placeOfBirth can only occur once." ] ;
+    sh:property    [ sh:path     rdaGr2:placeOfDeath ;
+                     sh:maxCount 1 ;
+                     sh:message  "rdaGr2:placeOfDeath can only occur once." ] .
+
+:PlaceCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:Place ;
+    sh:property    [ sh:path     wgs84_pos:lat ;
+                     sh:maxCount 1 ;
+                     sh:message  "wgs84_pos:lat can only occur once." ] ;
+    sh:property    [ sh:path     wgs84_pos:long ;
+                     sh:maxCount 1 ;
+                     sh:message  "wgs84_pos:long can only occur once." ] ;
+    sh:property    [ sh:path     wgs84_pos:alt ;
+                     sh:maxCount 1 ;
+                     sh:message  "wgs84_pos:alt can only occur once." ] .
+
+:TimeSpanCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass edm:TimeSpan ;
+    sh:property    [ sh:path     edm:begin ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:begin can only occur once." ] ;
+    sh:property    [ sh:path     edm:end ;
+                     sh:maxCount 1 ;
+                     sh:message  "edm:end can only occur once." ] ;
+    sh:property    [ sh:path     skos:notation ;
+                     sh:maxCount 1 ;
+                     sh:message  "skos:notation can only occur once." ] .
+
+:LicenseCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass cc:License ;
+    sh:property    [ sh:path     odrl:inheritFrom ;
+                     sh:minCount 1 ;
+                     sh:maxCount 1 ;
+                     sh:message  "odrl:inheritFrom must occur exactly once." ] ;
+    sh:property    [ sh:path     cc:deprecatedOn ;
+                     sh:maxCount 1 ;
+                     sh:message  "cc:deprecatedOn can only occur once." ] .
+
+:ServiceCardinalitiesShape
+    a              sh:NodeShape ;
+    sh:targetClass svcs:Service ;
+    sh:property    [ sh:path     dcterms:conformsTo ;
+                     sh:minCount 1 ;
+                     sh:message  "dcterms:conformsTo must occur at least once." ] ;
+    sh:property    [ sh:path     doap:implements ;
+                     sh:maxCount 1 ;
+                     sh:message  "doap:implements can only occur once." ] .
+
+:ServiceWithLabelShape
+    a              sh:NodeShape ;
+    sh:targetClass svcs:Service ;
+    sh:or          ( [ sh:path     rdfs:label ;
+                       sh:qualifiedValueShape [ sh:pattern "\\S" ] ;
+                       sh:qualifiedMinCount   1 ]
+                     [ sh:not      [ sh:path    ( dcterms:conformsTo ) ;
+                                     sh:hasValue <https://oembed.com/> ] ] ) ;
+    sh:severity    sh:Warning ;
+    sh:message     "An oEmbed-compliant service should have a non-empty rdfs:label value." .
