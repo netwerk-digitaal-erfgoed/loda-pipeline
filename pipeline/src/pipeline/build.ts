@@ -6,13 +6,11 @@ import {createStages} from './stage.js';
 import {createRdf2EdmTaskRunner, Rdf2EdmWriter} from './rdf2edm-writer.js';
 import {LoggerReporter} from '@lde/pipeline-logger-reporter';
 import pino from 'pino';
-// import {createBindingsProvider} from './bindings-provider.js';
+import {DatasetDescriptionGenerator} from './datasetDescription.js';
 
 export async function build(
   pipelineConfig: PipelineConfig,
 ): Promise<{pipeline: Pipeline; distributionResolver: ImportResolver}> {
-  // const bindingsProvider = createBindingsProvider(pipelineConfig);
-
   const datasetSelector = await createDatasetSelector(
     new URL(pipelineConfig.dataset.uri),
     new URL(applicationConfig.REGISTRY_ENDPOINT),
@@ -30,7 +28,6 @@ export async function build(
   const stages = await createStages(
     applicationConfig.getPath(applicationConfig.BASE_CONFIG_DIR),
     applicationConfig.getPath(applicationConfig.VALIDATION_OUTPUT_DIR),
-    // bindingsProvider,
     {
       batchSize: applicationConfig.STAGE_BATCH_SIZE,
       maxConcurrency: applicationConfig.STAGE_MAX_CONCURRENCY,
@@ -56,6 +53,13 @@ export async function build(
       new FileWriter({outputDir}),
       createRdf2EdmTaskRunner(outputDir, applicationConfig),
       logger.child({component: 'rdf2edm'}),
+      new DatasetDescriptionGenerator(
+        applicationConfig.getPath(
+          applicationConfig.BASE_CONFIG_DIR,
+          'datasetdescription.ttl.hbs',
+        ),
+        pipelineConfig,
+      ),
     ),
     chaining: {
       stageOutputResolver,

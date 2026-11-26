@@ -1,0 +1,59 @@
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix edm: <http://www.europeana.eu/schemas/edm/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://dc4eu.nl/id/datasets/{{dataset.id}}> a dcat:Dataset ;
+	dcterms:title "{{dataset.title}}"@en ;
+	dcterms:description "EDM version of dataset {{dataset.title}} - converted via LODA-pipeline for delivery to Euroepana."@en ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:creator <{{dataset.creator.uri}}> ;
+	dcat:distribution <https://dc4eu.nl/id/datasets/{{dataset.id}}/dist-nt>, <https://dc4eu.nl/id/datasets/{{dataset.id}}/dist-xml> ;
+	dcterms:created "{{dataset.createdDate}}"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:issued "{{dataset.createdDate}}"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "{{distribution.createdDateTime}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:language {{#if dataset.language.iri}}<{{dataset.language.iri}}>{{else}}"{{dataset.language.code}}"{{/if}} ;
+	dcterms:publisher <https://dc4eu.nl> ;
+	dcat:keyword "LODA-pipeline","Europeana" ;
+	# TODO ad dcat:contactPoint with value "dc4eu@beeldengeluid.nl" ;
+	dcterms:source "{{dataset.sourceDataset}}" .
+
+<{{dataset.creator.uri}}> a foaf:Organization ;
+	foaf:name "{{dataset.creator.name}}"@nl .
+
+<https://dc4eu.nl> a foaf:Organization ;
+	foaf:name "DC4EU"@nl .
+
+<https://dc4eu.nl/id/datasets/{{dataset.id}}/dist-nt> a dcat:Distribution ;
+	dcterms:description "Gzipped distribution of {{distribution.nt.numTriples}} N-triples."@en ;
+	dcat:byteSize "{{distribution.nt.numBytes}}"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "{{distribution.createdDateTime}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:issued "{{distribution.createdDate}}"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "{{distribution.createdDateTime}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <{{distribution.nt.contentUrl}}> ;
+	dcat:downloadURL <{{distribution.nt.contentUrl}}> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/n-triples+gzip" ;
+	dcat:mediaType <https://www.iana.org/assignments/media-types/application/n-triples+gzip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> .
+
+<https://dc4eu.nl/id/datasets/{{dataset.id}}/dist-xml>  a dcat:Distribution ;
+	dcterms:description "Zipped distribution of {{distribution.xml.numTriples}} EDM XML files."@en ;
+	dcat:byteSize "{{distribution.xml.numBytes}}"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger> ;
+	dcterms:created "{{distribution.createdDateTime}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcterms:issued "{{distribution.createdDate}}"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	dcterms:modified "{{distribution.createdDateTime}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	dcat:accessURL <{{distribution.xml.contentUrl}}> ;
+	dcat:downloadURL <{{distribution.xml.contentUrl}}> ;
+	dcterms:license <http://creativecommons.org/publicdomain/zero/1.0/> ;
+	dcterms:format "application/zip" ;
+	dcat:mediaType <http://www.iana.org/assignments/media-types/application/rdf+xml> ;
+	dcat:compressFormat <https://www.iana.org/assignments/media-types/application/zip> ;
+	dcterms:conformsTo <http://www.europeana.eu/schemas/edm/> ;
+	edm:hasTransformation <#transformation> .
+
+<#transformation> a edm:DataTransformationResource ;
+	rdf:value {{#each distribution.queryFiles}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}} ;
+	dcterms:conformsTo <https://www.w3.org/TR/sparql11-query/#construct> ;
+	edm:hasOutputFormat <http://www.europeana.eu/schemas/edm/> .
