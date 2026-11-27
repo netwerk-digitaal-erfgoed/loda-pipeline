@@ -1,6 +1,6 @@
 import {createReadStream, createWriteStream} from 'node:fs';
-import {access, writeFile} from 'node:fs/promises';
-import {basename, dirname, join, parse, resolve} from 'node:path';
+import {access, rm} from 'node:fs/promises';
+import {basename, resolve} from 'node:path';
 import {pipeline} from 'node:stream/promises';
 import {createGzip} from 'node:zlib';
 import type {Dataset} from '@lde/dataset';
@@ -9,8 +9,10 @@ import type {TaskRunner} from '@lde/task-runner';
 import {DockerTaskRunner} from '@lde/task-runner-docker';
 import {HttpTaskRunner} from '@lde/task-runner-http';
 import type {Logger} from 'pino';
-import type {ApplicationConfig} from '../config.js';
-import {DatasetDescriptionGenerator} from './datasetDescription.js';
+import type {ApplicationConfig, PipelineConfig} from '../config.js';
+import {captureManifest, writeManifest} from '../description/manifest.js';
+import {describe} from '../description/render.js';
+import {getOutputPaths, type OutputPaths} from '../output.js';
 
 const rdf2edmScript = '/app/crawler/rdf2edm.sh';
 
@@ -33,14 +35,15 @@ export function createRdf2EdmTaskRunner(
  * Writes N-Triples through a {@link FileWriter} and, once a dataset has been
  * processed successfully, converts its file to a zip of EDM XML records with
  * the Europeana rdf2edm tool, run by the task runner in the directory the
- * file writer writes to.
+ * file writer writes to. Records the run's facts in a manifest, from which the
+ * dataset description is rendered.
  */
 export class Rdf2EdmWriter implements Writer {
   constructor(
     private readonly fileWriter: FileWriter,
     private readonly taskRunner: TaskRunner<unknown>,
     private readonly logger: Logger,
-    private readonly descriptionGenerator: DatasetDescriptionGenerator,
+    private readonly pipelineConfig: PipelineConfig,
   ) {}
 
   async openRun(context: RunContext): Promise<RunWriter> {
@@ -53,44 +56,56 @@ export class Rdf2EdmWriter implements Writer {
       flush: async (dataset, outcome) => {
         await run.flush(dataset, outcome);
         if (outcome === 'success') {
-          const outputPaths = await this.convert(dataset);
-          if (!outputPaths) {
-            return; // TODO: or throw
-          }
-          await this.generateDescription(dataset, outputPaths);
+          await this.finalize(dataset, context);
         }
       },
     };
   }
 
-  private async convert(dataset: Dataset): Promise<string[] | null> {
-    const paths: string[] = [];
-    const outputPath = this.fileWriter.getOutputPath(dataset);
+  private async finalize(dataset: Dataset, context: RunContext) {
+    const paths = getOutputPaths(this.fileWriter, dataset);
+    await rm(paths.manifest, {force: true});
 
     try {
-      await access(outputPath);
+      await access(paths.nt);
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         this.logger.warn(
           {dataset: dataset.iri.toString()},
           'No output to convert to EDM XML',
         );
-        return null;
+        return;
       }
       throw error;
     }
 
-    paths.push(await this.gzip(dataset, outputPath));
-    paths.push(await this.convertEdm(dataset, outputPath));
-    return paths;
+    const numTriples = await this.gzip(dataset, paths);
+    await this.convertEdm(dataset, paths);
+
+    await writeManifest(
+      paths.manifest,
+      await captureManifest({
+        dataset,
+        context,
+        pipelineConfig: this.pipelineConfig,
+        nt: {path: paths.ntGz, numTriples},
+        xmlPath: paths.edmZip,
+      }),
+    );
+
+    try {
+      await describe(paths, this.pipelineConfig);
+    } catch (error) {
+      this.logger.error(
+        {dataset: dataset.iri.toString(), error},
+        'Generating the dataset description failed; fix and rerun it with pipeline:describe',
+      );
+    }
   }
 
-  private async convertEdm(
-    dataset: Dataset,
-    outputPath: string,
-  ): Promise<string> {
-    const input = basename(outputPath);
-    const output = `./${parse(outputPath).name}.edm.zip`;
+  private async convertEdm(dataset: Dataset, paths: OutputPaths) {
+    const input = basename(paths.nt);
+    const output = `./${basename(paths.edmZip)}`;
     this.logger.info(
       {dataset: dataset.iri.toString(), input, output},
       'Converting to EDM XML',
@@ -103,34 +118,35 @@ export class Rdf2EdmWriter implements Writer {
       {dataset: dataset.iri.toString(), toolOutput},
       'Converted to EDM XML',
     );
-    return join(dirname(outputPath), output);
   }
 
-  private async gzip(dataset: Dataset, inputPath: string): Promise<string> {
-    const output = `${inputPath}.gz`;
+  private async gzip(dataset: Dataset, paths: OutputPaths): Promise<number> {
     this.logger.info(
-      {dataset: dataset.iri.toString(), input: basename(inputPath), output},
+      {
+        dataset: dataset.iri.toString(),
+        input: basename(paths.nt),
+        output: paths.ntGz,
+      },
       'Gzipping N-Triples',
     );
+    let lines = 0;
     await pipeline(
-      createReadStream(inputPath),
+      createReadStream(paths.nt),
+      async function* (source: AsyncIterable<Buffer>) {
+        for await (const chunk of source) {
+          for (
+            let i = chunk.indexOf(0x0a);
+            i !== -1;
+            i = chunk.indexOf(0x0a, i + 1)
+          ) {
+            lines++;
+          }
+          yield chunk;
+        }
+      },
       createGzip(),
-      createWriteStream(output),
+      createWriteStream(paths.ntGz),
     );
-
-    return output;
-  }
-
-  private async generateDescription(dataset: Dataset, outputPaths: string[]) {
-    const description = await this.descriptionGenerator.generate(
-      dataset,
-      outputPaths,
-    );
-    const outputPath = this.fileWriter.getOutputPath(dataset);
-    const output = join(
-      dirname(outputPath),
-      `${parse(outputPath).name}.description.ttl`,
-    );
-    await writeFile(output, description);
+    return lines;
   }
 }

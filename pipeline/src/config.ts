@@ -11,7 +11,7 @@ const PipelineConfig = z.object({
     description: z
       .object({
         title: z.string().optional(),
-        createdOn: z.iso.date().optional(),
+        createdDate: z.iso.date().optional(),
         creator: z
           .object({
             uri: z.url().optional(),

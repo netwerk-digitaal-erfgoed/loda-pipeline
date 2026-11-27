@@ -7,6 +7,7 @@
   },
   "scripts": {
     "start": "tsx src/index.ts",
+    "describe": "tsx src/description/index.ts",
     "compile": "tsc"
   },
   "dependencies": {

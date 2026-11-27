@@ -1,4 +1,4 @@
-import {FileWriter, type ImportResolver, Pipeline} from '@lde/pipeline';
+import {type ImportResolver, Pipeline} from '@lde/pipeline';
 import {applicationConfig, type PipelineConfig} from '../config.js';
 import {createDatasetSelector} from './dataset-selector.js';
 import {createQleverResolvers} from './distribution-resolver.js';
@@ -6,11 +6,12 @@ import {createStages} from './stage.js';
 import {createRdf2EdmTaskRunner, Rdf2EdmWriter} from './rdf2edm-writer.js';
 import {LoggerReporter} from '@lde/pipeline-logger-reporter';
 import pino from 'pino';
-import {DatasetDescriptionGenerator} from './datasetDescription.js';
+import {createFileWriter} from '../output.js';
 
-export async function build(
-  pipelineConfig: PipelineConfig,
-): Promise<{pipeline: Pipeline; distributionResolver: ImportResolver}> {
+export async function build(pipelineConfig: PipelineConfig): Promise<{
+  pipeline: Pipeline;
+  distributionResolver: ImportResolver;
+}> {
   const datasetSelector = await createDatasetSelector(
     new URL(pipelineConfig.dataset.uri),
     new URL(applicationConfig.REGISTRY_ENDPOINT),
@@ -44,23 +45,19 @@ export async function build(
       : undefined,
   });
 
+  const writers = new Rdf2EdmWriter(
+    createFileWriter(),
+    createRdf2EdmTaskRunner(outputDir, applicationConfig),
+    logger.child({component: 'rdf2edm'}),
+    pipelineConfig,
+  );
+
   const pipeline = new Pipeline({
     name: pipelineConfig.name,
     datasetSelector,
     distributionResolver,
     stages,
-    writers: new Rdf2EdmWriter(
-      new FileWriter({outputDir}),
-      createRdf2EdmTaskRunner(outputDir, applicationConfig),
-      logger.child({component: 'rdf2edm'}),
-      new DatasetDescriptionGenerator(
-        applicationConfig.getPath(
-          applicationConfig.BASE_CONFIG_DIR,
-          'datasetdescription.ttl.hbs',
-        ),
-        pipelineConfig,
-      ),
-    ),
+    writers,
     chaining: {
       stageOutputResolver,
       outputDir: applicationConfig.getPath(applicationConfig.STAGE_OUTPUT_DIR),

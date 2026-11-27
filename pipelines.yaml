@@ -4,12 +4,7 @@ pipelines:
     dataset: 
       uri: http://data.beeldengeluid.nl/id/dataset/0029
       description:
-        title: Amateurfilm collectie
-        createdOn: 2026-01-23
-        creator:
-          uri: https://www.beeldengeluid.nl
-          name: Nederlands Instituut voor Beeld en Geluid
-        language: nl
+        createdDate: 2026-01-23
 
     overrides:
       - pipelines/amateurfilm
@@ -30,7 +25,7 @@ pipelines:
     dataset:
       uri: https://atlantislite.deventit.nl/AtlantisPubliek/data/dataset/MHD+-+Eerste+Wereldoorlog
       description:
-        createdOn: 2026-08-11
+        createdDate: 2026-08-11
     overrides:
       - pipelines/mhdww1
 

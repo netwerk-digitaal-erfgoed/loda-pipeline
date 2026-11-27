@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "pipeline:start": "ROOT_DIR=$(pwd) npm run start -w pipeline",
+    "pipeline:describe": "ROOT_DIR=$(pwd) npm run describe -w pipeline",
     "validation-tool:start": "npm run dev -w validation-tool",
     "lint": "eslint . && prettier --check pipeline/src validation-tool/src",
     "fix": "eslint --fix . && prettier --write pipeline/src validation-tool/src",
