@@ -7,15 +7,17 @@ if [ "${1:-}" = "--native" ]; then
   shift
 fi
 
-if [ $# -ne 1 ]; then
-  echo "Usage: scripts/run [--native] <pipeline>" >&2
+if [ $# -lt 1 ]; then
+  echo "Usage: scripts/run [--native] <pipeline> [pipeline flags, e.g. --upload]" >&2
   exit 1
 fi
 
 cd "$(dirname "$0")/.."
 
 if [ "$native" = true ]; then
-  QLEVER_ENV=native exec npm start -- "$1"
+  QLEVER_ENV=native exec npm run pipeline:start -- "$@"
 fi
 
-PIPELINE="$1" exec docker compose up --build --exit-code-from pipeline
+pipeline="$1"
+shift
+PIPELINE="$pipeline" PIPELINE_FLAGS="$*" exec docker compose up --build --exit-code-from pipeline

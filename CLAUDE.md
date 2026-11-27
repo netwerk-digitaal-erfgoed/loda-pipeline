@@ -11,17 +11,29 @@ This project is intentionally a thin consumer of `@lde/pipeline`. When something
 ## Commands
 
 ```bash
-# Run a pipeline for a dataset
-npm start -- <dataset-uri>
+# Run a pipeline by its name in pipelines.yaml; afterwards dry-runs the S3 upload
+npm run pipeline:start -- <name>
 
-# Create a new pipeline directory
-npm start -- init <dataset-uri>
+# Same, and actually upload the distribution files and description
+npm run pipeline:start -- <name> --upload
+
+# Regenerate the dataset description from the run manifest, without rerunning the pipeline
+npm run pipeline:describe -- <name>
+
+# Upload the outputs of the last run, without rerunning the pipeline (dry run without --upload)
+npm run pipeline:upload -- <name> [--upload]
+
+# Run the tests (vitest)
+npm run pipeline:test
 
 # Type-check
 npx tsc -p pipeline --noEmit
+
+# Lint and check formatting (eslint, prettier)
+npm run lint
 ```
 
-No linter or test framework is configured.
+Tests live next to the code as `*.test.ts`. The root `pipeline:*` scripts end in `--`, so that flags such as `--upload` reach the script instead of npm.
 
 ## Architecture
 

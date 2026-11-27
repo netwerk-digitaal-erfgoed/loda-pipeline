@@ -1,6 +1,5 @@
 import {parseArgs} from 'node:util';
 import {getPipelineConfig} from '../config.js';
-import {createFileWriter, getOutputPaths} from '../output.js';
 import {describe} from './render.js';
 
 const {positionals} = parseArgs({allowPositionals: true});
@@ -10,8 +9,8 @@ if (positionals.length !== 1) {
 }
 
 const pipelineConfig = await getPipelineConfig(positionals[0]);
-const output = await describe(
-  getOutputPaths(createFileWriter(), new URL(pipelineConfig.dataset.uri)),
-  pipelineConfig,
-);
+const output = await describe(pipelineConfig);
 console.log(`Wrote ${output}`);
+
+export * from './manifest.js';
+export * from './render.js';

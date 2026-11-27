@@ -1,10 +1,15 @@
 import {createReadStream, createWriteStream} from 'node:fs';
 import {access, rm} from 'node:fs/promises';
-import {basename, resolve} from 'node:path';
+import {resolve} from 'node:path';
 import {pipeline} from 'node:stream/promises';
 import {createGzip} from 'node:zlib';
-import type {Dataset} from '@lde/dataset';
-import {FileWriter, RunContext, RunWriter, Writer} from '@lde/pipeline';
+import {Dataset} from '@lde/dataset';
+import {
+  FileWriter,
+  type RunContext,
+  type RunWriter,
+  type Writer,
+} from '@lde/pipeline';
 import type {TaskRunner} from '@lde/task-runner';
 import {DockerTaskRunner} from '@lde/task-runner-docker';
 import {HttpTaskRunner} from '@lde/task-runner-http';
@@ -12,7 +17,6 @@ import type {Logger} from 'pino';
 import type {ApplicationConfig, PipelineConfig} from '../config.js';
 import {captureManifest, writeManifest} from '../description/manifest.js';
 import {describe} from '../description/render.js';
-import {getOutputPaths, type OutputPaths} from '../output.js';
 
 const rdf2edmScript = '/app/crawler/rdf2edm.sh';
 
@@ -39,12 +43,24 @@ export function createRdf2EdmTaskRunner(
  * dataset description is rendered.
  */
 export class Rdf2EdmWriter implements Writer {
+  private readonly fileWriter: FileWriter;
+
   constructor(
-    private readonly fileWriter: FileWriter,
     private readonly taskRunner: TaskRunner<unknown>,
     private readonly logger: Logger,
     private readonly pipelineConfig: PipelineConfig,
-  ) {}
+  ) {
+    const {dataset, output} = pipelineConfig;
+    this.fileWriter = new FileWriter({outputDir: output.dir});
+    const fileWriterPath = this.fileWriter.getOutputPath(
+      new Dataset({iri: new URL(dataset.uri), distributions: []}),
+    );
+    if (fileWriterPath !== output.paths.nt) {
+      throw new Error(
+        `FileWriter writes ${fileWriterPath}, but the pipeline config expects ${output.paths.nt}`,
+      );
+    }
+  }
 
   async openRun(context: RunContext): Promise<RunWriter> {
     const run = await this.fileWriter.openRun(context);
@@ -63,8 +79,11 @@ export class Rdf2EdmWriter implements Writer {
   }
 
   private async finalize(dataset: Dataset, context: RunContext) {
-    const paths = getOutputPaths(this.fileWriter, dataset);
-    await rm(paths.manifest, {force: true});
+    const {paths} = this.pipelineConfig.output;
+    await Promise.all([
+      rm(paths.manifest, {force: true}),
+      rm(paths.description, {force: true}),
+    ]);
 
     try {
       await access(paths.nt);
@@ -79,8 +98,8 @@ export class Rdf2EdmWriter implements Writer {
       throw error;
     }
 
-    const numTriples = await this.gzip(dataset, paths);
-    await this.convertEdm(dataset, paths);
+    const numTriples = await this.gzip(dataset);
+    await this.convertEdm(dataset);
 
     await writeManifest(
       paths.manifest,
@@ -88,13 +107,12 @@ export class Rdf2EdmWriter implements Writer {
         dataset,
         context,
         pipelineConfig: this.pipelineConfig,
-        nt: {path: paths.ntGz, numTriples},
-        xmlPath: paths.edmZip,
+        numTriples,
       }),
     );
 
     try {
-      await describe(paths, this.pipelineConfig);
+      await describe(this.pipelineConfig);
     } catch (error) {
       this.logger.error(
         {dataset: dataset.iri.toString(), error},
@@ -103,9 +121,10 @@ export class Rdf2EdmWriter implements Writer {
     }
   }
 
-  private async convertEdm(dataset: Dataset, paths: OutputPaths) {
-    const input = basename(paths.nt);
-    const output = `./${basename(paths.edmZip)}`;
+  private async convertEdm(dataset: Dataset) {
+    const {files} = this.pipelineConfig.output;
+    const input = files.nt;
+    const output = `./${files.edmXmlZip}`;
     this.logger.info(
       {dataset: dataset.iri.toString(), input, output},
       'Converting to EDM XML',
@@ -120,13 +139,10 @@ export class Rdf2EdmWriter implements Writer {
     );
   }
 
-  private async gzip(dataset: Dataset, paths: OutputPaths): Promise<number> {
+  private async gzip(dataset: Dataset): Promise<number> {
+    const {files, paths} = this.pipelineConfig.output;
     this.logger.info(
-      {
-        dataset: dataset.iri.toString(),
-        input: basename(paths.nt),
-        output: paths.ntGz,
-      },
+      {dataset: dataset.iri.toString(), input: files.nt, output: paths.ntGz},
       'Gzipping N-Triples',
     );
     let lines = 0;

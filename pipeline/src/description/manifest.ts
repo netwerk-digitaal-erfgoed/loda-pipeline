@@ -1,5 +1,5 @@
 import {stat} from 'node:fs/promises';
-import {basename, relative, sep} from 'node:path';
+import {relative, sep} from 'node:path';
 import type {Dataset} from '@lde/dataset';
 import type {RunContext} from '@lde/pipeline';
 import unzipper from 'unzipper';
@@ -42,20 +42,21 @@ export interface CaptureInput {
   dataset: Dataset;
   context: RunContext;
   pipelineConfig: PipelineConfig;
-  nt: {path: string; numTriples: number};
-  xmlPath: string;
+  numTriples: number;
 }
 
 export async function captureManifest({
   dataset,
   context,
   pipelineConfig,
-  nt,
-  xmlPath,
+  numTriples,
 }: CaptureInput): Promise<RunManifest> {
+  const {files, paths} = pipelineConfig.output;
+  const ntPath = paths.ntGz;
+  const xmlPath = paths.edmXmlZip;
   const [queryFiles, ntStat, xmlStat, numRecords] = await Promise.all([
     getQueryFiles(pipelineConfig.overrides),
-    stat(nt.path),
+    stat(ntPath),
     stat(xmlPath),
     countZipEntries(xmlPath, '.edm.xml'),
   ]);
@@ -79,11 +80,15 @@ export async function captureManifest({
     queryFiles,
     outputs: {
       nt: {
-        file: basename(nt.path),
+        file: files.ntGz,
         numBytes: ntStat.size,
-        numTriples: nt.numTriples,
+        numTriples,
       },
-      xml: {file: basename(xmlPath), numBytes: xmlStat.size, numRecords},
+      xml: {
+        file: files.edmXmlZip,
+        numBytes: xmlStat.size,
+        numRecords,
+      },
     },
   };
 }

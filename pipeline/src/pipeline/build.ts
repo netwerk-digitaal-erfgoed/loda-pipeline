@@ -6,7 +6,6 @@ import {createStages} from './stage.js';
 import {createRdf2EdmTaskRunner, Rdf2EdmWriter} from './rdf2edm-writer.js';
 import {LoggerReporter} from '@lde/pipeline-logger-reporter';
 import pino from 'pino';
-import {createFileWriter} from '../output.js';
 
 export async function build(pipelineConfig: PipelineConfig): Promise<{
   pipeline: Pipeline;
@@ -36,8 +35,6 @@ export async function build(pipelineConfig: PipelineConfig): Promise<{
     pipelineConfig.overrides,
   );
 
-  const outputDir = applicationConfig.getPath(applicationConfig.OUTPUT_DIR);
-
   const logger = pino({
     level: process.env.LOG_LEVEL ?? 'debug',
     transport: process.stdout.isTTY
@@ -46,8 +43,7 @@ export async function build(pipelineConfig: PipelineConfig): Promise<{
   });
 
   const writers = new Rdf2EdmWriter(
-    createFileWriter(),
-    createRdf2EdmTaskRunner(outputDir, applicationConfig),
+    createRdf2EdmTaskRunner(pipelineConfig.output.dir, applicationConfig),
     logger.child({component: 'rdf2edm'}),
     pipelineConfig,
   );

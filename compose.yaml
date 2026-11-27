@@ -3,7 +3,10 @@ services:
     build:
       context: .
       dockerfile: pipeline/Dockerfile
-    command: ['${PIPELINE:?Set PIPELINE to a pipeline directory name}']
+    command: ${PIPELINE:?Set PIPELINE to a pipeline directory name} ${PIPELINE_FLAGS:-}
+    env_file:
+      - path: pipeline/.env
+        required: false
     user: '1000:1000'
     environment:
       QLEVER_MEMORY_GB: ${QLEVER_MEMORY_GB:-8}
@@ -29,6 +32,14 @@ services:
         source: ghcr.io/ldelements/task-runner-http:0.1.0
         target: /agent
       - ./imports:/app/imports
+
+  s3mock:
+    image: adobe/s3mock:5.2.3
+    profiles: [s3mock]
+    ports:
+      - '9090:9090'
+    environment:
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: ${S3_BUCKET:-europeana}
 
   rdf2edm:
     build:

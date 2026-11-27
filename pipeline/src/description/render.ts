@@ -1,9 +1,9 @@
 import {readFile, stat, writeFile} from 'node:fs/promises';
-import {dirname, join} from 'node:path';
+import {join} from 'node:path';
 import handlebars from 'handlebars';
 import * as z from 'zod';
 import {applicationConfig, type PipelineConfig} from '../config.js';
-import type {OutputPaths} from '../output.js';
+import {getDistributionUrl} from '../distribution.js';
 import {readManifest, type RunManifest} from './manifest.js';
 
 const DistributionFile = z.object({
@@ -45,11 +45,11 @@ export const descriptionTemplatePath = () =>
   );
 
 export async function describe(
-  paths: OutputPaths,
   pipelineConfig: PipelineConfig,
 ): Promise<string> {
+  const {dir, paths} = pipelineConfig.output;
   const manifest = await readManifest(paths.manifest);
-  await assertOutputsUnchanged(manifest, dirname(paths.manifest));
+  await assertOutputsUnchanged(manifest, dir);
 
   await writeFile(
     paths.description,
@@ -104,12 +104,11 @@ function toLanguageValue(
 }
 
 function toDistributionValues({
+  pipeline,
   run,
   queryFiles,
   outputs,
 }: RunManifest): DatasetDescriptionData['distribution'] {
-  const contentUrl = (file: string) =>
-    `${applicationConfig.DISTRIBUTION_BASE}/${file}`;
   return {
     createdDate: run.completedAt.slice(0, 10),
     createdDateTime: run.completedAt,
@@ -117,22 +116,30 @@ function toDistributionValues({
     nt: {
       numTriples: outputs.nt.numTriples,
       numBytes: outputs.nt.numBytes,
-      contentUrl: contentUrl(outputs.nt.file),
+      contentUrl: getDistributionUrl(
+        applicationConfig.DISTRIBUTION_BASE,
+        pipeline,
+        'ntGz',
+      ),
     },
     xml: {
       numTriples: outputs.xml.numRecords,
       numBytes: outputs.xml.numBytes,
-      contentUrl: contentUrl(outputs.xml.file),
+      contentUrl: getDistributionUrl(
+        applicationConfig.DISTRIBUTION_BASE,
+        pipeline,
+        'edmXmlZip',
+      ),
     },
   };
 }
 
-async function assertOutputsUnchanged(
+export async function assertOutputsUnchanged(
   manifest: RunManifest,
-  dir: string,
+  outputDir: string,
 ): Promise<void> {
   for (const output of Object.values(manifest.outputs)) {
-    const {size} = await stat(join(dir, output.file));
+    const {size} = await stat(join(outputDir, output.file));
 
     if (size !== output.numBytes) {
       throw new Error(
