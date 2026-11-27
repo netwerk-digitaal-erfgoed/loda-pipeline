@@ -139,7 +139,7 @@ const applicationConfigSchema: JSONSchemaType<
         'https://github.com/netwerk-digitaal-erfgoed/loda-pipeline/blob/main',
     },
     S3_ENDPOINT: {type: 'string', default: 'https://objectstore.surf.nl'},
-    S3_REGION: {type: 'string', default: 'us-east-1'},
+    S3_REGION: {type: 'string', default: 'default'},
     S3_BUCKET: {type: 'string', default: 'europeana'},
     S3_FORCE_PATH_STYLE: {type: 'boolean', default: true},
     S3_ACCESS_KEY_ID: {type: 'string', nullable: true},
